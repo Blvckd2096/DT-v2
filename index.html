@@ -1072,8 +1072,13 @@ function saveAdminToBackend() {
   if (!apiUrl()) { showAdminToast('Đã lưu trên máy này. Dán link Apps Script ở tab Chung rồi bấm Lưu để đổi cho tất cả.'); return; }
   showAdminToast('Đang lưu lên Google Sheet…');
   apiPost({ action: 'saveSettings', settings: weddingData }).then(d => {
-    if (d && d.ok) showAdminToast('Đã lưu — mọi người mở thiệp sẽ thấy nội dung mới.');
-    else showAdminToast('Không lưu được lên mạng. Đã giữ bản trên máy này, kiểm tra lại link Apps Script.');
+    if (d && d.ok) { showAdminToast('Đã lưu — mọi người mở thiệp sẽ thấy nội dung mới.'); return; }
+    // Apps Script thường chuyển hướng sau POST nên trình duyệt không nhận được JSON trả về,
+    // dù dữ liệu đã ghi xong. Đọc lại settings để xác nhận rồi mới báo kết quả.
+    apiGet('settings').then(g => {
+      if (g && g.ok && g.settings) showAdminToast('Đã lưu — mọi người mở thiệp sẽ thấy nội dung mới.');
+      else showAdminToast('Không lưu được lên mạng. Đã giữ bản trên máy này, kiểm tra lại link Apps Script.');
+    });
   });
 }
 function loadReview() {
@@ -1110,10 +1115,13 @@ function setupForms() {
     if (!apiUrl()) { showStatus($('#rsvpStatus'), true, 'Đã ghi nhận xác nhận của ' + name + ' (bản xem trước, chỉ lưu trên máy này).'); e.target.reset(); return; }
     showStatus($('#rsvpStatus'), true, 'Đang gửi xác nhận…');
     apiPost({ action: 'rsvp', name: name, attend: attend, guests: attend === 'yes' ? +guests : 0, note: note }).then(d => {
-      if (d && d.ok) showStatus($('#rsvpStatus'), true, 'Đã gửi xác nhận của ' + name + ' về cho cô dâu chú rể. Cảm ơn bạn!');
-      else showStatus($('#rsvpStatus'), false, 'Không gửi được. Kiểm tra mạng rồi thử lại.');
-      e.target.reset();
+      if (d && d.ok) { showStatus($('#rsvpStatus'), true, 'Đã gửi xác nhận của ' + name + ' về cho cô dâu chú rể. Cảm ơn bạn!'); return; }
+      apiGet('rsvp').then(g => {
+        if (g && g.ok && Array.isArray(g.rsvp) && g.rsvp.some(x => x.name === name)) showStatus($('#rsvpStatus'), true, 'Đã gửi xác nhận của ' + name + ' về cho cô dâu chú rể. Cảm ơn bạn!');
+        else showStatus($('#rsvpStatus'), false, 'Không gửi được. Kiểm tra mạng rồi thử lại.');
+      });
     });
+    e.target.reset();
   });
   $('#wishForm').addEventListener('submit', e => {
     e.preventDefault();
@@ -1123,7 +1131,13 @@ function setupForms() {
     const list = getWishes(); const item = { name, message: msg, icon, likes: 0 };
     list.unshift(item); saveWishes(list); renderWishes(); spawnBubble(item);
     if (!apiUrl()) { showStatus($('#wishStatus'), true, 'Đã ghi nhận lời chúc của ' + name + ' (bản xem trước, chỉ lưu trên máy này).'); }
-    else { showStatus($('#wishStatus'), true, 'Đang gửi lời chúc…'); apiPost({ action: 'wishes', name: name, message: msg, icon: icon }).then(d => { if (d && d.ok) showStatus($('#wishStatus'), true, 'Đã gửi lời chúc của ' + name + ' về cho cô dâu chú rể. Cảm ơn bạn!'); else showStatus($('#wishStatus'), false, 'Không gửi được lên mạng, lời chúc đã lưu trên máy này.'); }); }
+    else { showStatus($('#wishStatus'), true, 'Đang gửi lời chúc…'); apiPost({ action: 'wishes', name: name, message: msg, icon: icon }).then(d => {
+      if (d && d.ok) { showStatus($('#wishStatus'), true, 'Đã gửi lời chúc của ' + name + ' về cho cô dâu chú rể. Cảm ơn bạn!'); return; }
+      apiGet('wishes').then(g => {
+        if (g && g.ok && Array.isArray(g.wishes) && g.wishes.some(x => x.name === name && x.message === msg)) showStatus($('#wishStatus'), true, 'Đã gửi lời chúc của ' + name + ' về cho cô dâu chú rể. Cảm ơn bạn!');
+        else showStatus($('#wishStatus'), false, 'Không gửi được lên mạng, lời chúc đã lưu trên máy này.');
+      });
+    }); }
     e.target.reset();
   });
 }
