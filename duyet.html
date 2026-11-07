@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Duyệt xác nhận &amp; lời chúc — Dương Đăng &amp; Ánh Tuyết</title>
+<style>
+:root{--pink:#FFECEE;--deep:#d47a88;--deep2:#c96a7a;--ink:#4a2f35;--ink2:#7a5a60;--line:#f0d5d8;--card:#fff}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Georgia,'Times New Roman',serif;background:var(--pink);color:var(--ink);line-height:1.6;padding:20px 14px 60px}
+.wrap{max-width:760px;margin:0 auto}
+h1{font-size:1.7rem;font-weight:600;text-align:center;color:var(--ink);margin:6px 0 2px}
+.sub{text-align:center;color:var(--ink2);font-size:13.5px;margin-bottom:18px}
+.bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.btn{border:0;border-radius:999px;padding:11px 18px;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;text-align:center}
+.btn-main{flex:1;background:var(--deep2);color:#fff;min-width:160px}
+.btn-ghost{background:#fff;color:var(--deep);border:1px solid var(--deep)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 16px;margin-bottom:16px;box-shadow:0 2px 12px rgba(74,47,53,.06)}
+.card h2{font-size:1.15rem;margin-bottom:10px;color:var(--ink)}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.stat{flex:1;min-width:110px;background:#FFF5F6;border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+.stat b{display:block;font-size:1.5rem;color:var(--deep)}
+.stat span{font-size:12.5px;color:var(--ink2)}
+.row{border-top:1px solid var(--line);padding:10px 0;font-size:14.5px}
+.row:first-of-type{border-top:0}
+.mut{color:#999;font-size:12.5px}
+.pill{display:inline-block;border:1px solid var(--line);background:#fff;border-radius:999px;padding:3px 10px;font-size:12px;cursor:pointer;margin-left:6px}
+.pill:hover{border-color:var(--deep)}
+.status{font-size:13.5px;color:var(--ink2);margin-bottom:10px}
+.err{color:#b3261e}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Duyệt xác nhận &amp; lời chúc</h1>
+  <p class="sub">Dương Đăng &amp; Ánh Tuyết · Đọc từ Google Sheet qua Apps Script</p>
+  <div class="bar">
+    <button class="btn btn-main" id="reloadBtn" type="button">↻ Tải lại danh sách</button>
+    <a class="btn btn-ghost" href="./" target="_blank" rel="noopener">Mở thiệp cưới</a>
+  </div>
+  <p class="status" id="status">Đang tải…</p>
+
+  <div class="card">
+    <h2>Xác nhận tham dự</h2>
+    <div class="stats" id="rsvpStats"></div>
+    <div id="rsvpList">Đang tải…</div>
+  </div>
+
+  <div class="card">
+    <h2>Lời chúc</h2>
+    <div class="stats" id="wishStats"></div>
+    <div id="wishList">Đang tải…</div>
+  </div>
+</div>
+<script>
+var API = "https://script.google.com/macros/s/AKfycbxGkVC-pnendP4VVX-q6tGdiqhG1HqLvpXZWuMOvdmOPOY68ssIzxvGwYrYHY4zQxe8_A/exec";
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function apiGet(action){
+  return fetch(API + '?action=' + action).then(function(r){ return r.json(); }).catch(function(){ return null; });
+}
+function apiPost(body){
+  return fetch(API, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(body) }).then(function(r){ return r.json(); }).catch(function(){ return null; });
+}
+function loadAll(){
+  var st = document.getElementById('status');
+  st.textContent = 'Đang tải…';
+  document.getElementById('rsvpList').textContent = 'Đang tải…';
+  document.getElementById('wishList').textContent = 'Đang tải…';
+  apiGet('rsvp').then(function(d){
+    var box = document.getElementById('rsvpList'), stats = document.getElementById('rsvpStats');
+    if(!d || !d.ok || !Array.isArray(d.rsvp) || !d.rsvp.length){ box.textContent = 'Chưa có xác nhận nào.'; stats.innerHTML = ''; return; }
+    var yes = d.rsvp.filter(function(x){ return String(x.attend) === 'yes' || x.attend === 'Có'; });
+    var total = yes.reduce(function(s,x){ return s + (Number(x.guests) || 0); }, 0);
+    var no = d.rsvp.length - yes.length;
+    stats.innerHTML = '<div class="stat"><b>' + d.rsvp.length + '</b><span>xác nhận</span></div>'
+      + '<div class="stat"><b>' + yes.length + '</b><span>sẽ đến</span></div>'
+      + '<div class="stat"><b>' + no + '</b><span>không đến</span></div>'
+      + '<div class="stat"><b>' + total + '</b><span>tổng số người</span></div>';
+    box.innerHTML = d.rsvp.map(function(x){
+      return '<div class="row"><b>' + esc(x.name) + '</b> — ' + esc(x.attend) + ' · ' + (Number(x.guests) || 0) + ' người'
+        + (x.note ? ' · <i>' + esc(x.note) + '</i>' : '')
+        + ' <span class="mut">(' + esc(x.time || '') + ')</span></div>';
+    }).join('');
+  });
+  apiGet('wishes').then(function(d){
+    var box = document.getElementById('wishList'), stats = document.getElementById('wishStats');
+    if(!d || !d.ok || !Array.isArray(d.wishes) || !d.wishes.length){ box.textContent = 'Chưa có lời chúc nào.'; stats.innerHTML = ''; return; }
+    var shown = d.wishes.filter(function(x){ return x.approved; }).length;
+    var likes = d.wishes.reduce(function(s,x){ return s + (Number(x.likes) || 0); }, 0);
+    stats.innerHTML = '<div class="stat"><b>' + d.wishes.length + '</b><span>lời chúc</span></div>'
+      + '<div class="stat"><b>' + shown + '</b><span>đang hiện</span></div>'
+      + '<div class="stat"><b>' + likes + '</b><span>lượt thích</span></div>';
+    box.innerHTML = d.wishes.map(function(x){
+      return '<div class="row">' + esc(x.icon || '💗') + ' <b>' + esc(x.name) + '</b>: ' + esc(x.message)
+        + ' · ♥ ' + (Number(x.likes) || 0) + ' · ' + (x.approved ? 'Đang hiện' : 'Đang ẩn')
+        + ' <button type="button" class="pill" data-approve="' + x.row + '" data-on="' + (x.approved ? '0' : '1') + '">' + (x.approved ? 'Ẩn' : 'Hiện') + '</button>'
+        + ' <span class="mut">(' + esc(x.time || '') + ')</span></div>';
+    }).join('');
+  });
+  st.textContent = '';
+}
+document.getElementById('reloadBtn').addEventListener('click', loadAll);
+document.getElementById('wishList').addEventListener('click', function(e){
+  var b = e.target.closest('[data-approve]'); if(!b) return;
+  var row = +b.dataset.approve, on = b.dataset.on === '1';
+  b.disabled = true;
+  apiPost({ action:'approveWish', row: row, approved: on }).then(function(d){
+    if(d && d.ok){ loadAll(); }
+    else { b.disabled = false; document.getElementById('status').textContent = 'Không đổi được trạng thái. Thử tải lại.'; }
+  });
+});
+loadAll();
+</script>
+</body>
+</html>
