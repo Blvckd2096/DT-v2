@@ -28,12 +28,15 @@ a{color:inherit;text-decoration:none}
 .invite-guest{font-family:"Playball",cursive;font-size:2.1rem;line-height:1.3;color:var(--deep);text-align:center;margin:14px 0 16px}
 .sec-sub{font-family:var(--serif);font-style:italic;color:var(--ink2);font-size:1.05rem;margin-top:8px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:24px 18px;box-shadow:var(--shadow)}
-/* Reveal on scroll: titles rise, text slides left/right */
-.rvl{opacity:1;transform:none}
-.slide-l{opacity:1;transform:none}
-.slide-r{opacity:1;transform:none}
+/* Reveal on scroll: titles rise (xuất hiện), text slides left/right (trượt), blocks shake in (lắc) */
+.js .rvl{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.22,.61,.36,1)}
+.js .slide-l{opacity:0;transform:translateX(-36px);transition:opacity .7s ease,transform .7s cubic-bezier(.22,.61,.36,1)}
+.js .slide-r{opacity:0;transform:translateX(36px);transition:opacity .7s ease,transform .7s cubic-bezier(.22,.61,.36,1)}
+.js .shake-in{opacity:0;transition:opacity .5s ease}
+.js .shake-in.in{opacity:1;animation:shakeIn .7s ease}
 .rvl.in,.slide-l.in,.slide-r.in{opacity:1;transform:none}
-@media (prefers-reduced-motion:reduce){.js .rvl,.js .slide-l,.js .slide-r{opacity:1;transform:none;transition:none}}
+@keyframes shakeIn{0%{transform:translateX(0)}20%{transform:translateX(-9px)}40%{transform:translateX(9px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}100%{transform:translateX(0)}}
+@media (prefers-reduced-motion:reduce){.js .rvl,.js .slide-l,.js .slide-r,.js .shake-in{opacity:1;transform:none;transition:none;animation:none}}
 /* ---------- OPENER: sample-faithful fade, pink only ---------- */
 .opener{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#e89ba8 0%,#d47a88 100%);padding:24px;transition:opacity 2.1s ease}
 .opener.opening{opacity:0;pointer-events:none}
@@ -454,7 +457,7 @@ noscript .opener{display:none}
 <section class="section"><div class="container" style="text-align:center">
   <p class="eyebrow rvl" data-bind="cdEyebrow">Đếm ngược</p>
   <h2 class="sec-title rvl" data-bind="cdTitle">Đến ngày chung đôi</h2>
-  <div class="cd">
+  <div class="cd shake-in">
     <div class="cd-item"><div class="cd-num" id="cdDays">23</div><div class="cd-label">Ngày</div></div>
     <div class="cd-item"><div class="cd-num" id="cdHours">14</div><div class="cd-label">Giờ</div></div>
     <div class="cd-item"><div class="cd-num" id="cdMinutes">01</div><div class="cd-label">Phút</div></div>
@@ -475,7 +478,7 @@ noscript .opener{display:none}
   <div class="rvl">
     <p class="invite-guest" data-bind="guestName">Quý Khách</p>
     <p class="slide-l" style="text-align:center;font-family:var(--serif);font-size:1.6rem;font-weight:600;line-height:1.5;color:var(--ink)" data-bind="inviteMessage">Trân trọng kính mời quý khách đến dự buổi tiệc chung vui cùng gia đình chúng tôi</p>
-    <div class="families">
+    <div class="families rvl">
       <div class="family slide-l"><h4 data-bind="familyTitleGroom">Nhà trai</h4><div class="parent"><span class="role">Ông</span><span class="pname" data-bind="groomFather">Dương Quang Sứ</span></div><div class="parent"><span class="role">Bà</span><span class="pname" data-bind="groomMother">Nguyễn Thị Tuyền</span></div><div class="addr"><span class="alabel">Địa chỉ</span><span class="atext" data-bind="groomAddress">SN 146 - Thôn Đình - Tam Hồng - Yên Lạc - Phú Thọ</span></div><div class="addr old"><span class="alabel">Trước sáp nhập</span><span class="atext" data-bind="groomAddressOld">SN 146 - Thôn Đình - Yên Đồng - Yên Lạc - Vĩnh Phúc</span></div></div>
       <div class="family-divider" aria-hidden="true"><svg viewBox="0 0 32 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="10" r="7"/><circle cx="21" cy="10" r="7"/></svg></div>
       <div class="family slide-r"><h4 data-bind="familyTitleBride">Nhà gái</h4><div class="parent"><span class="role">Ông</span><span class="pname" data-bind="brideFather">Nguyễn Hữu Thông</span></div><div class="parent"><span class="role">Bà</span><span class="pname" data-bind="brideMother">Nguyễn Thị Thanh Huyền</span></div><div class="addr"><span class="alabel">Địa chỉ</span><span class="atext" data-bind="brideAddress">SN 225 - Thôn Chùa - Tam Hồng - Yên Lạc - Phú Thọ</span></div><div class="addr old"><span class="alabel">Trước sáp nhập</span><span class="atext" data-bind="brideAddressOld">SN 225 - Thôn Chùa - Yên Đồng - Yên Lạc - Vĩnh Phúc</span></div></div>
@@ -506,7 +509,7 @@ noscript .opener{display:none}
 <!-- GALLERY -->
 <section class="section"><div class="container">
   <div class="chapter"><p class="eyebrow rvl" data-bind="albumEyebrow">IV · Album ảnh</p><h2 class="sec-title rvl" data-bind="albumTitle">Khoảnh khắc</h2></div>
-  <div class="album-wrap">
+  <div class="album-wrap rvl">
   <div class="album-stage" id="albumStage"><div class="album-slide" style="z-index:10;opacity:1;filter:none;transform:translateX(calc(-50% + 0%)) scale(1);pointer-events:auto"><img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=700&amp;h=900&amp;q=80&amp;fit=crop" alt="Ảnh cưới 1" loading="lazy"></div><div class="album-slide" style="z-index:9;opacity:0.62;filter:blur(1.1px) brightness(0.87);transform:translateX(calc(-50% + 76%)) scale(0.85);pointer-events:auto"><img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=700&amp;h=900&amp;q=80&amp;fit=crop" alt="Ảnh cưới 2" loading="lazy"></div><div class="album-slide" style="z-index:8;opacity:0.24;filter:blur(2.2px) brightness(0.74);transform:translateX(calc(-50% + 152%)) scale(0.7);pointer-events:auto"><img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=900&amp;h=600&amp;q=80&amp;fit=crop" alt="Ảnh cưới 3" loading="lazy"></div><div class="album-slide" style="z-index:7;opacity:0;filter:blur(3.3000000000000003px) brightness(0.61);transform:translateX(calc(-50% + 228%)) scale(0.55);pointer-events:none"><img src="https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?w=700&amp;h=900&amp;q=80&amp;fit=crop" alt="Ảnh cưới 4" loading="lazy"></div><div class="album-slide" style="z-index:6;opacity:0;filter:blur(4.4px) brightness(0.48);transform:translateX(calc(-50% + 304%)) scale(0.55);pointer-events:none"><img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=900&amp;h=600&amp;q=80&amp;fit=crop" alt="Ảnh cưới 5" loading="lazy"></div><div class="album-slide" style="z-index:5;opacity:0;filter:blur(5.5px) brightness(0.35);transform:translateX(calc(-50% + 380%)) scale(0.55);pointer-events:none"><img src="https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=700&amp;h=900&amp;q=80&amp;fit=crop" alt="Ảnh cưới 6" loading="lazy"></div></div>
   <div class="album-nav">
     <button class="a-btn" id="albPrev" type="button" aria-label="Ảnh trước">‹</button>
@@ -635,7 +638,7 @@ noscript .opener{display:none}
     <audio id="bgMusic" preload="none"></audio>
   </div>
 </div></section>
-<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 07/11/2026 11:30</span></footer>
+<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 07/11/2026 19:06</span></footer>
 <!-- Floating controls (above content, below dialogs) -->
 <nav class="bottom-bar" aria-label="Điều hướng nhanh">
   <a href="#wishes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5z"/></svg><span>Gửi lời chúc</span></a>
@@ -649,7 +652,7 @@ noscript .opener{display:none}
   <div class="gift-dialog" role="dialog" aria-modal="true" aria-label="Hộp quà cưới">
     <button class="gift-close" id="giftDialogClose" type="button" aria-label="Đóng hộp quà">×</button>
     <h3 class="gift-dialog-title" data-bind="giftDialogTitle">Hộp quà cưới</h3>
-    <div class="gift-cols">
+    <div class="gift-cols shake-in">
       <div class="gift-col">
         <p class="gift-col-label">Chú rể</p>
         <div class="gift-qr-card"><img id="giftQrImg" data-bind="giftQrImage" alt="Mã QR chú rể" loading="lazy"></div>
@@ -839,10 +842,21 @@ function fitParentNames() {
 function showStatus(el, ok, msg) { el.textContent = msg; el.className = 'status show ' + (ok ? 'ok' : 'err'); }
 const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.08 });
 function observeReveals() {
-  const els = $$('.rvl,.slide-l,.slide-r');
+  const els = $$('.rvl,.slide-l,.slide-r,.shake-in');
   if (typeof IntersectionObserver === 'undefined') { els.forEach(el => el.classList.add('in')); return; }
   els.forEach(el => io.observe(el));
   setTimeout(() => els.forEach(el => el.classList.add('in')), 2500);
+  // Tự quan sát các cụm mới được vẽ lại sau (lịch trình, câu chuyện, lời chúc, album).
+  if (!window.__revealMO && typeof MutationObserver !== 'undefined') {
+    window.__revealMO = new MutationObserver(muts => {
+      muts.forEach(m => m.addedNodes.forEach(n => {
+        if (!n || n.nodeType !== 1) return;
+        if (n.matches && n.matches('.rvl,.slide-l,.slide-r,.shake-in')) io.observe(n);
+        if (n.querySelectorAll) n.querySelectorAll('.rvl,.slide-l,.slide-r,.shake-in').forEach(el => io.observe(el));
+      }));
+    });
+    window.__revealMO.observe(document.body, { childList: true, subtree: true });
+  }
 }
 function startCountdown() {
   if (!weddingData.weddingDate) return;
