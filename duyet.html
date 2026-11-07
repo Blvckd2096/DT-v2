@@ -63,6 +63,19 @@ function apiPost(body){
 }
 function loadAll(){
   var st = document.getElementById('status');
+  // Nếu có mật khẩu Duyệt (lưu trong Sheet), hỏi trước khi hiện danh sách.
+  apiGet('settings').then(function(s){
+    var pw = (s && s.settings && s.settings.duyetPassword) ? String(s.settings.duyetPassword).trim() : '';
+    if (pw && !window.__duyetUnlocked) {
+      var got = (window.prompt('Nhập mật khẩu để xem danh sách khách:') || '').trim();
+      if (got !== pw) { st.textContent = 'Sai mật khẩu. Tải lại trang để thử lại.'; document.getElementById('rsvpList').textContent = ''; document.getElementById('wishList').textContent = ''; return; }
+      window.__duyetUnlocked = true;
+    }
+    loadData();
+  }).catch(function(){ loadData(); });
+}
+function loadData(){
+  var st = document.getElementById('status');
   st.textContent = 'Đang tải…';
   document.getElementById('rsvpList').textContent = 'Đang tải…';
   document.getElementById('wishList').textContent = 'Đang tải…';
