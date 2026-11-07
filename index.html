@@ -95,21 +95,21 @@ a{color:inherit;text-decoration:none}
 @keyframes heartBeat{0%,100%{transform:translate(-50%,-50%) scale(1)}30%{transform:translate(-50%,-50%) scale(1.1)}45%{transform:translate(-50%,-50%) scale(.96)}60%{transform:translate(-50%,-50%) scale(1.06)}}
 @keyframes ringPulse{0%{transform:translate(-50%,-50%) scale(.85);opacity:.9}70%{transform:translate(-50%,-50%) scale(1.3);opacity:0}100%{transform:translate(-50%,-50%) scale(1.3);opacity:0}}
 /* Envelope (phong thư) — deep rose to match the pink theme */
-.envelope{position:relative;max-width:400px;margin:6px auto 0;padding-top:245px}
-.env-floral{position:absolute;top:0;left:0;right:0;z-index:3;display:block;width:100%;height:52px;margin:0 auto 2px;color:#c98a94}
-.env-photos{position:absolute;top:52px;left:0;right:0;height:216px;z-index:1}
-.env-photo{position:absolute;top:0;width:52%;aspect-ratio:3/4;background:#fff;padding:6px 6px 24px;border-radius:4px;box-shadow:0 10px 24px rgba(74,47,53,.28);margin:0}
+.envelope{position:relative;max-width:400px;margin:6px auto 0;padding-top:186px}
+.env-floral{position:absolute;top:0;left:0;right:0;z-index:3;display:block;width:100%;height:36px;margin:0 auto 2px;color:#c98a94}
+.env-photos{position:absolute;top:36px;left:0;right:0;height:235px;z-index:1}
+.env-photo{position:absolute;top:0;width:56%;aspect-ratio:3/4;background:#fff;padding:5px 5px 20px;border-radius:4px;box-shadow:0 10px 24px rgba(74,47,53,.28);margin:0}
 .env-photo img{width:100%;height:100%;object-fit:cover;display:block;border-radius:2px}
-.env-photo-l{left:2%;transform:rotate(-7deg)}
-.env-photo-r{right:2%;transform:rotate(7deg)}
-.env-ticket{position:absolute;top:150px;left:50%;transform:translateX(-50%) rotate(-3deg);z-index:2;width:52%;background:#fffdf7;border:1px solid #e8d5c8;border-radius:6px;padding:10px 10px 8px;text-align:center;box-shadow:0 8px 20px rgba(74,47,53,.22)}
-.env-ticket-label{font-family:var(--script);font-size:1.15rem;color:#8e2f47;line-height:1.1}
-.env-ticket-date{font-family:var(--serif);font-weight:700;font-size:1.15rem;letter-spacing:.06em;color:#8e2f47;margin-top:2px}
-.env-ticket-sub{font-family:var(--script);font-size:.95rem;color:var(--ink2);margin-top:2px}
-.env-body{position:relative;z-index:3;height:170px;background:linear-gradient(160deg,#a83a56,#8e2f47 55%,#7d2840);border-radius:6px;box-shadow:0 16px 32px rgba(74,47,53,.3);overflow:hidden}
-.env-flap{position:absolute;top:0;left:0;right:0;height:90px;background:linear-gradient(180deg,#c05a72,#a83a56);clip-path:polygon(0 0,100% 0,50% 100%)}
-.env-seal{position:absolute;left:50%;top:60px;transform:translateX(-50%);width:60px;height:60px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#c05a72,#8e2f47 60%,#6d2138);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.35),inset 0 0 0 3px rgba(255,255,255,.14);z-index:4}
-.env-seal span{font-family:var(--script);font-size:1.2rem;color:#f5d98a;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+.env-photo-l{left:0;transform:rotate(-8deg)}
+.env-photo-r{right:0;transform:rotate(8deg)}
+.env-ticket{position:absolute;top:108px;left:50%;transform:translateX(-50%) rotate(-3deg);z-index:2;width:44%;background:#fffdf7;border:1px solid #e8d5c8;border-radius:6px;padding:8px 8px 6px;text-align:center;box-shadow:0 8px 20px rgba(74,47,53,.22)}
+.env-ticket-label{font-family:var(--script);font-size:1.05rem;color:#8e2f47;line-height:1.1}
+.env-ticket-date{font-family:var(--serif);font-weight:700;font-size:1.05rem;letter-spacing:.05em;color:#8e2f47;margin-top:2px}
+.env-ticket-sub{font-family:var(--script);font-size:.9rem;color:var(--ink2);margin-top:2px}
+.env-body{position:relative;z-index:3;height:150px;background:linear-gradient(160deg,#a83a56,#8e2f47 55%,#7d2840);border-radius:6px;box-shadow:0 16px 32px rgba(74,47,53,.3);overflow:hidden}
+.env-flap{position:absolute;top:0;left:0;right:0;height:80px;background:linear-gradient(180deg,#c05a72,#a83a56);clip-path:polygon(0 0,100% 0,50% 100%)}
+.env-seal{position:absolute;left:50%;top:52px;transform:translateX(-50%);width:56px;height:56px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#c05a72,#8e2f47 60%,#6d2138);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.35),inset 0 0 0 3px rgba(255,255,255,.14);z-index:4}
+.env-seal span{font-family:var(--script);font-size:1.1rem;color:#f5d98a;text-shadow:0 1px 2px rgba(0,0,0,.35)}
 .families{display:grid;grid-template-columns:1fr 16px 1fr;gap:0 4px;align-items:stretch;margin-top:20px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 8px 16px;box-shadow:var(--shadow)}
 #invitation{padding-left:12px;padding-right:12px}
 .family{min-width:0;text-align:center}
@@ -660,7 +660,7 @@ noscript .opener{display:none}
     <audio id="bgMusic" preload="none"></audio>
   </div>
 </div></section>
-<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 07/11/2026 19:55</span></footer>
+<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 07/11/2026 20:03</span></footer>
 <!-- Floating controls (above content, below dialogs) -->
 <nav class="bottom-bar" aria-label="Điều hướng nhanh">
   <a href="#wishes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5z"/></svg><span>Gửi lời chúc</span></a>
