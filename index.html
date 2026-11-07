@@ -25,6 +25,7 @@ a{color:inherit;text-decoration:none}
 .chapter{text-align:center;margin-bottom:20px}
 .eyebrow{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--deep);font-weight:600}
 .sec-title{font-family:var(--serif);font-weight:500;font-size:clamp(2rem,8.5vw,3.2rem);line-height:1.25;margin-top:6px}
+.invite-guest{font-family:"Playball",cursive;font-size:2.1rem;line-height:1.3;color:var(--deep);text-align:center;margin:14px 0 16px}
 .sec-sub{font-family:var(--serif);font-style:italic;color:var(--ink2);font-size:1.05rem;margin-top:8px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:24px 18px;box-shadow:var(--shadow)}
 /* Reveal on scroll: titles rise, text slides left/right */
@@ -460,6 +461,7 @@ noscript .opener{display:none}
 <section class="section" id="invitation"><div class="container">
   <div class="chapter"><p class="eyebrow rvl" data-bind="inviteEyebrow">II · Thiệp mời</p><h2 class="sec-title rvl" data-bind="inviteTitle">Trân trọng kính mời</h2></div>
   <div class="rvl">
+    <p class="invite-guest" data-bind="guestName">Quý Khách</p>
     <p class="slide-l" style="text-align:center;font-family:var(--serif);font-size:1.6rem;font-weight:600;line-height:1.5;color:var(--ink)" data-bind="inviteMessage">Trân trọng kính mời quý khách đến dự buổi tiệc chung vui cùng gia đình chúng tôi</p>
     <div class="families">
       <div class="family slide-l"><h4 data-bind="familyTitleGroom">Nhà trai</h4><div class="parent"><span class="role">Ông</span><span class="pname" data-bind="groomFather">Dương Quang Sứ</span></div><div class="parent"><span class="role">Bà</span><span class="pname" data-bind="groomMother">Nguyễn Thị Tuyền</span></div><div class="addr"><span class="alabel">Địa chỉ</span><span class="atext" data-bind="groomAddress">SN 146 - Thôn Đình - Tam Hồng - Yên Lạc - Phú Thọ</span></div><div class="addr old"><span class="alabel">Trước sáp nhập</span><span class="atext" data-bind="groomAddressOld">SN 146 - Thôn Đình - Yên Đồng - Yên Lạc - Vĩnh Phúc</span></div></div>
@@ -621,7 +623,7 @@ noscript .opener{display:none}
     <audio id="bgMusic" preload="none"></audio>
   </div>
 </div></section>
-<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 07/11/2026 09:30</span></footer>
+<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 07/11/2026 09:46</span></footer>
 <!-- Floating controls (above content, below dialogs) -->
 <nav class="bottom-bar" aria-label="Điều hướng nhanh">
   <a href="#wishes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5z"/></svg><span>Gửi lời chúc</span></a>
@@ -1046,11 +1048,26 @@ function apiPost(body) {
   const u = apiUrl(); if (!u) return Promise.resolve(null);
   return fetch(u, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) }).then(r => r.json()).catch(() => null);
 }
+// Tên khách mời riêng cho từng link: ?guest=Anh Đăng (hoặc ?khach=...).
+// Có tham số này thì tên đó thắng tên mặc định trong Sheet/file, hiển thị
+// ở cả màn hình chờ (bìa) lẫn mục Thiệp mời.
+function guestNameFromUrl() {
+  try {
+    const p = new URLSearchParams(location.search);
+    const g = (p.get('guest') || p.get('khach') || '').trim();
+    return g || null;
+  } catch (e) { return null; }
+}
+function applyGuestParam() {
+  const g = guestNameFromUrl();
+  if (g) weddingData.guestName = g;
+}
 function applyRemoteSettings(s) {
   if (!s || typeof s !== 'object') return false;
   const keepUrl = weddingData.appsScriptUrl;
   Object.assign(weddingData, s);
   if (!weddingData.appsScriptUrl) weddingData.appsScriptUrl = keepUrl;
+  applyGuestParam();
   bindData(); renderCalendar(); renderStory(); renderSchedule(); renderGallery(); renderWishes();
   return true;
 }
@@ -1477,6 +1494,7 @@ function setupAdmin() {
 function init() {
   const safe = fn => { try { fn(); } catch (e) { console.warn(e); } };
   safe(() => { try { const sv = JSON.parse(localStorage.getItem(LS_ADMIN_SAVED) || 'null'); if (sv && typeof sv === 'object') { const keepUrl = weddingData.appsScriptUrl; Object.assign(weddingData, sv); if (!weddingData.appsScriptUrl) weddingData.appsScriptUrl = keepUrl; } } catch (e) {} });
+  safe(applyGuestParam);
   safe(bindData); safe(loadRemoteSettings); safe(loadRemoteWishes); safe(renderCalendar); safe(renderStory); safe(renderGallery); safe(setupAlbumNav);
   safe(() => { var refit = function(){ fitParentNames(); }; var n = 0; var iv = setInterval(function(){ refit(); if (++n >= 10) clearInterval(iv); }, 500); if (document.fonts && document.fonts.load) document.fonts.load('600 19px "Cormorant Garamond"').then(refit).catch(refit); if (document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ setTimeout(refit, 60); }); window.addEventListener('load', function(){ refit(); setTimeout(refit, 800); setTimeout(refit, 2000); }); window.addEventListener('resize', () => { clearTimeout(window.__fitT); window.__fitT = setTimeout(refit, 150); }); });
   safe(() => makeCoverPetals($('#coverPetals'), 13)); safe(renderSchedule); safe(renderWishes);
@@ -1513,7 +1531,7 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
     </div>
     <div class="admin-body" id="adminBody">
       <div class="admin-page on">
-        <div class="field"><label>Tên khách mời (hiện trên bìa)</label><input data-f="guestName" type="text" /></div>
+        <div class="field"><label>Tên khách mời mặc định (hiện trên bìa + thiệp mời)</label><input data-f="guestName" type="text" /></div>
         <div class="field"><label>Link Apps Script (để nút Lưu đổi cho tất cả)</label><input data-f="appsScriptUrl" type="text" placeholder="Dán link /exec sau khi deploy Apps Script…" /></div>
         <div class="field"><label>Tên chú rể (ngắn, hiện trên bìa)</label><input data-f="groomName" type="text" /></div>
         <div class="field"><label>Tên cô dâu (ngắn, hiện trên bìa)</label><input data-f="brideName" type="text" /></div>
