@@ -85,7 +85,6 @@ a{color:inherit;text-decoration:none}
 .cal-day.special::after{content:"";position:absolute;left:50%;top:50%;width:calc(100% + 10px);aspect-ratio:1/1;border:2px solid var(--deep);border-radius:50%;transform:translate(-50%,-50%);z-index:-1;animation:ringPulse 2s ease-out infinite}
 @keyframes heartBeat{0%,100%{transform:translate(-50%,-50%) scale(1)}30%{transform:translate(-50%,-50%) scale(1.1)}45%{transform:translate(-50%,-50%) scale(.96)}60%{transform:translate(-50%,-50%) scale(1.06)}}
 @keyframes ringPulse{0%{transform:translate(-50%,-50%) scale(.85);opacity:.9}70%{transform:translate(-50%,-50%) scale(1.3);opacity:0}100%{transform:translate(-50%,-50%) scale(1.3);opacity:0}}
-.cal-note{text-align:center;color:var(--ink2);font-size:13px;margin-top:12px}
 .couple-grid{display:flex;flex-direction:column;gap:20px}
 .couple-card{text-align:center}
 .couple-card img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:24px}
@@ -166,11 +165,11 @@ a{color:inherit;text-decoration:none}
 .field input,.field textarea{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:14px;font:inherit;background:#fff;color:var(--ink)}
 .field textarea{min-height:90px;resize:vertical}
 .radio-row{display:flex;gap:10px;flex-wrap:wrap}
-.radio-opt{flex:1;border:1px solid var(--line);border-radius:14px;padding:10px 8px;text-align:center;cursor:pointer;font-size:14px;background:#fff}
+.radio-opt{position:relative;flex:1;border:1px solid var(--line);border-radius:14px;padding:10px 8px;text-align:center;cursor:pointer;font-size:14px;background:#fff}
 .radio-opt:has(input:checked){background:var(--deep);color:#fff;border-color:var(--deep)}
 .radio-opt input{position:absolute;opacity:0;pointer-events:none;width:0;height:0;left:0;top:0}
 .chips{display:flex;gap:8px;flex-wrap:wrap}
-.chip{flex:1;min-width:36px;border:1px solid var(--line);border-radius:12px;padding:8px 0;text-align:center;cursor:pointer;background:#fff}
+.chip{position:relative;flex:1;min-width:36px;border:1px solid var(--line);border-radius:12px;padding:8px 0;text-align:center;cursor:pointer;background:#fff}
 .chip:has(input:checked){background:var(--deep);color:#fff;border-color:var(--deep)}
 .chip input{position:absolute;opacity:0;pointer-events:none;width:0;height:0;left:0;top:0}
 .btn-full{width:100%;padding:13px;border-radius:999px;background:var(--deep);color:#fff;font-weight:600;font-size:15px}
@@ -360,7 +359,9 @@ noscript .opener{display:none}
 #adminPanel .admin-head{display:flex;align-items:center;justify-content:space-between;padding:15px 18px 10px;border-bottom:1px solid var(--line);flex:none}
 #adminPanel .admin-head h3{margin:0;font-family:var(--serif);font-size:18px;color:var(--ink)}
 #adminPanel .admin-head .x{border:0;background:#FFF0F2;width:34px;height:34px;border-radius:50%;font-size:16px;color:var(--ink);cursor:pointer}
-#adminPanel .admin-tabs{display:flex;gap:6px;padding:10px 14px 4px;overflow-x:auto;flex:none;scrollbar-width:none}
+#adminPanel .admin-tabs-wrap{display:flex;align-items:center;gap:4px;padding:10px 10px 4px;flex:none}
+#adminPanel .admin-tabs{display:flex;gap:6px;overflow-x:auto;flex:1;min-width:0;scrollbar-width:none;padding:2px}
+#adminPanel .tabs-arrow{flex:none;width:28px;height:32px;border:1px solid var(--line);background:#fff;border-radius:999px;cursor:pointer;color:var(--ink2);font-size:17px;line-height:1}
 #adminPanel .admin-tabs::-webkit-scrollbar{display:none}
 #adminPanel .admin-tabs button{flex:none;border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font-size:13px;color:var(--ink2);cursor:pointer}
 #adminPanel .admin-tabs button.on{background:var(--deep2);border-color:var(--deep2);color:#fff}
@@ -508,7 +509,7 @@ noscript .opener{display:none}
 <!-- CALENDAR -->
 <section class="section"><div class="container">
   <div class="chapter"><p class="eyebrow rvl" data-bind="calEyebrow">VI · Ngày cưới</p><h2 class="sec-title rvl" data-bind="calTitle">Ghi vào lịch</h2></div>
-  <div class="card rvl"><div class="cal" id="calendar"><div class="cal-head"><span>Tháng 11</span><span>2026</span></div><div class="cal-grid"><div class="cal-dow">T2</div><div class="cal-dow">T3</div><div class="cal-dow">T4</div><div class="cal-dow">T5</div><div class="cal-dow">T6</div><div class="cal-dow">T7</div><div class="cal-dow">CN</div><div></div><div></div><div></div><div></div><div></div><div></div><div class="cal-day">1</div><div class="cal-day">2</div><div class="cal-day">3</div><div class="cal-day">4</div><div class="cal-day">5</div><div class="cal-day">6</div><div class="cal-day">7</div><div class="cal-day">8</div><div class="cal-day">9</div><div class="cal-day">10</div><div class="cal-day">11</div><div class="cal-day">12</div><div class="cal-day">13</div><div class="cal-day">14</div><div class="cal-day">15</div><div class="cal-day">16</div><div class="cal-day">17</div><div class="cal-day">18</div><div class="cal-day">19</div><div class="cal-day">20</div><div class="cal-day">21</div><div class="cal-day">22</div><div class="cal-day">23</div><div class="cal-day">24</div><div class="cal-day">25</div><div class="cal-day">26</div><div class="cal-day">27</div><div class="cal-day special">28</div><div class="cal-day">29</div><div class="cal-day">30</div></div></div><p class="cal-note" data-bind="calNote">Ngày 28 được tô đậm là ngày cưới của chúng mình.</p></div>
+  <div class="card rvl"><div class="cal" id="calendar"><div class="cal-head"><span>Tháng 11</span><span>2026</span></div><div class="cal-grid"><div class="cal-dow">T2</div><div class="cal-dow">T3</div><div class="cal-dow">T4</div><div class="cal-dow">T5</div><div class="cal-dow">T6</div><div class="cal-dow">T7</div><div class="cal-dow">CN</div><div></div><div></div><div></div><div></div><div></div><div></div><div class="cal-day">1</div><div class="cal-day">2</div><div class="cal-day">3</div><div class="cal-day">4</div><div class="cal-day">5</div><div class="cal-day">6</div><div class="cal-day">7</div><div class="cal-day">8</div><div class="cal-day">9</div><div class="cal-day">10</div><div class="cal-day">11</div><div class="cal-day">12</div><div class="cal-day">13</div><div class="cal-day">14</div><div class="cal-day">15</div><div class="cal-day">16</div><div class="cal-day">17</div><div class="cal-day">18</div><div class="cal-day">19</div><div class="cal-day">20</div><div class="cal-day">21</div><div class="cal-day">22</div><div class="cal-day">23</div><div class="cal-day">24</div><div class="cal-day">25</div><div class="cal-day">26</div><div class="cal-day">27</div><div class="cal-day special">28</div><div class="cal-day">29</div><div class="cal-day">30</div></div></div></div>
 </div></section>
 <!-- GIFT -->
 <section class="section" id="gift"><div class="container">
@@ -620,7 +621,7 @@ noscript .opener{display:none}
     <audio id="bgMusic" preload="none"></audio>
   </div>
 </div></section>
-<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 07/11/2026 00:45</span></footer>
+<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 07/11/2026 09:08</span></footer>
 <!-- Floating controls (above content, below dialogs) -->
 <nav class="bottom-bar" aria-label="Điều hướng nhanh">
   <a href="#wishes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5z"/></svg><span>Gửi lời chúc</span></a>
@@ -739,7 +740,6 @@ const weddingData = {
   albumEyebrow: "IV · Album ảnh", albumTitle: "Khoảnh khắc",
   schedEyebrow: "V · Lịch trình", schedTitle: "Ngày trọng đại",
   calEyebrow: "VI · Ngày cưới", calTitle: "Ghi vào lịch",
-  calNote: "Ngày 28 được tô đậm là ngày cưới của chúng mình.",
   giftEyebrow: "VII · Hộp quà cưới", giftTitle: "Tấm lòng của bạn", giftHint: "Nhấn để mở",
   giftDialogTitle: "Hộp quà cưới",
   rsvpEyebrow: "VIII · Xác nhận tham dự", rsvpTitle: "Bạn sẽ đến chứ?",
@@ -1335,7 +1335,10 @@ function setupAdmin() {
     $$('#adminTabs button').forEach(x => x.classList.toggle('on', x === b));
     $$('.admin-page').forEach((p, i) => p.classList.toggle('on', i === +b.dataset.tab));
     $('#adminBody').scrollTop = 0;
+    b.scrollIntoView({ behavior: 'auto', inline: 'nearest', block: 'nearest' });
   });
+  $('#tabsPrev').addEventListener('click', () => $('#adminTabs').scrollBy({ left: -220, behavior: 'auto' }));
+  $('#tabsNext').addEventListener('click', () => $('#adminTabs').scrollBy({ left: 220, behavior: 'auto' }));
   $('#adminBody').addEventListener('input', e => {
     const inp = e.target.closest('[data-f]'); if (!inp) return;
     weddingData[inp.dataset.f] = inp.value; applyAdminField(inp.dataset.f);
@@ -1461,15 +1464,19 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
       <h3>Admin — Sửa thiệp</h3>
       <button class="x" id="adminClose" type="button" aria-label="Đóng Admin" onclick="document.getElementById('adminPanel').classList.remove('open');">✕</button>
     </div>
-    <div class="admin-tabs" id="adminTabs">
-      <button type="button" data-tab="0" class="on">Chung</button>
-      <button type="button" data-tab="1">Gia đình &amp; Lễ</button>
-      <button type="button" data-tab="2">Lịch trình &amp; Album</button>
-      <button type="button" data-tab="3">Mừng cưới</button>
-      <button type="button" data-tab="4">Cảm ơn &amp; Nhạc</button>
-      <button type="button" data-tab="5">Câu chuyện &amp; Nhạc</button>
-      <button type="button" data-tab="6">Tiêu đề &amp; Chữ</button>
-      <button type="button" data-tab="7">Duyệt</button>
+    <div class="admin-tabs-wrap">
+      <button type="button" class="tabs-arrow" id="tabsPrev" aria-label="Cuộn tab sang trái">‹</button>
+      <div class="admin-tabs" id="adminTabs">
+        <button type="button" data-tab="0" class="on">Chung</button>
+        <button type="button" data-tab="1">Gia đình &amp; Lễ</button>
+        <button type="button" data-tab="2">Lịch trình &amp; Album</button>
+        <button type="button" data-tab="3">Mừng cưới</button>
+        <button type="button" data-tab="4">Cảm ơn &amp; Nhạc</button>
+        <button type="button" data-tab="5">Câu chuyện &amp; Nhạc</button>
+        <button type="button" data-tab="6">Tiêu đề &amp; Chữ</button>
+        <button type="button" data-tab="7">Duyệt</button>
+      </div>
+      <button type="button" class="tabs-arrow" id="tabsNext" aria-label="Cuộn tab sang phải">›</button>
     </div>
     <div class="admin-body" id="adminBody">
       <div class="admin-page on">
@@ -1574,7 +1581,6 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
         <div class="field"><label>Tiêu đề lịch trình</label><input data-f="schedTitle" type="text" /></div>
         <div class="field"><label>Tiêu đề nhỏ lịch tháng</label><input data-f="calEyebrow" type="text" /></div>
         <div class="field"><label>Tiêu đề lịch tháng</label><input data-f="calTitle" type="text" /></div>
-        <div class="field"><label>Ghi chú dưới lịch tháng</label><input data-f="calNote" type="text" /></div>
         <p class="admin-sub">Hộp quà &amp; Xác nhận &amp; Lời chúc</p>
         <div class="field"><label>Tiêu đề nhỏ hộp quà</label><input data-f="giftEyebrow" type="text" /></div>
         <div class="field"><label>Tiêu đề hộp quà</label><input data-f="giftTitle" type="text" /></div>
