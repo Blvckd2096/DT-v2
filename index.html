@@ -151,6 +151,10 @@ a{color:inherit;text-decoration:none}
   .js .scene .photo-right{transform:rotate(2deg) translateX(-24px) scale(.96);transition:transform .9s cubic-bezier(.22,.61,.36,1)}
   .js .scene.in .photo-left{transform:rotate(-11deg) translateX(0) scale(1)}
   .js .scene.in .photo-right{transform:rotate(8deg) translateX(0) scale(1)}
+  /* Ticket chui lên khỏi phong bì: khi cụm chưa vào màn hình thì vé thụt sâu xuống trong phong bì
+     (chỉ lộ mép trên), khi vào màn hình thì vé trồi lên; chạy sau hiệu ứng xòe ảnh 0.2s */
+  .js .scene .ticket{transform:rotate(-13deg) translateY(64px);opacity:0;transition:transform .9s cubic-bezier(.22,.61,.36,1) .2s,opacity .7s ease .2s}
+  .js .scene.in .ticket{transform:rotate(-13deg) translateY(0);opacity:1}
 
 
   /* Envelope front pocket with 3D folds */
@@ -881,7 +885,7 @@ T</span></div>
     <audio id="bgMusic" preload="none"></audio>
   </div>
 </div></section>
-<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 07/11/2026 21:28</span></footer>
+<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 07/11/2026 21:55</span></footer>
 <!-- Floating controls (above content, below dialogs) -->
 <nav class="bottom-bar" aria-label="Điều hướng nhanh">
   <a href="#wishes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5z"/></svg><span>Gửi lời chúc</span></a>
