@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#FFECEE">
-<script>document.documentElement.classList.add('js');window.__revealReady=false;setTimeout(function(){if(!window.__revealReady){var els=document.querySelectorAll('.rvl,.slide-l,.slide-r,.shake-in');for(var i=0;i<els.length;i++)els[i].classList.add('in');}},2500);</script>
+<script>document.documentElement.classList.add('js');window.__revealReady=false;function __revealCheck(){var els=document.querySelectorAll('.rvl,.slide-l,.slide-r,.shake-in');for(var i=0;i<els.length;i++){var r=els[i].getBoundingClientRect();var inView=r.top<window.innerHeight*0.92&&r.bottom>window.innerHeight*0.02;if(inView)els[i].classList.add('in');else els[i].classList.remove('in');}}document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){if(!window.__revealReady){window.addEventListener('scroll',__revealCheck,{passive:true});setInterval(__revealCheck,400);__revealCheck();}},2500);});</script>
 <title>Dương Đăng &amp; Ánh Tuyết — Wedding Invitation</title>
 <meta name="description" content="Thiệp cưới Dương Đăng &amp; Ánh Tuyết — Thứ bảy, 28 tháng 11, 2026.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -874,7 +874,7 @@ T</span></div>
     <audio id="bgMusic" preload="none"></audio>
   </div>
 </div></section>
-<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 07/11/2026 20:40</span></footer>
+<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 07/11/2026 20:56</span></footer>
 <!-- Floating controls (above content, below dialogs) -->
 <nav class="bottom-bar" aria-label="Điều hướng nhanh">
   <a href="#wishes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5z"/></svg><span>Gửi lời chúc</span></a>
@@ -1083,9 +1083,25 @@ function observeReveals() {
   const els = $$('.rvl,.slide-l,.slide-r,.shake-in');
   if (typeof IntersectionObserver === 'undefined') { els.forEach(el => el.classList.add('in')); return; }
   els.forEach(el => io.observe(el));
-  // Fallback: nếu observer không kích hoạt (trình xem trong app), sau 2,5s hiện toàn bộ để không bị trang trắng.
+  // Fallback: nếu observer không kích hoạt (trình xem trong app), sau 2,5s dùng scroll listener
+  // với getBoundingClientRect để hiệu ứng vẫn chạy mỗi lần cuộn vào/ra, thay vì chỉ hiện tĩnh toàn bộ.
   // Trình duyệt thật observer kích hoạt ngay nên fallback không chạy, hiệu ứng cuộn vẫn chạy lại mỗi lần vào/ra.
-  setTimeout(() => { if (!__ioFired) els.forEach(el => el.classList.add('in')); }, 2500);
+  setTimeout(() => {
+    if (!__ioFired) {
+      const onScroll = () => {
+        document.querySelectorAll('.rvl,.slide-l,.slide-r,.shake-in').forEach(el => {
+          const r = el.getBoundingClientRect();
+          const inView = r.top < window.innerHeight * 0.92 && r.bottom > window.innerHeight * 0.02;
+          el.classList.toggle('in', inView);
+        });
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll, { passive: true });
+      // Kiểm tra định kỳ để bắt cả trường hợp trình xem không bắn sự kiện scroll
+      setInterval(onScroll, 400);
+      onScroll();
+    }
+  }, 2500);
   // Tự quan sát các cụm mới được vẽ lại sau (lịch trình, câu chuyện, lời chúc, album).
   if (!window.__revealMO && typeof MutationObserver !== 'undefined') {
     window.__revealMO = new MutationObserver(muts => {
