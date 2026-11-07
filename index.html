@@ -133,8 +133,8 @@ a{color:inherit;text-decoration:none}
 .tl-time{color:var(--deep);font-weight:600;font-size:13px}
 .tl-title{font-family:var(--serif);font-size:1.4rem}
 .tl-place,.tl-desc{color:var(--ink2);font-size:14px}
-.tl-venues{display:flex;gap:8px;margin-top:12px}
-.tl-venues .btn-venue{flex:1;min-width:0;padding:9px 6px;font-size:12.5px;text-align:center;white-space:nowrap;margin-top:0}
+.tl-venues{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.tl-venues .btn-venue{flex:0 0 auto;padding:9px 14px;font-size:12.5px;text-align:center;white-space:nowrap;margin-top:0}
 /* ---------- GIFT BOX + DIALOG (body-level, sample layout, pink only) ---------- */
 #gift .container{padding-bottom:60px}
 .giftbox{display:block;margin:14px auto 0;width:210px;background:var(--deep2);border-radius:18px;padding:30px 16px 24px;color:#fff;text-align:center;box-shadow:var(--shadow);cursor:pointer;position:relative;animation:giftWiggle 3.4s ease-in-out infinite;transform-origin:50% 100%}
@@ -471,14 +471,14 @@ noscript .opener{display:none}
       <div class="family slide-r"><h4 data-bind="familyTitleBride">Nhà gái</h4><div class="parent"><span class="role">Ông</span><span class="pname" data-bind="brideFather">Nguyễn Hữu Thông</span></div><div class="parent"><span class="role">Bà</span><span class="pname" data-bind="brideMother">Nguyễn Thị Thanh Huyền</span></div><div class="addr"><span class="alabel">Địa chỉ</span><span class="atext" data-bind="brideAddress">SN 225 - Thôn Chùa - Tam Hồng - Yên Lạc - Phú Thọ</span></div><div class="addr old"><span class="alabel">Trước sáp nhập</span><span class="atext" data-bind="brideAddressOld">SN 225 - Thôn Chùa - Yên Đồng - Yên Lạc - Vĩnh Phúc</span></div></div>
     </div>
     <div class="wed-date">
-      <p class="wed-date-label" data-bind="wedDateLabel">Ngày cưới</p>
+      <p class="wed-date-label" data-bind="wedDateLabel">Lễ thành hôn</p>
       <div class="wed-date-rule" aria-hidden="true"></div>
       <div class="wed-date-grid">
         <div class="wed-date-col slide-l"><p class="wd-small" id="wdMonth">Tháng 11</p><p class="wd-big" id="wdDay">28</p><p class="wd-small" id="wdWeekday">Thứ bảy</p></div>
         <div class="wed-date-sep" aria-hidden="true"></div>
         <div class="wed-date-col slide-r"><p class="wd-small" data-bind="wedTimeLabel">Giờ cưới</p><p class="wd-big"><span data-bind="weddingTime">08:00</span></p><p class="wd-small" data-bind="wedTimePeriod">Sáng</p></div>
       </div>
-      <div class="wed-lunar"><span class="wed-lunar-line" aria-hidden="true"></span><span class="wed-lunar-pill" data-bind="lunarText">(Tức ngày 20 tháng 10 năm Bính Ngọ)</span><span class="wed-lunar-line" aria-hidden="true"></span></div>
+      <div class="wed-lunar"><span class="wed-lunar-line" aria-hidden="true"></span><span class="wed-lunar-pill" data-bind="lunarText">(Tức ngày 21 tháng 10 năm Bính Ngọ)</span><span class="wed-lunar-line" aria-hidden="true"></span></div>
     </div>
   </div>
 </div></section>
@@ -625,7 +625,7 @@ noscript .opener{display:none}
     <audio id="bgMusic" preload="none"></audio>
   </div>
 </div></section>
-<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 07/11/2026 09:52</span></footer>
+<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 07/11/2026 10:10</span></footer>
 <!-- Floating controls (above content, below dialogs) -->
 <nav class="bottom-bar" aria-label="Điều hướng nhanh">
   <a href="#wishes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5z"/></svg><span>Gửi lời chúc</span></a>
@@ -737,8 +737,8 @@ const weddingData = {
   inviteEyebrow: "II · Thiệp mời", inviteTitle: "Trân trọng kính mời",
   inviteMessage: "Trân trọng kính mời quý khách đến dự buổi tiệc chung vui cùng gia đình chúng tôi",
   familyTitleGroom: "Nhà trai", familyTitleBride: "Nhà gái",
-  wedDateLabel: "Ngày cưới", wedTimeLabel: "Giờ cưới", wedTimePeriod: "Sáng",
-  lunarText: "(Tức ngày 20 tháng 10 năm Bính Ngọ)",
+  wedDateLabel: "Lễ thành hôn", wedTimeLabel: "Giờ cưới", wedTimePeriod: "Sáng",
+  lunarText: "(Tức ngày 21 tháng 10 năm Bính Ngọ)",
   loveEyebrow: "Lời thì thầm",
   storyEyebrow: "III · Chuyện của chúng mình", storyTitle: "Our Story",
   albumEyebrow: "IV · Album ảnh", albumTitle: "Khoảnh khắc",
@@ -1631,7 +1631,7 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
         <div class="field"><label>Nhãn Ngày cưới (khối ngày cưới)</label><input data-f="wedDateLabel" type="text" /></div>
         <div class="field"><label>Nhãn Giờ cưới</label><input data-f="wedTimeLabel" type="text" /></div>
         <div class="field"><label>Buổi (Sáng / Chiều / Tối)</label><input data-f="wedTimePeriod" type="text" /></div>
-        <div class="field"><label>Ngày âm lịch (vd: Tức ngày 20 tháng 10 năm Bính Ngọ)</label><input data-f="lunarText" type="text" /></div>
+        <div class="field"><label>Ngày âm lịch (vd: Tức ngày 21 tháng 10 năm Bính Ngọ)</label><input data-f="lunarText" type="text" /></div>
         <p class="admin-sub">Lời nhắn &amp; Câu chuyện &amp; Album</p>
         <div class="field"><label>Tiêu đề nhỏ lời nhắn</label><input data-f="loveEyebrow" type="text" /></div>
         <div class="field"><label>Tiêu đề nhỏ câu chuyện</label><input data-f="storyEyebrow" type="text" /></div>
