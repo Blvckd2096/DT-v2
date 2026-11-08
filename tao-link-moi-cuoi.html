@@ -33,10 +33,12 @@
   .guest{border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px;background:#fffdf7}
   .g-name{font-size:16px;font-weight:700}
   .g-meta{font-size:12.5px;color:var(--ink2);margin-top:2px}
+  .g-orig{font-size:12.5px;color:var(--ink2);margin-top:2px;font-style:italic}
   .g-link{font-size:12.5px;color:var(--deep2);word-break:break-all;margin-top:8px;background:#fff;border:1px dashed var(--line);border-radius:8px;padding:7px 9px}
   .g-actions{display:flex;gap:8px;margin-top:10px}
   .g-actions button{flex:1;padding:9px 10px;font-size:14px}
   .btn-copy{background:var(--deep);color:#fff}
+  .btn-open{background:var(--soft);color:var(--deep2);border:1px solid var(--line)}
   .btn-copy.done{background:#2e7d32}
   .btn-invite{background:#fff;color:var(--deep2);border:1px solid var(--deep)}
   .btn-uninvite{background:#fff;color:var(--ink2);border:1px solid var(--line)}
@@ -63,12 +65,13 @@ A Cường
 C Thu (bạn cấp 3)
 A Đức - nhà gái"></textarea>
     <div class="btn-row">
+      <button id="btnPaste" class="btn-secondary" type="button">📋 Dán nhanh</button>
       <button id="btnGen" class="btn-primary" type="button">Tạo link</button>
       <button id="btnSample" class="btn-secondary" type="button">Dùng danh sách mẫu</button>
       <button id="btnClear" class="btn-secondary" type="button">Xóa hết</button>
     </div>
     <p id="parseMsg" class="msg"></p>
-    <div class="rule"><b>Quy tắc xưng hô:</b> A → Anh, C → Chị, E → Em, B → Bác, O → Ông, Ba → Bà, Co → Cô, Chu → Chú. Tên không có chữ đầu thì mặc định xưng “bạn”. Dòng “Nhà trai / Nhà gái” và “Tên nhóm:” dùng để chia bên và nhóm.</div>
+    <div class="rule"><b>Quy tắc xưng hô:</b> A → Anh, C → Chị, E → Em, B → Bác, O → Ông, Ba → Bà, Co → Cô, Chu → Chú. Tên không có chữ đầu thì mặc định xưng “bạn”. Dòng “Nhà trai / Nhà gái” và “Tên nhóm:” dùng để chia bên và nhóm. Chữ viết tắt toàn chữ hoa ở cuối tên (vd “DD”) được coi là ghi chú nên sẽ bỏ khỏi tên trên thiệp, tên gốc vẫn hiện trong thẻ để đối chiếu.</div>
   </section>
 
   <section class="card" id="resultCard" hidden>
@@ -78,6 +81,12 @@ A Đức - nhà gái"></textarea>
       <div class="stat"><b id="statDone">0</b><span>Đã mời</span></div>
       <div class="stat"><b id="statTodo">0</b><span>Chưa mời</span></div>
     </div>
+    <div class="btn-row" style="margin:0 0 4px">
+      <button id="btnBackup" class="btn-secondary" type="button">💾 Sao lưu</button>
+      <button id="btnRestore" class="btn-secondary" type="button">📂 Khôi phục</button>
+      <input type="file" id="restoreFile" accept="application/json,.json" hidden>
+    </div>
+    <p id="backupMsg" class="msg"></p>
     <input id="search" type="search" placeholder="Tìm tên khách..." autocomplete="off">
     <h3>Chưa mời (<span id="countTodo">0</span>)</h3>
     <div id="listTodo"></div>
@@ -112,6 +121,15 @@ A Đức - nhà gái"></textarea>
 
   function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 
+  // Chữ viết tắt toàn chữ hoa ở cuối tên (vd "DD") thường là ghi chú, không phải tên.
+  // Loại khỏi tên hiển thị/link, nhưng giữ tên gốc để đối chiếu.
+  var NOTE_TAIL = /^[A-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝĐ]{2,}$/;
+  function stripNoteTail(rest){
+    var parts = String(rest || '').split(/\s+/).filter(function(x){ return x; });
+    while (parts.length > 1 && NOTE_TAIL.test(parts[parts.length-1])) parts.pop();
+    return parts.join(' ');
+  }
+
   function parseName(raw){
     var name = String(raw || '').trim().replace(/^\d+\.\s*/, '');
     if (!name) return null;
@@ -121,9 +139,12 @@ A Đức - nhà gái"></textarea>
       var title = TITLE_MAP[first];
       var rest = parts.slice(1).join(' ');
       if (!rest) return null;
-      return { displayName: title + ' ' + rest, pronoun: title };
+      var full = title + ' ' + rest;
+      var clean = title + ' ' + stripNoteTail(rest);
+      return { displayName: clean, pronoun: title, origName: (full !== clean) ? full : '' };
     }
-    return { displayName: name, pronoun: 'bạn' };
+    var cleanName = stripNoteTail(name);
+    return { displayName: cleanName, pronoun: 'bạn', origName: (cleanName !== name) ? name : '' };
   }
 
   function parseGuestList(text){
@@ -163,6 +184,7 @@ A Đức - nhà gái"></textarea>
         id: 'g' + out.length + '_' + Date.now().toString(36),
         name: parsed.displayName,
         pronoun: parsed.pronoun,
+        orig: parsed.origName || '',
         side: side, group: lineGroup, invited: invited
       });
     });
@@ -191,10 +213,12 @@ A Đức - nhà gái"></textarea>
     el.className = 'guest';
     el.innerHTML =
       '<div class="g-name">' + esc(g.name) + '</div>' +
+      (g.orig ? '<div class="g-orig">Tên gốc: ' + esc(g.orig) + '</div>' : '') +
       '<div class="g-meta">' + esc(meta) + '</div>' +
       '<div class="g-link">' + esc(link) + '</div>' +
       '<div class="g-actions">' +
         '<button class="btn-copy" type="button">Copy link</button>' +
+        '<button class="btn-open" type="button">Mở ↗</button>' +
         (g.invited
           ? '<button class="btn-uninvite" type="button">↩ Chưa mời</button>'
           : '<button class="btn-invite" type="button">✓ Đã mời</button>') +
@@ -205,6 +229,9 @@ A Đức - nhà gái"></textarea>
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(link).then(done).catch(function(){ fallbackCopy(link, done); });
       } else { fallbackCopy(link, done); }
+    });
+    el.querySelector('.btn-open').addEventListener('click', function(){
+      window.open(link, '_blank', 'noopener');
     });
     var toggleBtn = el.querySelector('.btn-invite, .btn-uninvite');
     if (toggleBtn) toggleBtn.addEventListener('click', function(){
@@ -227,7 +254,7 @@ A Đức - nhà gái"></textarea>
     var q = (searchEl.value || '').trim().toLowerCase();
     var match = function(g){
       if (!q) return true;
-      return g.name.toLowerCase().indexOf(q) >= 0 || (g.group || '').toLowerCase().indexOf(q) >= 0;
+      return g.name.toLowerCase().indexOf(q) >= 0 || (g.orig || '').toLowerCase().indexOf(q) >= 0 || (g.group || '').toLowerCase().indexOf(q) >= 0;
     };
     var todo = guests.filter(function(g){ return !g.invited && match(g); });
     var done = guests.filter(function(g){ return g.invited && match(g); });
@@ -261,10 +288,14 @@ A Đức - nhà gái"></textarea>
       msgEl.className = 'msg';
       return;
     }
-    // Giữ lại trạng thái Đã mời của những khách đã có trước đó (khớp theo tên)
+    // Giữ lại trạng thái Đã mời của những khách đã có trước đó (khớp theo tên,
+    // cả tên gốc để không mất dấu khi tên được làm sạch đuôi ghi chú)
     var prev = {};
-    guests.forEach(function(g){ prev[g.name] = g.invited; });
-    list.forEach(function(g){ if (prev[g.name] !== undefined) g.invited = prev[g.name]; });
+    guests.forEach(function(g){ prev[g.name] = g.invited; if (g.orig) prev[g.orig] = g.invited; });
+    list.forEach(function(g){
+      if (prev[g.name] !== undefined) g.invited = prev[g.name];
+      else if (g.orig && prev[g.orig] !== undefined) g.invited = prev[g.orig];
+    });
     guests = list;
     save(); render();
     var preInvited = list.filter(function(g){ return g.invited; }).length;
@@ -273,6 +304,29 @@ A Đức - nhà gái"></textarea>
     resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
+  // Dán nhanh: đọc danh sách đã sao chép từ CCM rồi cho vào ô nhập.
+  // Ô đang trống thì dán mới, đã có nội dung thì nối thêm xuống dưới.
+  // iPhone Safari có thể hỏi quyền truy cập bộ nhớ tạm ở lần đầu.
+  $('#btnPaste').addEventListener('click', function(){
+    if (!navigator.clipboard || !navigator.clipboard.readText) {
+      msgEl.textContent = 'Trình duyệt này không hỗ trợ dán nhanh. Bấm giữ vào ô rồi chọn “Dán”.';
+      msgEl.className = 'msg';
+      return;
+    }
+    navigator.clipboard.readText().then(function(text){
+      text = (text || '').trim();
+      if (!text) { msgEl.textContent = 'Bộ nhớ tạm đang trống. Sao chép danh sách từ CCM trước rồi bấm lại.'; msgEl.className = 'msg'; return; }
+      var cur = inputEl.value.trim();
+      inputEl.value = cur ? (cur + '\n' + text) : text;
+      save();
+      var lines = text.split(/\r?\n/).filter(function(l){ return l.trim(); }).length;
+      msgEl.textContent = 'Đã dán ' + lines + ' dòng vào ô nhập. Bấm “Tạo link” để tạo link.';
+      msgEl.className = 'msg ok';
+    }).catch(function(){
+      msgEl.textContent = 'Không đọc được bộ nhớ tạm (chưa cho phép). Bấm giữ vào ô rồi chọn “Dán”.';
+      msgEl.className = 'msg';
+    });
+  });
   $('#btnGen').addEventListener('click', function(){ generate(false); });
   $('#btnSample').addEventListener('click', function(){
     inputEl.value =
@@ -294,6 +348,45 @@ A Đức - nhà gái"></textarea>
     guests = []; inputEl.value = '';
     try { localStorage.removeItem(LS_GUESTS); localStorage.removeItem(LS_INPUT); } catch (e) {}
     msgEl.textContent = ''; render();
+  });
+  // Sao lưu / khôi phục: tải file JSON chứa danh sách + trạng thái Đã mời,
+  // để khôi phục lại khi đổi máy hoặc khi bộ nhớ trình duyệt bị xóa.
+  var backupMsg = $('#backupMsg');
+  $('#btnBackup').addEventListener('click', function(){
+    if (!guests.length) { backupMsg.textContent = 'Chưa có khách nào để sao lưu.'; backupMsg.className = 'msg'; return; }
+    var data = { app: 'tao-link-moi-cuoi', version: 1, savedAt: new Date().toISOString(), input: inputEl.value, guests: guests };
+    var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'link-moi-sao-luu-' + new Date().toISOString().slice(0, 10) + '.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+    backupMsg.textContent = 'Đã tải file sao lưu (' + guests.length + ' khách). Giữ file này để khôi phục khi cần.';
+    backupMsg.className = 'msg ok';
+  });
+  $('#btnRestore').addEventListener('click', function(){ $('#restoreFile').click(); });
+  $('#restoreFile').addEventListener('change', function(e){
+    var file = e.target.files[0];
+    e.target.value = '';
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(){
+      try {
+        var data = JSON.parse(reader.result);
+        var list = (data && Array.isArray(data.guests)) ? data.guests.filter(function(g){ return g && g.name; }) : [];
+        if (!list.length) throw new Error('bad');
+        guests = list;
+        if (typeof data.input === 'string') inputEl.value = data.input;
+        save(); render();
+        backupMsg.textContent = 'Đã khôi phục ' + list.length + ' khách từ file sao lưu.';
+        backupMsg.className = 'msg ok';
+      } catch (err) {
+        backupMsg.textContent = 'File sao lưu không đúng định dạng. Chọn đúng file đã tải từ nút Sao lưu.';
+        backupMsg.className = 'msg';
+      }
+    };
+    reader.readAsText(file);
   });
   $('#btnToggleInvited').addEventListener('click', function(){
     var hidden = listDone.hidden;
