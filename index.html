@@ -888,7 +888,7 @@ T</span></div>
     <audio id="bgMusic" preload="none"></audio>
   </div>
 </div></section>
-<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 08/11/2026 08:59</span></footer>
+<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 08/11/2026 10:05</span></footer>
 <!-- Floating controls (above content, below dialogs) -->
 <nav class="bottom-bar" aria-label="Điều hướng nhanh">
   <a href="#wishes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5z"/></svg><span>Gửi lời chúc</span></a>
@@ -1043,13 +1043,28 @@ const weddingData = {
 const $ = (s, p = document) => p.querySelector(s);
 const $$ = (s, p = document) => Array.from(p.querySelectorAll(s));
 const esc = (s) => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+// Xưng hô riêng cho khách (?goi=Anh): thay "bạn"/"Bạn" bằng xưng hô của khách
+// trong các câu chữ của thiệp, nhưng giữ nguyên từ ghép như "bạn bè", "bạn thân".
+function applyPronoun(text){
+  var p = window.__guestPronoun;
+  if (!p || p === 'bạn') return text;
+  return String(text).replace(/(^|[^A-Za-zÀ-ỹ])([Bb]ạn)(?!\s*(?:bè|đọc|học|thân|đời|cùng|nhé))/g, function(m, pre){ return pre + p; });
+}
+// Các câu chữ cố định trong form (không phải data-bind) cũng đổi theo xưng hô khách.
+function applyPronounToStatic(){
+  if (!window.__guestPronoun || window.__guestPronoun === 'bạn') return;
+  $$('.demo-note').forEach(function(el){ el.textContent = applyPronoun(el.textContent); });
+  $$('#rsvpForm label, #wishForm label').forEach(function(el){ el.textContent = applyPronoun(el.textContent); });
+  var wn = $('#wishName');
+  if (wn && wn.placeholder) wn.placeholder = applyPronoun(wn.placeholder);
+}
 function bindData() {
   $$('[data-bind]').forEach(el => {
     let v = weddingData[el.dataset.bind];
     if (v === undefined || v === '') return;
-    if (el.dataset.bind === 'thankYouMessage' && window.__guestPronoun) v = String(v).split('bạn').join(window.__guestPronoun);
-    if (el.tagName === 'IMG') el.src = v; else el.textContent = v;
+    if (el.tagName === 'IMG') el.src = v; else el.textContent = applyPronoun(v);
   });
+  applyPronounToStatic();
   $$('[data-bind-map]').forEach(el => { const v = weddingData[el.dataset.bindMap]; if (v) el.href = v; });
   // Dải chạy tự cập nhật theo tên + ngày cưới
   const mqUnit = (weddingData.groomName || '') + ' ♥︎ ' + (weddingData.brideName || '') + ' ♥︎ ' + (weddingData.weddingDateShort || '') + ' ♥︎ ';
@@ -1377,8 +1392,9 @@ function guestNameFromUrl() {
 function applyGuestParam() {
   const g = guestNameFromUrl();
   if (g) weddingData.guestName = g;
-  // Xưng hô riêng cho khách (?goi=Anh): dùng thay "bạn" trong lời cảm ơn (bindData),
-  // và điền sẵn tên khách vào form RSVP. Chỉ áp dụng cho link cá nhân, không đổi dữ liệu đã lưu.
+  // Xưng hô riêng cho khách (?goi=Anh): dùng thay "bạn" trong mọi câu chữ của thiệp
+  // (bindData + applyPronounToStatic), và điền sẵn tên khách vào form RSVP.
+  // Chỉ áp dụng cho link cá nhân, không đổi dữ liệu đã lưu.
   try {
     const p = new URLSearchParams(location.search);
     const goi = (p.get('goi') || '').trim().slice(0, 20);
@@ -1468,16 +1484,16 @@ function setupForms() {
     e.preventDefault();
     const name = $('#rsvpName').value.trim();
     const att = document.querySelector('input[name="attendance"]:checked');
-    if (!name || !att) { showStatus($('#rsvpStatus'), false, 'Vui lòng nhập họ tên và chọn bạn sẽ tham dự hay không.'); return; }
+    if (!name || !att) { showStatus($('#rsvpStatus'), false, applyPronoun('Vui lòng nhập họ tên và chọn bạn sẽ tham dự hay không.')); return; }
     const guests = document.querySelector('input[name="guests"]:checked')?.value || '1';
     const note = ($('#rsvpNote')?.value || '').trim();
     const attend = att.value === 'yes' ? 'yes' : 'no';
     if (!apiUrl()) { showStatus($('#rsvpStatus'), true, 'Đã ghi nhận xác nhận của ' + name + ' (bản xem trước, chỉ lưu trên máy này).'); e.target.reset(); return; }
     showStatus($('#rsvpStatus'), true, 'Đang gửi xác nhận…');
     apiPost({ action: 'rsvp', name: name, attend: attend, guests: attend === 'yes' ? +guests : 0, note: note }).then(d => {
-      if (d && d.ok) { showStatus($('#rsvpStatus'), true, 'Đã gửi xác nhận của ' + name + ' về cho cô dâu chú rể. Cảm ơn bạn!'); return; }
+      if (d && d.ok) { showStatus($('#rsvpStatus'), true, applyPronoun('Đã gửi xác nhận của ' + name + ' về cho cô dâu chú rể. Cảm ơn bạn!')); return; }
       apiGet('rsvp').then(g => {
-        if (g && g.ok && Array.isArray(g.rsvp) && g.rsvp.some(x => x.name === name)) showStatus($('#rsvpStatus'), true, 'Đã gửi xác nhận của ' + name + ' về cho cô dâu chú rể. Cảm ơn bạn!');
+        if (g && g.ok && Array.isArray(g.rsvp) && g.rsvp.some(x => x.name === name)) showStatus($('#rsvpStatus'), true, applyPronoun('Đã gửi xác nhận của ' + name + ' về cho cô dâu chú rể. Cảm ơn bạn!'));
         else showStatus($('#rsvpStatus'), false, 'Không gửi được. Kiểm tra mạng rồi thử lại.');
       });
     });
@@ -1492,9 +1508,9 @@ function setupForms() {
     list.unshift(item); saveWishes(list); renderWishes(); spawnBubble(item);
     if (!apiUrl()) { showStatus($('#wishStatus'), true, 'Đã ghi nhận lời chúc của ' + name + ' (bản xem trước, chỉ lưu trên máy này).'); }
     else { showStatus($('#wishStatus'), true, 'Đang gửi lời chúc…'); apiPost({ action: 'wishes', name: name, message: msg, icon: icon }).then(d => {
-      if (d && d.ok) { showStatus($('#wishStatus'), true, 'Đã gửi lời chúc của ' + name + ' về cho cô dâu chú rể. Cảm ơn bạn!'); return; }
+      if (d && d.ok) { showStatus($('#wishStatus'), true, applyPronoun('Đã gửi lời chúc của ' + name + ' về cho cô dâu chú rể. Cảm ơn bạn!')); return; }
       apiGet('wishes').then(g => {
-        if (g && g.ok && Array.isArray(g.wishes) && g.wishes.some(x => x.name === name && x.message === msg)) showStatus($('#wishStatus'), true, 'Đã gửi lời chúc của ' + name + ' về cho cô dâu chú rể. Cảm ơn bạn!');
+        if (g && g.ok && Array.isArray(g.wishes) && g.wishes.some(x => x.name === name && x.message === msg)) showStatus($('#wishStatus'), true, applyPronoun('Đã gửi lời chúc của ' + name + ' về cho cô dâu chú rể. Cảm ơn bạn!'));
         else showStatus($('#wishStatus'), false, 'Không gửi được lên mạng, lời chúc đã lưu trên máy này.');
       });
     }); }
