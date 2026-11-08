@@ -735,12 +735,22 @@ T</span></div>
       <div class="family slide-r"><h4 data-bind="familyTitleBride">Nhà gái</h4><div class="parent"><span class="role">Ông</span><span class="pname" data-bind="brideFather">Nguyễn Hữu Thông</span></div><div class="parent"><span class="role">Bà</span><span class="pname" data-bind="brideMother">Nguyễn Thị Thanh Huyền</span></div><div class="addr"><span class="alabel">Địa chỉ</span><span class="atext" data-bind="brideAddress">SN 225 - Thôn Chùa - Tam Hồng - Yên Lạc - Phú Thọ</span></div><div class="addr old"><span class="alabel">Trước sáp nhập</span><span class="atext" data-bind="brideAddressOld">SN 225 - Thôn Chùa - Yên Đồng - Yên Lạc - Vĩnh Phúc</span></div></div>
     </div>
     <div class="wed-date">
-      <p class="wed-date-label" data-bind="wedDateLabel">Lễ thành hôn</p>
+      <p class="wed-date-label">Lễ Vu Quy</p>
       <div class="wed-date-rule" aria-hidden="true"></div>
       <div class="wed-date-grid">
-        <div class="wed-date-col slide-l"><p class="wd-small" id="wdMonth">Tháng 11</p><p class="wd-big" id="wdDay">29</p><p class="wd-small" id="wdWeekday">Chủ Nhật</p></div>
+        <div class="wed-date-col slide-l"><p class="wd-small wd-month">Tháng 11</p><p class="wd-big wd-day">29</p><p class="wd-small wd-weekday">Chủ Nhật</p></div>
         <div class="wed-date-sep" aria-hidden="true"></div>
-        <div class="wed-date-col slide-r"><p class="wd-small" data-bind="wedTimeLabel">Giờ cưới</p><p class="wd-big"><span data-bind="weddingTime">08:00</span></p><p class="wd-small" data-bind="wedTimePeriod">Sáng</p></div>
+        <div class="wed-date-col slide-r"><p class="wd-small">Giờ cưới</p><p class="wd-big"><span>9:30</span></p><p class="wd-small">Sáng</p></div>
+      </div>
+      <div class="wed-lunar"><span class="wed-lunar-line" aria-hidden="true"></span><span class="wed-lunar-pill" data-bind="lunarText">(Tức ngày 21 tháng 10 năm Bính Ngọ)</span><span class="wed-lunar-line" aria-hidden="true"></span></div>
+    </div>
+    <div class="wed-date">
+      <p class="wed-date-label">Lễ thành hôn</p>
+      <div class="wed-date-rule" aria-hidden="true"></div>
+      <div class="wed-date-grid">
+        <div class="wed-date-col slide-l"><p class="wd-small wd-month">Tháng 11</p><p class="wd-big wd-day">29</p><p class="wd-small wd-weekday">Chủ Nhật</p></div>
+        <div class="wed-date-sep" aria-hidden="true"></div>
+        <div class="wed-date-col slide-r"><p class="wd-small">Giờ cưới</p><p class="wd-big"><span>11:00</span></p><p class="wd-small">Sáng</p></div>
       </div>
       <div class="wed-lunar"><span class="wed-lunar-line" aria-hidden="true"></span><span class="wed-lunar-pill" data-bind="lunarText">(Tức ngày 21 tháng 10 năm Bính Ngọ)</span><span class="wed-lunar-line" aria-hidden="true"></span></div>
     </div>
@@ -889,7 +899,7 @@ T</span></div>
     <audio id="bgMusic" preload="none"></audio>
   </div>
 </div></section>
-<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 08/11/2026 13:47</span></footer>
+<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 08/11/2026 20:07</span></footer>
 <!-- Floating controls (above content, below dialogs) -->
 <nav class="bottom-bar" aria-label="Điều hướng nhanh">
   <a href="#wishes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5z"/></svg><span>Gửi lời chúc</span></a>
@@ -1076,10 +1086,9 @@ function bindData() {
     if (!isNaN(d)) {
       const months = ['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'];
       const weekdays = ['Chủ nhật','Thứ hai','Thứ ba','Thứ tư','Thứ năm','Thứ sáu','Thứ bảy'];
-      const mo = $('#wdMonth'), dy = $('#wdDay'), wd = $('#wdWeekday');
-      if (mo) mo.textContent = months[d.getMonth()];
-      if (dy) dy.textContent = String(d.getDate());
-      if (wd) wd.textContent = weekdays[d.getDay()];
+      $$('.wd-month').forEach(el => el.textContent = months[d.getMonth()]);
+      $$('.wd-day').forEach(el => el.textContent = String(d.getDate()));
+      $$('.wd-weekday').forEach(el => el.textContent = weekdays[d.getDay()]);
     }
   }
   // Cột cô dâu trong hộp quà: hiện QR + nút tải khi đã có QR; để trống thì về Sắp cập nhật
