@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tạo link mời cưới — Đăng &amp; Tuyết</title>
+<style>
+  :root{--bg:#FFECEE;--card:#fff;--ink:#4a2f35;--ink2:#6f4b54;--deep:#d47a88;--deep2:#c05a72;--line:rgba(212,122,136,.45);--soft:#FFF0F2}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Be Vietnam Pro',sans-serif}
+  .wrap{max-width:640px;margin:0 auto;padding:20px 14px 48px}
+  header{text-align:center;margin:6px 0 18px}
+  h1{font-family:Georgia,serif;font-size:28px;margin:0;color:var(--deep2)}
+  .sub{color:var(--ink2);font-size:14px;margin:6px 0 0}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 14px;margin-bottom:14px;box-shadow:0 8px 28px rgba(212,122,136,.16)}
+  .card h2{font-size:17px;margin:0 0 6px}
+  .card h3{font-size:15px;margin:16px 0 8px}
+  .hint{color:var(--ink2);font-size:13px;line-height:1.5;margin:0 0 10px}
+  textarea{width:100%;min-height:150px;border:1px solid var(--line);border-radius:12px;padding:10px;font-size:15px;line-height:1.55;font-family:inherit;resize:vertical;background:#fffdf7;color:var(--ink)}
+  textarea:focus{outline:2px solid var(--deep);outline-offset:1px}
+  .btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  button{font-family:inherit;cursor:pointer;border-radius:999px;border:0;padding:10px 18px;font-size:15px;font-weight:600}
+  .btn-primary{background:var(--deep);color:#fff}
+  .btn-secondary{background:var(--soft);color:var(--deep2);border:1px solid var(--line)}
+  .msg{font-size:13px;color:var(--ink2);margin:10px 0 0;min-height:18px}
+  .msg.ok{color:#2e7d32}
+  .stats{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 12px}
+  .stat{flex:1;min-width:90px;background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:8px 10px;text-align:center}
+  .stat b{display:block;font-size:20px;color:var(--deep2)}
+  .stat span{font-size:12px;color:var(--ink2)}
+  #search{width:100%;border:1px solid var(--line);border-radius:999px;padding:10px 14px;font-size:15px;font-family:inherit;background:#fffdf7;color:var(--ink)}
+  #search:focus{outline:2px solid var(--deep);outline-offset:1px}
+  .guest{border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px;background:#fffdf7}
+  .g-name{font-size:16px;font-weight:700}
+  .g-meta{font-size:12.5px;color:var(--ink2);margin-top:2px}
+  .g-link{font-size:12.5px;color:var(--deep2);word-break:break-all;margin-top:8px;background:#fff;border:1px dashed var(--line);border-radius:8px;padding:7px 9px}
+  .g-actions{display:flex;gap:8px;margin-top:10px}
+  .g-actions button{flex:1;padding:9px 10px;font-size:14px}
+  .btn-copy{background:var(--deep);color:#fff}
+  .btn-copy.done{background:#2e7d32}
+  .btn-invite{background:#fff;color:var(--deep2);border:1px solid var(--deep)}
+  .btn-uninvite{background:#fff;color:var(--ink2);border:1px solid var(--line)}
+  .empty{color:var(--ink2);font-size:14px;text-align:center;padding:14px 0}
+  .invited-head{margin:18px 0 8px}
+  .invited-head button{width:100%;background:var(--soft);color:var(--deep2);border:1px solid var(--line);text-align:left;padding:11px 14px;font-size:15px;display:flex;justify-content:space-between;align-items:center}
+  .foot{color:var(--ink2);font-size:12.5px;line-height:1.6;text-align:center;margin-top:6px}
+  .rule{font-size:12.5px;color:var(--ink2);line-height:1.6;background:var(--soft);border:1px dashed var(--line);border-radius:12px;padding:10px 12px;margin-top:10px}
+  .rule b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Tạo link mời cưới</h1>
+    <p class="sub">Dương Đăng &amp; Ánh Tuyết • 29 · 11 · 2026</p>
+  </header>
+
+  <section class="card">
+    <h2>1. Dán danh sách khách</h2>
+    <p class="hint">Dán danh sách từ CCM (nút “Xuất Text”) hoặc gõ mỗi khách 1 dòng. Ghi chú trong ngoặc hoặc sau dấu “–” sẽ được bỏ qua.</p>
+    <textarea id="input" rows="8" placeholder="Ví dụ:
+A Cường
+C Thu (bạn cấp 3)
+A Đức - nhà gái"></textarea>
+    <div class="btn-row">
+      <button id="btnGen" class="btn-primary" type="button">Tạo link</button>
+      <button id="btnSample" class="btn-secondary" type="button">Dùng danh sách mẫu</button>
+      <button id="btnClear" class="btn-secondary" type="button">Xóa hết</button>
+    </div>
+    <p id="parseMsg" class="msg"></p>
+    <div class="rule"><b>Quy tắc xưng hô:</b> A → Anh, C → Chị, E → Em, B → Bác, O → Ông, Ba → Bà, Co → Cô, Chu → Chú. Tên không có chữ đầu thì mặc định xưng “bạn”. Dòng “Nhà trai / Nhà gái” và “Tên nhóm:” dùng để chia bên và nhóm.</div>
+  </section>
+
+  <section class="card" id="resultCard" hidden>
+    <h2>2. Link mời</h2>
+    <div class="stats">
+      <div class="stat"><b id="statTotal">0</b><span>Tổng khách</span></div>
+      <div class="stat"><b id="statDone">0</b><span>Đã mời</span></div>
+      <div class="stat"><b id="statTodo">0</b><span>Chưa mời</span></div>
+    </div>
+    <input id="search" type="search" placeholder="Tìm tên khách..." autocomplete="off">
+    <h3>Chưa mời (<span id="countTodo">0</span>)</h3>
+    <div id="listTodo"></div>
+    <div class="invited-head">
+      <button id="btnToggleInvited" type="button"><span>Link đã mời (<span id="countDone">0</span>)</span><span id="invitedArrow">▸</span></button>
+    </div>
+    <div id="listDone" hidden></div>
+  </section>
+
+  <p class="foot">Mỗi link mở ra thiệp với tên và xưng hô riêng của khách đó. Trạng thái “Đã mời” chỉ lưu trên máy này, đóng trang mở lại vẫn còn.</p>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var BASE = 'https://blvckd2096.github.io/DT-v2/';
+  var LS_GUESTS = 'linkmoi_guests_v1';
+  var LS_INPUT = 'linkmoi_input_v1';
+
+  // Chữ đầu trong tên CCM -> xưng hô đầy đủ (cả dạng viết tắt và dạng đã đầy đủ)
+  var TITLE_MAP = {
+    'A':'Anh','C':'Chị','E':'Em','B':'Bác','O':'Ông',
+    'Ba':'Bà','Co':'Cô','Chu':'Chú',
+    'Anh':'Anh','Chị':'Chị','Em':'Em','Bác':'Bác','Ông':'Ông',
+    'Bà':'Bà','Cô':'Cô','Chú':'Chú','Bạn':'Bạn','Thầy':'Thầy'
+  };
+
+  var $ = function(s){ return document.querySelector(s); };
+  var inputEl = $('#input'), msgEl = $('#parseMsg'), resultCard = $('#resultCard');
+  var searchEl = $('#search'), listTodo = $('#listTodo'), listDone = $('#listDone');
+  var guests = [];
+
+  function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+  function parseName(raw){
+    var name = String(raw || '').trim().replace(/^\d+\.\s*/, '');
+    if (!name) return null;
+    var parts = name.split(/\s+/);
+    var first = parts[0];
+    if (TITLE_MAP[first]) {
+      var title = TITLE_MAP[first];
+      var rest = parts.slice(1).join(' ');
+      if (!rest) return null;
+      return { displayName: title + ' ' + rest, pronoun: title };
+    }
+    return { displayName: name, pronoun: 'bạn' };
+  }
+
+  function parseGuestList(text){
+    var out = [];
+    var side = '', group = '';
+    var lines = String(text || '').replace(/^\uFEFF/, '').split(/\r?\n/);
+    lines.forEach(function(rawLine){
+      var line = rawLine.trim();
+      if (!line) return;
+      // Dòng tiêu đề của bản xuất CCM: "Danh sách khách mời - Nhà trai"
+      if (/^Danh sách khách mời/i.test(line)) {
+        var m = line.match(/Nhà\s+(trai|gái)/i);
+        if (m) side = m[1].toLowerCase() === 'trai' ? 'trai' : 'gai';
+        return;
+      }
+      if (/^Tổng:/i.test(line)) return;
+      if (/^Tất cả các nhóm/i.test(line)) return;
+      if (/^Nhà trai$/i.test(line)) { side = 'trai'; group = ''; return; }
+      if (/^Nhà gái$/i.test(line)) { side = 'gai'; group = ''; return; }
+      // Dòng tên nhóm kết thúc bằng ":"
+      if (/:\s*$/.test(line) && !/^\d+\./.test(line)) { group = line.replace(/:\s*$/, '').trim(); return; }
+      var invited = false, namePart = line, lineGroup = group;
+      // Định dạng xuất CCM: "1. A Cường - Gia đình - Đã mời"
+      var ccm = line.match(/^\d+\.\s+(.+?)\s+-\s+(.+?)\s+-\s+(Đã mời|Chưa mời)\s*$/);
+      if (ccm) {
+        namePart = ccm[1]; lineGroup = ccm[2]; invited = (ccm[3] === 'Đã mời');
+      } else {
+        // Dạng text thường: bỏ ghi chú trong ngoặc, bỏ phần sau " - "
+        namePart = line.replace(/\s*\([^)]*\)\s*/g, ' ').trim();
+        var di = namePart.indexOf(' - ');
+        if (di > 0) namePart = namePart.slice(0, di).trim();
+        namePart = namePart.replace(/^\d+\.\s*/, '');
+      }
+      var parsed = parseName(namePart);
+      if (!parsed) return;
+      out.push({
+        id: 'g' + out.length + '_' + Date.now().toString(36),
+        name: parsed.displayName,
+        pronoun: parsed.pronoun,
+        side: side, group: lineGroup, invited: invited
+      });
+    });
+    return out;
+  }
+
+  function makeLink(g){
+    var url = BASE + '?guest=' + encodeURIComponent(g.name);
+    if (g.pronoun && g.pronoun !== 'bạn') url += '&goi=' + encodeURIComponent(g.pronoun);
+    return url;
+  }
+
+  function sideLabel(s){ return s === 'trai' ? 'Nhà trai' : (s === 'gai' ? 'Nhà gái' : 'Chưa chia bên'); }
+
+  function save(){
+    try {
+      localStorage.setItem(LS_GUESTS, JSON.stringify(guests));
+      localStorage.setItem(LS_INPUT, inputEl.value);
+    } catch (e) {}
+  }
+
+  function guestCard(g){
+    var meta = sideLabel(g.side) + (g.group ? ' • ' + g.group : '') + (g.pronoun && g.pronoun !== 'bạn' ? ' • xưng “' + g.pronoun + '”' : '');
+    var link = makeLink(g);
+    var el = document.createElement('div');
+    el.className = 'guest';
+    el.innerHTML =
+      '<div class="g-name">' + esc(g.name) + '</div>' +
+      '<div class="g-meta">' + esc(meta) + '</div>' +
+      '<div class="g-link">' + esc(link) + '</div>' +
+      '<div class="g-actions">' +
+        '<button class="btn-copy" type="button">Copy link</button>' +
+        (g.invited
+          ? '<button class="btn-uninvite" type="button">↩ Chưa mời</button>'
+          : '<button class="btn-invite" type="button">✓ Đã mời</button>') +
+      '</div>';
+    el.querySelector('.btn-copy').addEventListener('click', function(btn){
+      var b = btn.currentTarget;
+      var done = function(){ b.textContent = 'Đã copy ✓'; b.classList.add('done'); setTimeout(function(){ b.textContent = 'Copy link'; b.classList.remove('done'); }, 1800); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(link).then(done).catch(function(){ fallbackCopy(link, done); });
+      } else { fallbackCopy(link, done); }
+    });
+    var toggleBtn = el.querySelector('.btn-invite, .btn-uninvite');
+    if (toggleBtn) toggleBtn.addEventListener('click', function(){
+      g.invited = !g.invited;
+      save(); render();
+    });
+    return el;
+  }
+
+  function fallbackCopy(text, done){
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta); done();
+    } catch (e) { alert('Không copy được, hãy chạm giữ link để sao chép thủ công.'); }
+  }
+
+  function render(){
+    var q = (searchEl.value || '').trim().toLowerCase();
+    var match = function(g){
+      if (!q) return true;
+      return g.name.toLowerCase().indexOf(q) >= 0 || (g.group || '').toLowerCase().indexOf(q) >= 0;
+    };
+    var todo = guests.filter(function(g){ return !g.invited && match(g); });
+    var done = guests.filter(function(g){ return g.invited && match(g); });
+    var total = guests.length;
+    var doneCount = guests.filter(function(g){ return g.invited; }).length;
+    $('#statTotal').textContent = total;
+    $('#statDone').textContent = doneCount;
+    $('#statTodo').textContent = total - doneCount;
+    $('#countTodo').textContent = todo.length;
+    $('#countDone').textContent = done.length;
+    listTodo.innerHTML = '';
+    if (!todo.length) {
+      var e1 = document.createElement('div'); e1.className = 'empty';
+      e1.textContent = total === 0 ? 'Chưa có khách nào. Dán danh sách rồi bấm “Tạo link”.' : 'Đã mời hết rồi 🎉';
+      listTodo.appendChild(e1);
+    } else { todo.forEach(function(g){ listTodo.appendChild(guestCard(g)); }); }
+    listDone.innerHTML = '';
+    if (!done.length) {
+      var e2 = document.createElement('div'); e2.className = 'empty';
+      e2.textContent = 'Chưa có link nào được đánh dấu đã mời.';
+      listDone.appendChild(e2);
+    } else { done.forEach(function(g){ listDone.appendChild(guestCard(g)); }); }
+    resultCard.hidden = false;
+  }
+
+  function generate(fromSample){
+    var text = inputEl.value;
+    var list = parseGuestList(text);
+    if (!list.length) {
+      msgEl.textContent = 'Không lọc được tên khách nào. Kiểm tra lại danh sách (mỗi khách 1 dòng).';
+      msgEl.className = 'msg';
+      return;
+    }
+    // Giữ lại trạng thái Đã mời của những khách đã có trước đó (khớp theo tên)
+    var prev = {};
+    guests.forEach(function(g){ prev[g.name] = g.invited; });
+    list.forEach(function(g){ if (prev[g.name] !== undefined) g.invited = prev[g.name]; });
+    guests = list;
+    save(); render();
+    var preInvited = list.filter(function(g){ return g.invited; }).length;
+    msgEl.textContent = 'Đã tạo ' + list.length + ' link' + (preInvited ? ' (' + preInvited + ' khách đã mời sẵn theo CCM)' : '') + '. Kiểm tra lại tên rồi copy gửi từng người.';
+    msgEl.className = 'msg ok';
+    resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  $('#btnGen').addEventListener('click', function(){ generate(false); });
+  $('#btnSample').addEventListener('click', function(){
+    inputEl.value =
+      'Danh sách khách mời - Nhà trai\n' +
+      'Tất cả các nhóm\n' +
+      '1. A Cường - Gia đình - Đã mời\n' +
+      '2. C Thu - Bạn bè - Chưa mời\n' +
+      '3. A Đức - Gia đình - Chưa mời\n' +
+      'Tổng: 3 khách (1 đã mời, 2 chưa mời)\n' +
+      '\n' +
+      'Nhà gái\n' +
+      'Gia đình:\n' +
+      'A Hùng\n' +
+      'C Mai (bạn thân)\n';
+    generate(true);
+  });
+  $('#btnClear').addEventListener('click', function(){
+    if (!confirm('Xóa hết danh sách và link đã tạo?')) return;
+    guests = []; inputEl.value = '';
+    try { localStorage.removeItem(LS_GUESTS); localStorage.removeItem(LS_INPUT); } catch (e) {}
+    msgEl.textContent = ''; render();
+  });
+  $('#btnToggleInvited').addEventListener('click', function(){
+    var hidden = listDone.hidden;
+    listDone.hidden = !hidden;
+    $('#invitedArrow').textContent = hidden ? '▾' : '▸';
+  });
+  searchEl.addEventListener('input', render);
+
+  // Khôi phục dữ liệu đã lưu trên máy
+  try {
+    var savedInput = localStorage.getItem(LS_INPUT);
+    if (savedInput) inputEl.value = savedInput;
+    var saved = JSON.parse(localStorage.getItem(LS_GUESTS) || '[]');
+    if (Array.isArray(saved) && saved.length) { guests = saved; render(); }
+  } catch (e) {}
+})();
+</script>
+</body>
+</html>
