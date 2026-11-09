@@ -291,7 +291,7 @@ a{color:inherit;text-decoration:none}
   }
 .families{display:grid;grid-template-columns:1fr 16px 1fr;gap:0 4px;align-items:stretch;margin-top:20px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 8px 16px;box-shadow:var(--shadow)}
 #invitation{padding-left:12px;padding-right:12px}
-.family{min-width:0;text-align:center}
+.family{display:flex;flex-direction:column;min-width:0;text-align:center}
 .family h4{font-size:14px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--deep);margin-bottom:14px}
 .family h4::after{content:'';display:block;width:30px;height:2px;background:var(--deep);border-radius:2px;margin:9px auto 0}
 .family .parent{margin-bottom:12px}
@@ -301,6 +301,7 @@ a{color:inherit;text-decoration:none}
 .family .addr.old{margin-top:10px;padding-top:10px}
 .family .alabel{display:block;font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--deep);margin-bottom:4px}
 .family .atext{display:block;font-size:13px;line-height:1.65;color:var(--ink2)}
+.family .addr-btn{margin-top:auto;padding-top:14px}
 .family p:nth-of-type(1),.family p:nth-of-type(2){font-family:var(--serif);font-size:15px;font-weight:500;color:var(--ink);line-height:1.5}
 
 .family .btn{padding:8px 10px;font-size:12px;margin-top:10px;white-space:nowrap;max-width:100%}
@@ -730,9 +731,9 @@ T</span></div>
     <p class="invite-guest" data-bind="guestName">Quý Khách</p>
     <p class="slide-l" style="text-align:center;font-family:var(--serif);font-size:1.6rem;font-weight:600;line-height:1.5;color:var(--ink)" data-bind="inviteMessage">Trân trọng kính mời quý khách đến dự buổi tiệc chung vui cùng gia đình chúng em</p>
     <div class="families rvl">
-      <div class="family slide-l"><h4 data-bind="familyTitleGroom">Nhà trai</h4><div class="parent"><span class="role">Ông</span><span class="pname" data-bind="groomFather">Dương Quang Sứ</span></div><div class="parent"><span class="role">Bà</span><span class="pname" data-bind="groomMother">Nguyễn Thị Tuyền</span></div><div class="addr"><span class="alabel">Địa chỉ</span><span class="atext" data-bind="groomAddress">SN 146 - Thôn Đình - Tam Hồng - Yên Lạc - Phú Thọ</span></div><div class="addr old"><span class="alabel">Trước sáp nhập</span><span class="atext" data-bind="groomAddressOld">SN 146 - Thôn Đình - Yên Đồng - Yên Lạc - Vĩnh Phúc</span></div></div>
+      <div class="family slide-l"><h4 data-bind="familyTitleGroom">Nhà trai</h4><div class="parent"><span class="role">Ông</span><span class="pname" data-bind="groomFather">Dương Quang Sứ</span></div><div class="parent"><span class="role">Bà</span><span class="pname" data-bind="groomMother">Nguyễn Thị Tuyền</span></div><div class="addr"><span class="alabel">Địa chỉ</span><span class="atext" data-bind="groomAddress">SN 146 - Thôn Đình - Tam Hồng - Yên Lạc - Phú Thọ</span></div><div class="addr-btn"><a class="btn btn-ghost" href="https://maps.app.goo.gl/9j6WR9qussmBc5LY7?g_st=ic" target="_blank" rel="noopener">Xem bản đồ</a></div></div>
       <div class="family-divider" aria-hidden="true"><svg viewBox="0 0 32 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="10" r="7"/><circle cx="21" cy="10" r="7"/></svg></div>
-      <div class="family slide-r"><h4 data-bind="familyTitleBride">Nhà gái</h4><div class="parent"><span class="role">Ông</span><span class="pname" data-bind="brideFather">Nguyễn Hữu Thông</span></div><div class="parent"><span class="role">Bà</span><span class="pname" data-bind="brideMother">Nguyễn Thị Thanh Huyền</span></div><div class="addr"><span class="alabel">Địa chỉ</span><span class="atext" data-bind="brideAddress">SN 225 - Thôn Chùa - Tam Hồng - Yên Lạc - Phú Thọ</span></div><div class="addr old"><span class="alabel">Trước sáp nhập</span><span class="atext" data-bind="brideAddressOld">SN 225 - Thôn Chùa - Yên Đồng - Yên Lạc - Vĩnh Phúc</span></div></div>
+      <div class="family slide-r"><h4 data-bind="familyTitleBride">Nhà gái</h4><div class="parent"><span class="role">Ông</span><span class="pname" data-bind="brideFather">Nguyễn Hữu Thông</span></div><div class="parent"><span class="role">Bà</span><span class="pname" data-bind="brideMother">Nguyễn Thị Thanh Huyền</span></div><div class="addr"><span class="alabel">Địa chỉ</span><span class="atext" data-bind="brideAddress">SN 225 - Thôn Chùa - Tam Hồng - Yên Lạc - Phú Thọ</span></div><div class="addr-btn"><a class="btn btn-ghost" href="https://www.google.com/maps/search/?api=1&query=21.1995739,105.5552271" target="_blank" rel="noopener">Xem bản đồ</a></div></div>
     </div>
     <div class="wed-date">
       <p class="wed-date-label">Lễ Vu Quy</p>
@@ -778,11 +779,6 @@ T</span></div>
     <button class="a-btn" id="albNext" type="button" aria-label="Ảnh sau">›</button>
   </div>
 </div>
-</div></section>
-<!-- SCHEDULE -->
-<section class="section"><div class="container">
-  <div class="chapter"><p class="eyebrow rvl" data-bind="schedEyebrow">V · Lịch trình</p><h2 class="sec-title rvl" data-bind="schedTitle">Ngày trọng đại</h2></div>
-  <div id="scheduleList" class="timeline"><div class="tl-item slide-l"><p class="tl-time">07:00 — 07:30</p><h3 class="tl-title">Lễ tại nhà gái</h3><p class="tl-place">225 - Thôn Chùa - Tam Hồng - Yên Lạc - Phú Thọ</p><p class="tl-desc">Lễ vu quy đơn giản cùng gia đình.</p><a class="btn btn-ghost" href="https://www.google.com/maps/search/?api=1&amp;query=21.1995739,105.5552271" target="_blank" rel="noopener">Xem bản đồ</a></div><div class="tl-item slide-r"><p class="tl-time">15:00 — 21:30</p><h3 class="tl-title">Tiệc cưới</h3><p class="tl-place"><div>Nhà văn hóa thôn Đình - Tam Hồng - Yên Lạc - Phú Thọ</div><div>225 - Thôn Chùa - Tam Hồng - Yên Lạc - Phú Thọ</div></p><p class="tl-desc">Tiệc thân mật, chúc mừng và lưu lại những khoảnh khắc.</p><div class="tl-venues"><a class="btn btn-ghost btn-venue" href="https://maps.app.goo.gl/9j6WR9qussmBc5LY7?g_st=ic" target="_blank" rel="noopener">Đến tiệc nhà trai</a><a class="btn btn-ghost btn-venue" href="https://www.google.com/maps/search/?api=1&amp;query=21.1995739,105.5552271" target="_blank" rel="noopener">Đến tiệc nhà gái</a></div></div><div class="tl-item slide-l"><p class="tl-time">09:00 — 11:30</p><h3 class="tl-title">Lễ thành hôn</h3><p class="tl-place">146 - Thôn Đình - Tam Hồng - Yên Lạc - Phú Thọ</p><p class="tl-desc">Nghi thức chính thức trước sự chứng kiến của gia đình và bạn bè.</p><a class="btn btn-ghost" href="https://www.google.com/maps/search/?api=1&amp;query=21.205939,105.55101" target="_blank" rel="noopener">Xem bản đồ</a></div></div>
 </div></section>
 <!-- CALENDAR -->
 <section class="section"><div class="container">
@@ -899,7 +895,7 @@ T</span></div>
     <audio id="bgMusic" preload="none"></audio>
   </div>
 </div></section>
-<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 09/11/2026 03:02</span></footer>
+<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 09/11/2026 14:53</span></footer>
 <!-- Floating controls (above content, below dialogs) -->
 <nav class="bottom-bar" aria-label="Điều hướng nhanh">
   <a href="#wishes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5z"/></svg><span>Gửi lời chúc</span></a>
