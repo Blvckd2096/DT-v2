@@ -321,8 +321,12 @@ a{color:inherit;text-decoration:none}
 .btn{display:inline-block;padding:10px 22px;border-radius:999px;background:var(--deep);color:#fff;font-weight:600;font-size:14px;margin-top:12px}
 .btn-ghost{background:#fff;color:var(--deep);border:1px solid var(--deep)}
 .love-quote{font-family:var(--serif);font-style:italic;font-size:1.5rem;text-align:center;line-height:1.5}
-.story-item{display:flex;flex-direction:column;gap:14px;margin-bottom:28px}
-.story-item img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:24px}
+.story-item{display:flex;gap:14px;align-items:center;margin-bottom:22px}
+.story-item:nth-child(even){flex-direction:row-reverse}
+.story-item img{width:46%;aspect-ratio:3/3.6;object-fit:cover;border-radius:16px;flex-shrink:0}
+.story-item:nth-child(odd) img{transform:rotate(-1.5deg)}
+.story-item:nth-child(even) img{transform:rotate(1.5deg)}
+.story-item>div{flex:1;min-width:0}
 .story-date{color:var(--deep);font-weight:600;font-size:12px;letter-spacing:.15em;text-transform:uppercase}
 .story-title{font-family:var(--serif);font-size:1.5rem;margin:2px 0 6px}
 .story-text{color:var(--ink2);font-size:14px}
@@ -895,7 +899,7 @@ T</span></div>
     <audio id="bgMusic" preload="none"></audio>
   </div>
 </div></section>
-<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 09/11/2026 14:53</span></footer>
+<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 09/11/2026 15:58</span></footer>
 <!-- Floating controls (above content, below dialogs) -->
 <nav class="bottom-bar" aria-label="Điều hướng nhanh">
   <a href="#wishes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5z"/></svg><span>Gửi lời chúc</span></a>
@@ -953,7 +957,7 @@ const weddingData = {
   brideBio: "Một cô gái yêu hoa, yêu sách và những buổi chiều yên tĩnh.",
   groomBio: "Một chàng trai thích nấu ăn, chụp ảnh và những chuyến đi xa.",
 
-  weddingDate: "2026-11-29T09:00:00+07:00",
+  weddingDate: "2026-11-29T09:30:00+07:00",
   weddingDateLong: "Chủ Nhật, 29 tháng 11, 2026",
   weddingDateShort: "29 · 11 · 2026",
   weddingDateShortWeekday: "Chủ Nhật · 29 · 11 · 2026",
