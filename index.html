@@ -75,9 +75,13 @@ a{color:inherit;text-decoration:none}
 @keyframes cueBounce{0%,100%{transform:translateY(0);opacity:.95}50%{transform:translateY(8px);opacity:.6}}
 .hero-names span[data-bind]{display:block;white-space:nowrap}
 .hero-names .amp{display:block;font-size:.55em;font-style:italic;color:#FFD5DC}
-.marquee{background:var(--ink);color:var(--bg);padding:18px 0;overflow:hidden;white-space:nowrap}
-.marquee-track{display:flex;width:max-content;animation:marqueeScroll 30s linear infinite}
+.marquee{position:relative;background:var(--ink);color:var(--bg);padding:18px 0;overflow:hidden;white-space:nowrap}
+.marquee::before,.marquee::after{content:"";position:absolute;top:0;bottom:0;width:64px;z-index:2;pointer-events:none}
+.marquee::before{left:0;background:linear-gradient(90deg,var(--ink),transparent)}
+.marquee::after{right:0;background:linear-gradient(-90deg,var(--ink),transparent)}
+.marquee-track{display:flex;width:max-content;animation:marqueeScroll 40s linear infinite}
 .marquee span{flex-shrink:0;font-family:var(--serif);font-style:italic;font-size:1.1rem}
+.marquee .mq-heart{font-size:.72em}
 @keyframes marqueeScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .cd{display:flex;gap:12px;justify-content:center;margin-top:24px;min-width:0}
 .cd-item{min-width:0}
@@ -652,7 +656,7 @@ noscript .opener{display:none}
   </div>
   <div class="scroll-cue" aria-hidden="true"><span class="cue-text" data-bind="heroScroll">Kéo xuống</span><span class="cue-arrow"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8.5l6 6 6-6"/><path d="M6 14.5l6 6 6-6"/></svg></span></div>
 </header>
-<div class="marquee" aria-hidden="true"><div class="marquee-track"><span class="marquee-span">Dương Đăng ♥︎ Ánh Tuyết ♥︎ 29 · 11 · 2026 ♥︎ Dương Đăng ♥︎ Ánh Tuyết ♥︎ 29 · 11 · 2026 ♥︎ Dương Đăng ♥︎ Ánh Tuyết ♥︎ 29 · 11 · 2026 ♥︎ Dương Đăng ♥︎ Ánh Tuyết ♥︎ 29 · 11 · 2026 ♥︎ Dương Đăng ♥︎ Ánh Tuyết ♥︎ 29 · 11 · 2026 ♥︎ Dương Đăng ♥︎ Ánh Tuyết ♥︎ 29 · 11 · 2026 ♥︎ Dương Đăng ♥︎ Ánh Tuyết ♥︎ 29 · 11 · 2026 ♥︎ </span><span class="marquee-span">Dương Đăng ♥︎ Ánh Tuyết ♥︎ 29 · 11 · 2026 ♥︎ Dương Đăng ♥︎ Ánh Tuyết ♥︎ 29 · 11 · 2026 ♥︎ Dương Đăng ♥︎ Ánh Tuyết ♥︎ 29 · 11 · 2026 ♥︎ Dương Đăng ♥︎ Ánh Tuyết ♥︎ 29 · 11 · 2026 ♥︎ Dương Đăng ♥︎ Ánh Tuyết ♥︎ 29 · 11 · 2026 ♥︎ Dương Đăng ♥︎ Ánh Tuyết ♥︎ 29 · 11 · 2026 ♥︎ Dương Đăng ♥︎ Ánh Tuyết ♥︎ 29 · 11 · 2026 ♥︎ </span></div></div>
+<div class="marquee" aria-hidden="true"><div class="marquee-track"><span class="marquee-span">Dương Đăng <span class="mq-heart">♥︎</span> Ánh Tuyết <span class="mq-heart">♥︎</span> 29 · 11 · 2026 <span class="mq-heart">♥︎</span> Dương Đăng <span class="mq-heart">♥︎</span> Ánh Tuyết <span class="mq-heart">♥︎</span> 29 · 11 · 2026 <span class="mq-heart">♥︎</span> Dương Đăng <span class="mq-heart">♥︎</span> Ánh Tuyết <span class="mq-heart">♥︎</span> 29 · 11 · 2026 <span class="mq-heart">♥︎</span> Dương Đăng <span class="mq-heart">♥︎</span> Ánh Tuyết <span class="mq-heart">♥︎</span> 29 · 11 · 2026 <span class="mq-heart">♥︎</span> Dương Đăng <span class="mq-heart">♥︎</span> Ánh Tuyết <span class="mq-heart">♥︎</span> 29 · 11 · 2026 <span class="mq-heart">♥︎</span> Dương Đăng <span class="mq-heart">♥︎</span> Ánh Tuyết <span class="mq-heart">♥︎</span> 29 · 11 · 2026 <span class="mq-heart">♥︎</span> Dương Đăng <span class="mq-heart">♥︎</span> Ánh Tuyết <span class="mq-heart">♥︎</span> 29 · 11 · 2026 <span class="mq-heart">♥︎</span> </span><span class="marquee-span">Dương Đăng <span class="mq-heart">♥︎</span> Ánh Tuyết <span class="mq-heart">♥︎</span> 29 · 11 · 2026 <span class="mq-heart">♥︎</span> Dương Đăng <span class="mq-heart">♥︎</span> Ánh Tuyết <span class="mq-heart">♥︎</span> 29 · 11 · 2026 <span class="mq-heart">♥︎</span> Dương Đăng <span class="mq-heart">♥︎</span> Ánh Tuyết <span class="mq-heart">♥︎</span> 29 · 11 · 2026 <span class="mq-heart">♥︎</span> Dương Đăng <span class="mq-heart">♥︎</span> Ánh Tuyết <span class="mq-heart">♥︎</span> 29 · 11 · 2026 <span class="mq-heart">♥︎</span> Dương Đăng <span class="mq-heart">♥︎</span> Ánh Tuyết <span class="mq-heart">♥︎</span> 29 · 11 · 2026 <span class="mq-heart">♥︎</span> Dương Đăng <span class="mq-heart">♥︎</span> Ánh Tuyết <span class="mq-heart">♥︎</span> 29 · 11 · 2026 <span class="mq-heart">♥︎</span> Dương Đăng <span class="mq-heart">♥︎</span> Ánh Tuyết <span class="mq-heart">♥︎</span> 29 · 11 · 2026 <span class="mq-heart">♥︎</span> </span></div></div>
 <!-- COUNTDOWN -->
 <section class="section"><div class="container" style="text-align:center">
   <p class="eyebrow rvl" data-bind="cdEyebrow">Đếm ngược</p>
@@ -905,7 +909,7 @@ T</span></div>
     <audio id="bgMusic" preload="none"></audio>
   </div>
 </div></section>
-<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 10/11/2026 15:39</span></footer>
+<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 10/11/2026 17:59</span></footer>
 <!-- Floating controls (above content, below dialogs) -->
 <nav class="bottom-bar" aria-label="Điều hướng nhanh">
   <a href="#wishes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5z"/></svg><span>Gửi lời chúc</span></a>
@@ -1084,8 +1088,8 @@ function bindData() {
   applyPronounToStatic();
   $$('[data-bind-map]').forEach(el => { const v = weddingData[el.dataset.bindMap]; if (v) el.href = v; });
   // Dải chạy tự cập nhật theo tên + ngày cưới
-  const mqUnit = (weddingData.groomName || '') + ' ♥︎ ' + (weddingData.brideName || '') + ' ♥︎ ' + (weddingData.weddingDateShort || '') + ' ♥︎ ';
-  $$('.marquee-span').forEach(el => el.textContent = mqUnit.repeat(7));
+  const mqUnit = (weddingData.groomName || '') + ' <span class="mq-heart">♥︎</span> ' + (weddingData.brideName || '') + ' <span class="mq-heart">♥︎</span> ' + (weddingData.weddingDateShort || '') + ' <span class="mq-heart">♥︎</span> ';
+  $$('.marquee-span').forEach(el => el.innerHTML = mqUnit.repeat(7));
   // Khối Ngày cưới: tháng / ngày / thứ tự tính từ ngày cưới
   if (weddingData.weddingDate) {
     const d = new Date(weddingData.weddingDate);
