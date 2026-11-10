@@ -75,12 +75,10 @@ a{color:inherit;text-decoration:none}
 @keyframes cueBounce{0%,100%{transform:translateY(0);opacity:.95}50%{transform:translateY(8px);opacity:.6}}
 .hero-names span[data-bind]{display:block;white-space:nowrap}
 .hero-names .amp{display:block;font-size:.55em;font-style:italic;color:#FFD5DC}
-.marquee{position:relative;background:var(--ink);color:var(--bg);padding:18px 0;overflow:hidden;white-space:nowrap}
-.marquee::before,.marquee::after{content:"";position:absolute;top:0;bottom:0;width:64px;z-index:2;pointer-events:none}
-.marquee::before{left:0;background:linear-gradient(90deg,var(--ink),transparent)}
-.marquee::after{right:0;background:linear-gradient(-90deg,var(--ink),transparent)}
-.marquee-track{display:flex;width:max-content;animation:marqueeScroll 40s linear infinite}
-.marquee span{flex-shrink:0;font-family:var(--serif);font-style:italic;font-size:1.1rem}
+.marquee{background:var(--ink);color:var(--bg);padding:18px 0;overflow:hidden;white-space:nowrap}
+.marquee-track{display:inline-block;white-space:nowrap;animation:marqueeScroll 40s linear infinite;will-change:transform}
+.marquee-span{display:inline-block;white-space:nowrap}
+.marquee span{font-family:var(--serif);font-style:italic;font-size:1.1rem}
 .marquee .mq-heart{font-size:.72em}
 @keyframes marqueeScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .cd{display:flex;gap:12px;justify-content:center;margin-top:24px;min-width:0}
@@ -909,7 +907,7 @@ T</span></div>
     <audio id="bgMusic" preload="none"></audio>
   </div>
 </div></section>
-<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 10/11/2026 17:59</span></footer>
+<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 10/11/2026 18:49</span></footer>
 <!-- Floating controls (above content, below dialogs) -->
 <nav class="bottom-bar" aria-label="Điều hướng nhanh">
   <a href="#wishes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5z"/></svg><span>Gửi lời chúc</span></a>
