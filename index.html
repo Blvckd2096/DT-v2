@@ -76,11 +76,10 @@ a{color:inherit;text-decoration:none}
 .hero-names span[data-bind]{display:block;white-space:nowrap}
 .hero-names .amp{display:block;font-size:.55em;font-style:italic;color:#FFD5DC}
 .marquee{background:var(--ink);color:var(--bg);padding:18px 0;overflow:hidden;white-space:nowrap}
-.marquee-track{display:inline-block;white-space:nowrap;animation:marqueeScroll 40s linear infinite;will-change:transform}
+.marquee-track{display:inline-block;white-space:nowrap}
 .marquee-span{display:inline-block;white-space:nowrap}
 .marquee span{font-family:var(--serif);font-style:italic;font-size:1.1rem}
 .marquee .mq-heart{font-size:.72em}
-@keyframes marqueeScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .cd{display:flex;gap:12px;justify-content:center;margin-top:24px;min-width:0}
 .cd-item{min-width:0}
 .cd-item{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 6px;flex:1;max-width:84px;box-shadow:var(--shadow)}
@@ -344,7 +343,7 @@ a{color:inherit;text-decoration:none}
 #gift .container{padding-bottom:60px}
 .giftbox{display:block;margin:14px auto 0;width:210px;background:var(--deep2);border-radius:18px;padding:30px 16px 24px;color:#fff;text-align:center;box-shadow:var(--shadow);cursor:pointer;position:relative;animation:giftWiggle 3.4s ease-in-out infinite;transform-origin:50% 100%}
 @keyframes giftWiggle{0%,86%,100%{transform:rotate(0)}89%{transform:rotate(-1.6deg)}93%{transform:rotate(1.6deg)}97%{transform:rotate(-.8deg)}}
-@media (prefers-reduced-motion:reduce){.giftbox{animation:none}.cal-day.special::before,.cal-day.special::after{animation:none}.marquee-track{animation:none}}
+@media (prefers-reduced-motion:reduce){.giftbox{animation:none}.cal-day.special::before,.cal-day.special::after{animation:none}}
 @media (max-width:380px){.gift-cols{gap:8px}.gift-dialog{padding:20px 10px 16px}.gift-qr-card{padding:8px}.sec-title{font-size:1.8rem}.hero-names{font-size:3.4rem}}
 .giftbox .xi{width:64px;height:64px;margin:0 auto 10px;border:2px solid #FFE9EC;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px}
 .giftbox .corner{position:absolute;font-size:18px;color:#FFE9EC;opacity:.8}
@@ -907,7 +906,7 @@ T</span></div>
     <audio id="bgMusic" preload="none"></audio>
   </div>
 </div></section>
-<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 10/11/2026 18:49</span></footer>
+<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 10/11/2026 19:05</span></footer>
 <!-- Floating controls (above content, below dialogs) -->
 <nav class="bottom-bar" aria-label="Điều hướng nhanh">
   <a href="#wishes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5z"/></svg><span>Gửi lời chúc</span></a>
@@ -1363,6 +1362,28 @@ function spawnBubble(w) {
 }
 function startBubbles() {
   setInterval(() => { const list = getWishes(); if (list.length) spawnBubble(list[Math.floor(Math.random() * list.length)]); }, 6000);
+}
+// Dải chữ chạy bằng JS (margin-left) thay vì CSS transform — iOS Safari hay để
+// lớp transform bị "đơ" không vẽ lại, kéo trang mới hiện chữ. margin-left vẽ
+// lại mỗi khung hình nên chữ luôn hiện.
+function startMarquee() {
+  const track = document.querySelector('.marquee-track');
+  const span = document.querySelector('.marquee-span');
+  if (!track || !span) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  let W = span.offsetWidth;
+  if (!W) return;
+  const DURATION = 40000;
+  let start = null;
+  function step(ts) {
+    if (start === null) start = ts;
+    const x = ((ts - start) % DURATION) / DURATION * W;
+    track.style.marginLeft = (-x) + 'px';
+    requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+  window.addEventListener('resize', () => { W = span.offsetWidth || W; });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { W = span.offsetWidth || W; });
 }
 function startPetals() {
   const layer = $('#petalLayer'); if (!layer) return;
@@ -1881,7 +1902,7 @@ function init() {
   safe(bindData); safe(loadRemoteSettings); safe(loadRemoteWishes); safe(renderCalendar); safe(renderStory); safe(renderGallery); safe(setupAlbumNav);
   safe(() => { var refit = function(){ fitParentNames(); }; var n = 0; var iv = setInterval(function(){ refit(); if (++n >= 10) clearInterval(iv); }, 500); if (document.fonts && document.fonts.load) document.fonts.load('600 19px "Cormorant Garamond"').then(refit).catch(refit); if (document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ setTimeout(refit, 60); }); window.addEventListener('load', function(){ refit(); setTimeout(refit, 800); setTimeout(refit, 2000); }); window.addEventListener('resize', () => { clearTimeout(window.__fitT); window.__fitT = setTimeout(refit, 150); }); });
   safe(() => makeCoverPetals($('#coverPetals'), 13)); safe(renderSchedule); safe(renderWishes);
-  safe(setupGift); safe(setupForms); safe(setupMusic); safe(setupOpener); safe(setupAdmin); safe(observeReveals); safe(startPetals); safe(startBubbles); safe(startCountdown);
+  safe(setupGift); safe(setupForms); safe(setupMusic); safe(setupOpener); safe(setupAdmin); safe(observeReveals); safe(startMarquee); safe(startPetals); safe(startBubbles); safe(startCountdown);
   const lbClose = $('#lbClose'); if (lbClose) lbClose.addEventListener('click', closeLightbox);
   const lbPrev = $('#lbPrev'); if (lbPrev) lbPrev.addEventListener('click', () => openLightbox((lbIndex - 1 + (lbList || galleryImages).length) % (lbList || galleryImages).length, lbList));
   const lbNext = $('#lbNext'); if (lbNext) lbNext.addEventListener('click', () => openLightbox((lbIndex + 1) % (lbList || galleryImages).length, lbList));
