@@ -322,15 +322,18 @@ a{color:inherit;text-decoration:none}
 .btn{display:inline-block;padding:10px 22px;border-radius:999px;background:var(--deep);color:#fff;font-weight:600;font-size:14px;margin-top:12px}
 .btn-ghost{background:#fff;color:var(--deep);border:1px solid var(--deep)}
 .love-quote{font-family:var(--serif);font-style:italic;font-size:1.5rem;text-align:center;line-height:1.5}
-.story-item{display:flex;gap:14px;align-items:center;margin-bottom:22px}
+.story-item{display:flex;gap:14px;align-items:center;margin-bottom:28px}
 .story-item:nth-child(even){flex-direction:row-reverse}
-.story-item img{width:46%;aspect-ratio:3/3.6;object-fit:cover;border-radius:16px;flex-shrink:0}
+.story-item img{width:56%;aspect-ratio:3/3.4;object-fit:cover;border-radius:16px;flex-shrink:0}
 .story-item:nth-child(odd) img{transform:rotate(-1.5deg)}
 .story-item:nth-child(even) img{transform:rotate(1.5deg)}
-.story-item>div{flex:1;min-width:0}
-.story-date{color:var(--deep);font-weight:600;font-size:12px;letter-spacing:.15em;text-transform:uppercase}
-.story-title{font-family:var(--serif);font-size:1.5rem;margin:2px 0 6px}
-.story-text{color:var(--ink2);font-size:14px}
+.story-item>div{flex:1;min-width:0;text-align:center}
+.story-date{color:var(--deep);font-weight:600;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.story-title{font-family:var(--serif);font-size:23px;font-weight:600;line-height:1.2;margin:6px 0 8px}
+.story-rule{display:flex;align-items:center;gap:6px;justify-content:center;color:var(--deep);margin-bottom:8px}
+.story-rule::before,.story-rule::after{content:'';height:1px;width:26px;background:#e3b7bf}
+.story-bignum{font-family:'Lora',serif;font-style:italic;font-size:26px;color:var(--ink)}
+.story-text{color:var(--ink2);font-size:12.5px;line-height:1.65;margin-top:8px}
 .timeline{border-left:1px solid var(--line);margin-left:8px;padding-left:24px}
 .tl-item{position:relative;padding-bottom:26px}
 .tl-item::before{content:'';position:absolute;left:-31px;top:6px;width:13px;height:13px;border-radius:50%;background:var(--deep);border:2px solid #fff;box-shadow:0 0 0 1px var(--deep)}
@@ -777,7 +780,7 @@ T</span></div>
 <!-- STORY -->
 <section class="section"><div class="container">
   <div class="chapter"><p class="eyebrow rvl" data-bind="storyEyebrow">III · Chuyện của chúng mình</p><h2 class="sec-title rvl" data-bind="storyTitle">Our Story</h2></div>
-  <div id="storyList"><div class="story-item"><img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=700&amp;h=900&amp;q=80&amp;fit=crop" alt="Ngày đầu gặp nhau" loading="lazy"><div class="slide-l"><p class="story-date">Mùa thu 2021</p><h3 class="story-title">Ngày đầu gặp nhau</h3><p class="story-text">Một buổi chiều mưa ở quán cà phê nhỏ. Chúng mình ngồi cạnh nhau, và câu chuyện cứ thế dài mãi.</p></div></div><div class="story-item"><img src="https://images.unsplash.com/photo-1525258946800-98cfd641d0de?w=700&amp;h=900&amp;q=80&amp;fit=crop" alt="Chuyến đi đầu tiên" loading="lazy"><div class="slide-r"><p class="story-date">Mùa hè 2023</p><h3 class="story-title">Chuyến đi đầu tiên</h3><p class="story-text">Đà Lạt, sương mù và một chiếc xe máy cũ. Chúng mình đã cùng nhau đi qua những con dốc và biết rằng sẽ còn đi cùng nhau dài.</p></div></div><div class="story-item"><img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=700&amp;h=900&amp;q=80&amp;fit=crop" alt="Lời cầu hôn" loading="lazy"><div class="slide-l"><p class="story-date">Mùa đông 2025</p><h3 class="story-title">Lời cầu hôn</h3><p class="story-text">Một buổi tối bình thường, bên bếp lửa. Không có gì hoa mỹ, chỉ có một câu hỏi và một câu trả lời.</p></div></div></div>
+  <div id="storyList"><div class="story-item"><img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=700&amp;h=900&amp;q=80&amp;fit=crop" alt="Ngày đầu gặp nhau" loading="lazy"><div class="slide-l"><p class="story-date">Mùa xuân 2025</p><h3 class="story-title">Ngày đầu gặp nhau</h3><div class="story-rule">♥</div><div class="story-bignum">03 · 2025</div><p class="story-text">Rep story thả thính 1 cái, dính luôn tới giờ.</p></div></div><div class="story-item"><img src="https://images.unsplash.com/photo-1525258946800-98cfd641d0de?w=700&amp;h=900&amp;q=80&amp;fit=crop" alt="Chuyến đi đầu tiên" loading="lazy"><div class="slide-r"><p class="story-date">Tết Trung thu 2025</p><h3 class="story-title">Chuyến đi đầu tiên</h3><div class="story-rule">♥</div><div class="story-bignum">10 · 2025</div><p class="story-text">Muốn rước đèn thì ít, muốn rước em về thì nhiều.</p></div></div><div class="story-item"><img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=700&amp;h=900&amp;q=80&amp;fit=crop" alt="Lời tỏ tình" loading="lazy"><div class="slide-l"><p class="story-date">Mùa thu 2025</p><h3 class="story-title">Lời tỏ tình</h3><div class="story-rule">♥</div><div class="story-bignum">09 · 2025</div><p class="story-text">Chỉ một khoảnh khắc, Bạn thành Người yêu. Hóa ra khoảng cách giữa hai chữ đó là một lời tỏ tình ❤️</p></div></div></div>
 </div></section>
 <!-- GALLERY -->
 <section class="section"><div class="container">
@@ -906,7 +909,7 @@ T</span></div>
     <audio id="bgMusic" preload="none"></audio>
   </div>
 </div></section>
-<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 10/11/2026 19:05</span></footer>
+<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 11/11/2026 11:16</span></footer>
 <!-- Floating controls (above content, below dialogs) -->
 <nav class="bottom-bar" aria-label="Điều hướng nhanh">
   <a href="#wishes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5z"/></svg><span>Gửi lời chúc</span></a>
@@ -989,9 +992,9 @@ const weddingData = {
   ],
 
   story: [
-    { date: "Mùa thu 2021", title: "Ngày đầu gặp nhau", text: "Một buổi chiều mưa ở quán cà phê nhỏ. Chúng mình ngồi cạnh nhau, và câu chuyện cứ thế dài mãi.", image: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=700&h=900&q=80&fit=crop" },
-    { date: "Mùa hè 2023", title: "Chuyến đi đầu tiên", text: "Đà Lạt, sương mù và một chiếc xe máy cũ. Chúng mình đã cùng nhau đi qua những con dốc và biết rằng sẽ còn đi cùng nhau dài.", image: "https://images.unsplash.com/photo-1525258946800-98cfd641d0de?w=700&h=900&q=80&fit=crop" },
-    { date: "Mùa đông 2025", title: "Lời cầu hôn", text: "Một buổi tối bình thường, bên bếp lửa. Không có gì hoa mỹ, chỉ có một câu hỏi và một câu trả lời.", image: "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=700&h=900&q=80&fit=crop" }
+    { date: "Mùa xuân 2025", title: "Ngày đầu gặp nhau", text: "Rep story thả thính 1 cái, dính luôn tới giờ.", bigDate: "03 · 2025", image: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=700&h=900&q=80&fit=crop" },
+    { date: "Tết Trung thu 2025", title: "Chuyến đi đầu tiên", text: "Muốn rước đèn thì ít, muốn rước em về thì nhiều.", bigDate: "10 · 2025", image: "https://images.unsplash.com/photo-1525258946800-98cfd641d0de?w=700&h=900&q=80&fit=crop" },
+    { date: "Mùa thu 2025", title: "Lời tỏ tình", text: "Chỉ một khoảnh khắc, Bạn thành Người yêu. Hóa ra khoảng cách giữa hai chữ đó là một lời tỏ tình ❤️", bigDate: "09 · 2025", image: "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=700&h=900&q=80&fit=crop" }
   ],
 
   gallery: [
@@ -1197,7 +1200,7 @@ function renderStory() {
   const w = $('#storyList'); if (!w || !weddingData.story) return;
   w.innerHTML = weddingData.story.map((s, i) => `<div class="story-item">
     <img class="rvl" src="${esc(s.image)}" alt="${esc(s.title)}" loading="lazy">
-    <div class="${i % 2 === 0 ? 'slide-l' : 'slide-r'}"><p class="story-date">${esc(s.date)}</p><h3 class="story-title">${esc(s.title)}</h3><p class="story-text">${esc(s.text)}</p></div>
+    <div class="${i % 2 === 0 ? 'slide-l' : 'slide-r'}"><p class="story-date">${esc(s.date)}</p><h3 class="story-title">${esc(s.title)}</h3><div class="story-rule">♥</div><div class="story-bignum">${esc(s.bigDate || '')}</div><p class="story-text">${esc(s.text)}</p></div>
   </div>`).join('');
 }
 let galleryImages = [], lbIndex = 0, albIdx = 0, albTimer = null;
@@ -1707,6 +1710,7 @@ function buildStoryFields() {
   w.innerHTML = (weddingData.story || []).map((s, i) => {
     return '<div class="sched-card">'
       + '<div class="field"><label>Mốc thời gian — mục ' + (i + 1) + '</label><input type="text" data-st="' + i + '" data-k="date" value="' + esc(s.date || '') + '" /></div>'
+      + '<div class="field"><label>Ngày lớn (VD: 03 · 2025)</label><input type="text" data-st="' + i + '" data-k="bigDate" value="' + esc(s.bigDate || '') + '" /></div>'
       + '<div class="field"><label>Tiêu đề</label><input type="text" data-st="' + i + '" data-k="title" value="' + esc(s.title || '') + '" /></div>'
       + '<div class="field"><label>Nội dung</label><textarea data-st="' + i + '" data-k="text">' + esc(s.text || '') + '</textarea></div>'
       + '<div class="field"><label>Ảnh (dán link)</label><div class="img-row"><input type="text" data-st="' + i + '" data-k="image" value="' + esc(s.image || '') + '" placeholder="Dán link ảnh…" /><label class="up-btn">Tải lên<input type="file" accept="image/*" data-simg="' + i + '" hidden /></label></div></div>'
