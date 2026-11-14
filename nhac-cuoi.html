@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nhạc Cưới — Đăng &amp; Tuyết — 29/11/2026</title>
+<style>
+:root{--bg:#f7f3ea;--card:#fff;--ink:#2d3142;--mut:#7a7568;--pink:#c2185b;--pink2:#d47a88;--pinkbg:#ffecee;--green:#1e7d32;--line:#e8e0d0;--blue:#2563eb}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+header{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line);padding:10px 12px 8px}
+h1{font-size:17px;margin:0}h1 small{display:block;font-size:12px;color:var(--mut);font-weight:400;margin-top:2px}
+.sub{font-size:13px;color:var(--mut);margin-top:6px}.sub b{color:var(--ink)}
+.tabs{display:flex;gap:6px;margin-top:8px}.tabs button{flex:1;padding:8px;border-radius:10px;border:1px solid var(--line);background:#f3efe6;font-size:14px;font-weight:700;color:var(--ink)}
+.tabs button.on{background:var(--pink);border-color:var(--pink);color:#fff}
+main{max-width:720px;margin:0 auto;padding:8px 8px 56px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px;margin-bottom:9px}
+.card h2{font-size:16px;margin:0 0 6px}.card p{font-size:13px;color:var(--mut);margin:4px 0;line-height:1.5}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+button{font-family:inherit;cursor:pointer}
+.btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 10px;font-size:13px;font-weight:600}
+.btn.primary{background:var(--green);border-color:var(--green);color:#fff}
+.btn.pink{background:var(--pink);border-color:var(--pink);color:#fff}
+.btn.danger{color:#b00020}.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.big{font-size:15px;padding:10px 12px;border-radius:12px}
+input[type=text],input[type=search],select{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;font-size:15px;background:#fff}
+input[type=range]{width:100%;accent-color:var(--pink)}
+details{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fffdf7}
+details summary{font-weight:700;cursor:pointer;font-size:14px}
+details ol{margin:8px 0 0;padding-left:20px;font-size:13px;line-height:1.7;word-break:break-word}
+.moment{border:1px solid var(--line);border-radius:12px;background:#fff;margin-bottom:9px;overflow:hidden}
+.moment>header{position:static;background:var(--pinkbg);padding:8px 10px;border-bottom:1px solid var(--line)}
+.moment h3{margin:0;font-size:16px}.moment h3 span{font-weight:400;font-size:12px;color:var(--mut);display:block;margin-top:2px}
+.song{padding:9px;border-top:1px solid var(--line)}
+.song:first-of-type{border-top:0}
+.songtop{display:flex;gap:10px}
+.cover{width:40px;height:40px;border-radius:8px;background:var(--pink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;flex:none}
+.cover.blue{background:#3b5bdb}.cover.green{background:#2e7d32}.cover.amber{background:#b45309}
+.stitle{font-weight:700;font-size:14px}.sartist{font-size:13px;color:var(--mut);margin-top:2px}
+.meta{font-size:12px;color:var(--mut);margin-top:4px}.meta b{color:var(--ink)}
+.badge{display:inline-block;background:#eef2ff;color:#3730a3;border-radius:6px;padding:1px 6px;font-size:11px;font-weight:700}
+.fileok{font-size:12px;color:var(--green);font-weight:700}.fileno{font-size:12px;color:#b45309;font-weight:700}
+.trim{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.trim label{font-size:12px;color:var(--mut);display:block}.trim output{font-size:14px;font-weight:700;color:var(--ink)}
+.trim .full{grid-column:1/-1}
+.progress{height:8px;background:#eee;border-radius:99px;overflow:hidden;margin-top:10px}.progress i{display:block;height:100%;background:var(--pink);width:0%}
+.searchbox{position:relative;margin-top:10px}.drop{position:absolute;left:0;right:0;top:calc(100% + 4px);background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.15);z-index:30;max-height:280px;overflow:auto}
+.drop button{display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid #f0ead9;padding:11px 12px;font-size:14px}.drop button small{display:block;color:var(--mut);font-size:12px;margin-top:2px}
+.now{font-size:15px}.now .bigtitle{font-size:19px;font-weight:800;line-height:1.2}
+.livebtns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.livebtns .wide{grid-column:1/-1}
+.liverow{display:flex;gap:10px;align-items:center;padding:9px;border:1px solid var(--line);border-radius:12px;background:#fff;margin-bottom:8px;text-align:left;width:100%}
+.liverow.on{border-color:var(--pink);background:var(--pinkbg)}
+.liverow .n{width:28px;height:28px;border-radius:50%;background:#eee;display:flex;align-items:center;justify-content:center;font-weight:800;flex:none}
+.liverow.on .n{background:var(--pink);color:#fff}
+#toast{position:fixed;left:12px;right:12px;bottom:18px;background:#222;color:#fff;padding:12px 14px;border-radius:12px;font-size:14px;z-index:99;display:none}
+.pill{display:inline-block;background:#e8f5e9;color:#1b5e20;border-radius:99px;padding:3px 9px;font-size:12px;font-weight:700}
+.pill.warn{background:#fff3e0;color:#8d4e00}
+.small{font-size:12px;color:var(--mut);line-height:1.5}
+.kbd{font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<header>
+  <h1>Nhạc Cưới — Đăng &amp; Tuyết<small>Lễ thành hôn • Chủ nhật 29/11/2026 • 09:30 • Nhà văn hóa thôn Đình</small></h1>
+  <div class="sub"><b id="statCount">16 bài</b> • <b id="statSize">142,2 MB</b> • tổng <b id="statDur">~61 phút</b> • Playlist <b>TS4140</b></div>
+  <div class="tabs">
+    <button id="tabBtnSetup" class="on" onclick="showTab('setup')">Chuẩn bị</button>
+    <button id="tabBtnLive" onclick="showTab('live')">Chế độ Lễ</button>
+  </div>
+</header>
+
+<main>
+<!-- ============ TAB CHUẨN BỊ ============ -->
+<section id="tab-setup">
+  <div class="card">
+    <h2>Tải về / Đồng bộ</h2>
+    <p>Xuất đúng như video: thư mục <b>01 - Đón khách</b> (9 bài) + 7 bài theo từng khoảnh khắc, tên file dạng <b>01 - … - Tên bài.mp3</b>. Chỉ bài nào đã tải file MP3 lên mới có nhạc thật trong ZIP.</p>
+    <div class="row">
+      <button class="btn primary" onclick="downloadZip()">Tải ZIP</button>
+      <button class="btn" onclick="downloadText()">Danh sách file (.txt)</button>
+      <button class="btn" onclick="downloadJSON()">Playlist (.json)</button>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <button class="btn" onclick="openDrive()">Mở Google Drive</button>
+      <button class="btn" onclick="copyFolderName()">Sao chép tên thư mục</button>
+      <span class="small" id="syncState">Chưa đồng bộ lên Drive lần nào trên máy này.</span>
+    </div>
+    <details style="margin-top:10px"><summary>Cấu trúc file sẽ xuất (16 file)</summary><ol id="exportList"></ol></details>
+    <p class="small">Đưa lên Drive: bấm <b>Tải ZIP</b>, mở Drive, tạo thư mục <b>Nhạc Cưới - TS4140 – Đăng &amp; Tuyết 29/11/2026</b>, tải ZIP lên. Trang này không tự đăng nhập Drive được nên không có đồng bộ tự động.</p>
+  </div>
+
+  <div class="card">
+    <h2>Thư viện bài hát <span class="pill" id="libCount"></span></h2>
+    <p>Gõ để tìm trong 16 bài của playlist TS4140, rồi bấm vào bài để gán cho khoảnh khắc đang mở ở dưới. Muốn thêm bài ngoài playlist thì điền form bên dưới.</p>
+    <div class="row">
+      <input type="text" id="customTitle" placeholder="Tên bài mới — vd: I Do">
+      <input type="text" id="customArtist" placeholder="Ca sĩ — vd: 911">
+      <input type="text" id="customDur" placeholder="Dài (phút:giây) — vd: 3:04" style="max-width:170px">
+      <button class="btn" onclick="addCustomSong()">Thêm bài</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Nhạc test từ thiệp</h2>
+    <p>7 bài đang dùng trong thiệp cưới, lấy từ repo cũ DangTuyet (repo mới DT-v2 chưa có thư mục nhạc). Chỉ để test nút phát, cắt, âm lượng — không phải nhạc lễ thật. Bấm Phát thử để nghe trực tiếp, hoặc Thêm vào thư viện để gán cho 1 khoảnh khắc rồi cắt thử.</p>
+    <div class="row"><button class="btn" onclick="loadAllTests()">Nạp cả 7 bài vào thư viện</button><span class="small">Tổng khoảng 22 MB, cần mạng.</span></div>
+    <div id="testSongs" style="margin-top:8px"></div>
+  </div>
+
+  <div id="moments"></div>
+
+  <div class="card">
+    <h2>Sao lưu / Khôi phục</h2>
+    <p>Mọi chỉnh sửa tự lưu trên máy này. File nhạc lưu riêng trong trình duyệt, không gửi đi đâu.</p>
+    <div class="row">
+      <button class="btn" onclick="exportBackup()">Tải bản sao lưu (.json)</button>
+      <button class="btn" onclick="document.getElementById('restoreFile').click()">Khôi phục từ file</button>
+      <button class="btn danger" onclick="resetAll()">Đặt lại như video gốc</button>
+    </div>
+    <input type="file" id="restoreFile" accept=".json,application/json" hidden onchange="restoreBackup(this)">
+  </div>
+</section>
+
+<!-- ============ TAB CHẾ ĐỘ LỄ ============ -->
+<section id="tab-live" hidden>
+  <div class="card now">
+    <div class="small"><span id="liveStatus">Chưa phát</span> • <span id="liveClock"></span> • Còn <b id="liveCountdown"></b> tới Lễ thành hôn 29/11 09:30</div>
+    <div class="bigtitle" id="liveTitle">Chưa chọn bài</div>
+    <div id="liveArtist" class="small"></div>
+    <div class="progress"><i id="liveProg"></i></div>
+    <div class="row" style="justify-content:space-between;margin-top:6px">
+      <span class="small kbd" id="liveTime">0:00 / 0:00</span>
+      <span class="small" id="liveTrim"></span>
+    </div>
+    <div class="livebtns">
+      <button class="btn big pink wide" id="livePlayBtn" onclick="toggleLive()">Phát</button>
+      <button class="btn big" onclick="fadeOut()">Mờ dần và dừng (3 giây)</button>
+      <button class="btn big" onclick="nextMoment()">Khoảnh khắc tiếp theo</button>
+      <button class="btn big pink wide" onclick="rehearse()">Chạy thử cả lễ từ đầu</button>
+      <button class="btn big wide" onclick="toggleMute()" id="muteBtn">Tắt tiếng toàn bộ</button>
+    </div>
+    <div style="margin-top:12px"><label class="small">Âm lượng tổng</label>
+      <input type="range" id="masterVol" min="0" max="100" value="80" oninput="setMaster(this.value)">
+      <div class="small">Mức tổng: <b id="masterVolOut">80%</b> • Âm lượng từng bài nhân với mức tổng này.</div>
+    </div>
+    <label class="row small" style="margin-top:10px"><input type="checkbox" id="autoAdv" checked style="width:20px;height:20px"> Tự chuyển khoảnh khắc tiếp theo khi bài hết (đoạn đã cắt)</label>
+  </div>
+  <div class="card"><h2>Thứ tự trong lễ — bấm để chọn bài</h2><div id="liveList"></div>
+  <p class="small">Mẹo khi chạy lễ: mở tab này trước giờ lễ, bấm vào khoảnh khắc để nạp bài, rồi bấm Phát. Để điện thoại cắm sạc, màn hình sẽ cố giữ sáng khi ở tab này.</p></div>
+</section>
+</main>
+
+<audio id="player" preload="metadata" playsinline></audio>
+<input type="file" id="audioFile" accept="audio/*,.mp3,.m4a,.wav" hidden>
+<div id="toast"></div>
+
+<script>
+"use strict";
+/* ===== DỮ LIỆU GỐC — 16 bài trong video Moodset, playlist Nhạc Cưới TS4140 ===== */
+const SONGS0={
+ "le-duong":{t:"Lễ Đường",a:"Kai Đinh",d:188,s:"7.2 MB"},
+ "dung-lam-trai-tim-anh-dau":{t:"Đừng Làm Trái Tim Anh Đau",a:"Sơn Tùng M-TP",d:279,s:"10.7 MB"},
+ "the-gioi-cua-anh":{t:"Thế Giới Của Anh",a:"Dương Domic, WEAN, CONGB, buitruonglinh, Van Toan",d:258,s:"10.0 MB"},
+ "moi-duyen-vang":{t:"Mối Duyên Vàng",a:"Tuấn Cry, Võ Thu Hà",d:218,s:"8.3 MB"},
+ "love-me-like-you-do":{t:"Love Me Like You Do",a:"Ellie Goulding",d:253,s:"9.7 MB"},
+ "thien-duong-voi-nguoi-thuong":{t:"Thiên Đường Với Người Thương",a:"Phương Mỹ Chi, DTAP",d:218,s:"8.3 MB"},
+ "trom-via":{t:"Trộm Vía",a:"Vũ Thùy Linh",d:233,s:"9.0 MB"},
+ "secret":{t:"SECRET",a:"—",d:225,s:"—"},
+ "cuoi-di":{t:"Cưới Đi",a:"—",d:233,s:"8.9 MB"},
+ "fall-in-love-at-dusk":{t:"Fall In Love At Dusk",a:"SECRET",d:281,s:"10.8 MB"},
+ "ordinary":{t:"Ordinary (Wedding Version)",a:"Alex Warren",d:187,s:"7.3 MB"},
+ "cant-help":{t:"Can't Help Falling In Love",a:"Andre Rieu",d:171,s:"6.7 MB"},
+ "beo-dat":{t:"Béo Đạt Mây Trời (Giao Hưởng)",a:"Epic Ven - Alternate Universe Mix",d:231,s:"8.2 MB"},
+ "lo-thuong-nhau":{t:"Lỡ Thương Nhau",a:"Nguyễn Hưng",d:234,s:"8.9 MB"},
+ "tinh-yeu-bat-diet":{t:"Tình Yêu Bất Diệt (Cover)",a:"Mồ Ai",d:284,s:"10.9 MB"},
+ "goi-con-tim":{t:"Gói Con Tim Làm Quà",a:"Nguyễn Hưng",d:184,s:"9.3 MB"}
+};
+const MOMENTS0=[
+ {id:"don-khach",label:"Đón khách",note:"Phát nền khi khách tới • có nút Ghép medley",songs:["le-duong","dung-lam-trai-tim-anh-dau","the-gioi-cua-anh","moi-duyen-vang","love-me-like-you-do","thien-duong-voi-nguoi-thuong","trom-via","secret","cuoi-di"],medley:true},
+ {id:"mc",label:"MC giới thiệu",note:"MC dẫn, nhạc nền nhẹ",songs:["fall-in-love-at-dusk"]},
+ {id:"chu-re",label:"Chú rể lên sân khấu",note:"",songs:["ordinary"]},
+ {id:"co-dau",label:"Cô dâu vào lễ đường",note:"",songs:["cant-help"]},
+ {id:"song-than",label:"Song thân lên sân khấu",note:"",songs:["beo-dat"]},
+ {id:"trao-nhan",label:"Trao nhẫn",note:"Video cắt sẵn: bắt đầu 0:55",songs:["lo-thuong-nhau"]},
+ {id:"rot-ruou",label:"Rót rượu • Cắt bánh",note:"",songs:["tinh-yeu-bat-diet"]},
+ {id:"dang-tiec",label:"Dâng tiệc",note:"",songs:["goi-con-tim"]}
+];
+const TRIM0={"lo-thuong-nhau":{start:55.4,end:233.5,vol:80},"ordinary":{start:31.8,end:183,vol:80}};
+const LS="nhacCuoiDangTuyet.v1";
+let SONGS=JSON.parse(JSON.stringify(SONGS0));
+let MOMENTS=JSON.parse(JSON.stringify(MOMENTS0));
+let TRIMS={}; for(const id in SONGS0) TRIMS[id]={start:0,end:SONGS0[id].d,vol:80};
+for(const id in TRIM0) Object.assign(TRIMS[id],TRIM0[id]);
+let masterVol=80, muted=false, files={}; /* files: songId -> {name,size} (blob nằm trong IndexedDB) */
+try{const saved=JSON.parse(localStorage.getItem(LS)||"null");
+ if(saved){if(saved.SONGS)SONGS=saved.SONGS; if(saved.MOMENTS)MOMENTS=saved.MOMENTS; if(saved.TRIMS)TRIMS=saved.TRIMS; if(saved.masterVol!=null)masterVol=saved.masterVol; if(saved.files)files=saved.files;}
+}catch(e){}
+function save(){try{localStorage.setItem(LS,JSON.stringify({SONGS,MOMENTS,TRIMS,masterVol,files}));}catch(e){}}
+/* ===== IndexedDB cho file MP3 ===== */
+let db=null;
+function idb(){return new Promise((res,rej)=>{if(db)return res(db);const r=indexedDB.open("nhac-cuoi-db",1);
+ r.onupgradeneeded=e=>{e.target.result.createObjectStore("files");}; r.onsuccess=e=>{db=e.target.result;res(db);}; r.onerror=()=>rej(new Error("Không mở được bộ nhớ file"));});}
+async function idbPut(id,blob){const d=await idb();return new Promise((res,rej)=>{const t=d.transaction("files","readwrite");t.objectStore("files").put(blob,id);t.oncomplete=res;t.onerror=()=>rej(new Error("Lưu file thất bại"));});}
+async function idbGet(id){const d=await idb();return new Promise((res,rej)=>{const t=d.transaction("files","readonly");const q=t.objectStore("files").get(id);q.onsuccess=()=>res(q.result||null);q.onerror=()=>rej(new Error("Đọc file thất bại"));});}
+async function idbDel(id){const d=await idb();return new Promise(res=>{const t=d.transaction("files","readwrite");t.objectStore("files").delete(id);t.oncomplete=res;t.onerror=res;});}
+/* ===== TIỆN ÍCH ===== */
+const $=s=>document.querySelector(s);
+function fmt(s){if(s==null||isNaN(s))return "—";s=Math.max(0,Math.round(s*10)/10);const m=Math.floor(s/60),ss=(s-m*60);return m+":"+(ss<10?"0":"")+ (Number.isInteger(ss)?ss+"":ss.toFixed(1));}
+function fmtDur(s){const m=Math.floor(s/60),ss=Math.round(s%60);return m+":"+String(ss).padStart(2,"0");}
+function parseDur(v){const p=String(v||"").trim().split(":");if(p.length===2)return (+p[0])*60+(+p[1]||0);return parseFloat(v)||0;}
+function toast(m){const t=$("#toast");t.textContent=m;t.style.display="block";clearTimeout(t._h);t._h=setTimeout(()=>t.style.display="none",3200);}
+function esc(s){return String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function totalSec(){let n=0;for(const m of MOMENTS)for(const id of m.songs)if(SONGS[id])n+=SONGS[id].d;return n;}
+function updateStats(){const n=MOMENTS.reduce((a,m)=>a+m.songs.length,0);$("#statCount").textContent=n+" bài";$("#statDur").textContent="~"+Math.round(totalSec()/60)+" phút";$("#libCount").textContent=Object.keys(SONGS).length+" bài trong thư viện";}
+</script>
+
+<script>
+/* ===== XUẤT FILE ===== */
+function exportNames(){
+ const out=[];const dk=MOMENTS.find(m=>m.id==="don-khach");
+ if(dk) dk.songs.forEach((id,i)=>{const s=SONGS[id];if(s)out.push({folder:"01 - Đón khách",name:String(i+1).padStart(2,"0")+" - Đón khách - "+s.t+".mp3",id});});
+ let n=0;
+ MOMENTS.forEach(m=>{if(m.id==="don-khach")return;n++;m.songs.forEach(id=>{const s=SONGS[id];if(s)out.push({folder:"",name:String(n).padStart(2,"0")+" - "+m.label+" - "+s.t+".mp3",id});});});
+ return out;
+}
+function renderExport(){const el=$("#exportList");el.innerHTML=exportNames().map(x=>"<li>✓ "+esc((x.folder?x.folder+"/":"")+x.name)+"</li>").join("");}
+function downloadBlob(blob,name){const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},800);}
+function downloadText(){const lines=exportNames().map(x=>(x.folder?x.folder+"/":"")+x.name);downloadBlob(new Blob(["Nhạc Cưới - TS4140 - Đăng & Tuyết - 29/11/2026\n"+lines.join("\n")+"\n"],{type:"text/plain;charset=utf-8"}),"danh-sach-file-nhac-cuoi.txt");toast("Đã tải danh sách file.");}
+function downloadJSON(){downloadBlob(new Blob([JSON.stringify({playlist:"Nhạc Cưới - TS4140",couple:"Dương Hải Đăng & Nguyễn Ánh Tuyết",date:"2026-11-29T09:30:00+07:00",moments:MOMENTS,songs:SONGS,trims:TRIMS,files:exportNames()},null,2)],{type:"application/json"}),"nhac-cuoi-dang-tuyet.json");toast("Đã tải playlist .json.");}
+function copyFolderName(){const n="Nhạc Cưới - TS4140 – Đăng & Tuyết 29/11/2026";(navigator.clipboard?navigator.clipboard.writeText(n):Promise.reject()).then(()=>toast("Đã sao chép tên thư mục.")).catch(()=>{prompt("Sao chép tên thư mục:",n);});}
+function openDrive(){localStorage.setItem("nhacCuoiDriveOpened",new Date().toISOString());$("#syncState").textContent="Đã mở Drive lúc "+new Date().toLocaleString("vi-VN")+" — tải ZIP lên thư mục TS4140 để hoàn tất đồng bộ.";window.open("https://drive.google.com/drive/my-drive","_blank");}
+async function downloadZip(){
+ toast("Đang gói ZIP…");
+ try{
+  if(!window.JSZip){await new Promise((res,rej)=>{const s=document.createElement("script");s.src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js";let done=false;const to=setTimeout(()=>{if(!done){done=true;rej(new Error("zip-timeout"));}},8000);s.onload=()=>{if(!done){done=true;clearTimeout(to);res();}};s.onerror=()=>{if(!done){done=true;clearTimeout(to);rej(new Error("no-net"));}};document.head.appendChild(s);});}
+  const zip=new JSZip();const missing=[];
+  for(const x of exportNames()){
+   const blob=await idbGet(x.id);
+   if(blob){const path=(x.folder?x.folder+"/":"")+x.name;zip.file(path,blob);}
+   else missing.push(x.name);
+  }
+  zip.file("playlist.json",JSON.stringify({playlist:"TS4140",moments:MOMENTS,songs:SONGS,trims:TRIMS,files:exportNames()},null,2));
+  zip.file("DANH-SACH-FILE.txt","Nhạc Cưới - TS4140 - Đăng & Tuyết - 29/11/2026\n"+exportNames().map(x=>(x.folder?x.folder+"/":"")+x.name).join("\n")+"\n");
+  if(missing.length) zip.file("CAN-BO-SUNG.txt","Các bài CHƯA có file MP3 trong app, cần tải file lên rồi xuất ZIP lại:\n- "+missing.join("\n- ")+"\n");
+  const blob=await zip.generateAsync({type:"blob"});
+  downloadBlob(blob,"Nhac-Cuoi-TS4140-Dang-Tuyet-29-11-2026.zip");
+  toast(missing.length?("Đã tải ZIP. Còn "+missing.length+" bài chưa có file MP3 — xem CAN-BO-SUNG.txt trong ZIP."):"Đã tải ZIP đủ 16 bài.");
+ }catch(e){toast("Không tải được thư viện ZIP (mất mạng?). Đã tải danh sách + playlist thay thế.");downloadText();downloadJSON();}
+}
+/* ===== RENDER KHOẢNH KHẮC ===== */
+const COVERS=["","blue","green","amber"];
+function songCard(m,songId,idx){
+ const s=SONGS[songId];if(!s)return "";
+ const tr=TRIMS[songId]||{start:0,end:s.d,vol:80};
+ const has=!!files[songId];
+ const ci=(idx%4);
+ return `<div class="song" data-song="${songId}">
+  <div class="songtop"><div class="cover ${COVERS[ci]}">${esc(s.t.trim()[0]||"♪")}</div>
+   <div style="flex:1;min-width:0"><div class="stitle">${esc(s.t)}</div><div class="sartist">${esc(s.a)}</div>
+   <div class="meta"><b>${fmtDur(s.d)}</b> • ${esc(s.s||"—")} • <span class="badge">320k</span> • <span class="${has?"fileok":"fileno"}">${has?"✓ Đã có file: "+esc(files[songId].name):"Chưa có file MP3"}</span></div></div>
+   <button class="btn" onclick="removeSong('${m.id}','${songId}')" title="Gỡ bài khỏi khoảnh khắc này">Gỡ</button></div>
+  <div class="row" style="margin-top:10px">
+   <button class="btn" onclick="playSong('${m.id}','${songId}')">Nghe đoạn đã cắt (${fmt(Math.max(0,tr.end-tr.start))})</button>
+   <button class="btn" onclick="pickFile('${songId}')">${has?"Đổi file MP3":"Tải file MP3 lên"}</button>
+   ${has?`<button class="btn" onclick="removeFile('${songId}')">Gỡ file</button>`:""}
+   <button class="btn" onclick="ytSearch('${songId}')">Tìm trên YouTube</button>
+  </div>
+  ${(!has&&TEST_AUDIO[m.id])?`<div class="small" style="margin-top:6px">Chưa có file — bấm Phát sẽ nghe nhạc test: ${esc(((TEST_SONGS.find(x=>x.id===TEST_AUDIO[m.id])||{}).t)||"")}</div>`:""}
+  <div class="trim">
+   <div><label>Bắt đầu (giây) — kéo hoặc gõ</label><input type="range" min="0" max="${s.d}" step="0.1" value="${tr.start}" oninput="setTrim('${songId}','start',this.value)"><output>${fmt(tr.start)}</output></div>
+   <div><label>Kết thúc (giây)</label><input type="range" min="0" max="${s.d}" step="0.1" value="${tr.end}" oninput="setTrim('${songId}','end',this.value)"><output>${fmt(tr.end)}</output></div>
+   <div><label>Âm lượng bài (%)</label><input type="range" min="0" max="100" step="1" value="${tr.vol}" oninput="setTrim('${songId}','vol',this.value)"><output>${tr.vol}%</output></div>
+   <div><label>Độ dài đoạn cắt</label><output style="font-size:16px">${fmt(Math.max(0,tr.end-tr.start))}</output><div class="small">Bắt đầu ${fmt(tr.start)} – kết thúc ${fmt(tr.end)} – dài ${fmt(Math.max(0,tr.end-tr.start))} – âm lượng ${tr.vol}%</div></div>
+   <div class="full row"><button class="btn pink" onclick="applyTrim('${songId}')">Cắt</button><span class="small">Cắt lưu điểm bắt đầu/kết thúc + âm lượng.</span></div>
+  </div>
+  <div class="progress"><i id="prog-${songId}"></i></div>
+ </div>`;
+}
+function renderMoments(){
+ const wrap=$("#moments");wrap.innerHTML=MOMENTS.map((m,mi)=>{
+  const cards=m.songs.map((id,i)=>songCard(m,id,i)).join("")||`<div class="song small">Chưa có bài — gõ tên bài ở ô tìm bên dưới để gán.</div>`;
+  return `<div class="moment" data-moment="${m.id}"><header><h3>${mi+1}. ${esc(m.label)}<span>${esc(m.note||"")} • ${m.songs.length} bài</span></h3>
+   <div class="row" style="margin-top:8px">
+    ${m.id==="don-khach"?`<button class="btn" onclick="toggleMedley('${m.id}')">${m.medley?"Medley: Bật — phát liền 9 bài":"Ghép medley"}</button>`:""}
+    ${mi>0?`<button class="btn" onclick="moveMoment(${mi},-1)">↑ Lên</button>`:""}
+    ${mi<MOMENTS.length-1?`<button class="btn" onclick="moveMoment(${mi},1)">↓ Xuống</button>`:""}
+   </div></header>
+   ${cards}
+   <div class="searchbox" style="padding:9px"><input type="search" placeholder="Tìm bài trong thư viện… — vd: trao nhẫn, lỡ thương, ordinary" oninput="showDrop(this,'${m.id}')" onfocus="showDrop(this,'${m.id}')" autocomplete="off"><div class="drop" hidden></div>
+   <div class="small" style="margin-top:6px">Thêm bài vào “${esc(m.label)}” — bấm vào 1 bài trong danh sách gợi ý để gán.</div></div>
+  </div>`;
+ }).join("");
+ renderLiveList();updateStats();renderExport();
+}
+function moveMoment(i,dir){const j=i+dir;if(j<0||j>=MOMENTS.length)return;const t=MOMENTS[i];MOMENTS[i]=MOMENTS[j];MOMENTS[j]=t;save();renderMoments();}
+function toggleMedley(id){const m=MOMENTS.find(x=>x.id===id);if(m){m.medley=!m.medley;save();renderMoments();toast(m.medley?"Medley Đón khách: BẬT — 9 bài phát liền nhau.":"Medley Đón khách: TẮT.");}}
+function showDrop(input,mid){
+ const box=input.parentElement.querySelector(".drop");const q=input.value.trim().toLowerCase();
+ const mlabel=((MOMENTS.find(x=>x.id===mid)||{}).label||"").toLowerCase();
+ const list=Object.entries(SONGS).filter(([id,s])=>s.d>0&&(!q||s.t.toLowerCase().includes(q)||s.a.toLowerCase().includes(q)||mlabel.includes(q))).slice(0,8);
+ if(!list.length){box.hidden=true;return;}
+ box.innerHTML=list.map(([id,s])=>`<button onclick="assignSong('${mid}','${id}')">${esc(s.t)} <small>${esc(s.a)} • ${fmtDur(s.d)}</small></button>`).join("");
+ box.hidden=false;
+}
+document.addEventListener("click",e=>{if(!e.target.closest(".searchbox"))document.querySelectorAll(".drop").forEach(d=>d.hidden=true);});
+function assignSong(mid,songId){
+ const m=MOMENTS.find(x=>x.id===mid);if(!m)return;
+ if(m.id==="don-khach"){if(!m.songs.includes(songId))m.songs.push(songId);}
+ else m.songs=[songId];
+ save();renderMoments();toast("Đã gán “"+SONGS[songId].t+"” cho “"+m.label+"”.");
+}
+function removeSong(mid,songId){const m=MOMENTS.find(x=>x.id===mid);if(!m)return;m.songs=m.songs.filter(id=>id!==songId);save();renderMoments();}
+function addCustomSong(){
+ const t=$("#customTitle").value.trim(),a=$("#customArtist").value.trim()||"—",d=parseDur($("#customDur").value.trim()||"0");
+ if(!t||d<=0){toast("Điền tên bài và độ dài dạng phút:giây, vd 3:04.");return;}
+ const id="custom-"+Date.now();SONGS[id]={t,a,d,s:"—"};TRIMS[id]={start:0,end:d,vol:80};
+ $("#customTitle").value="";$("#customArtist").value="";$("#customDur").value="";save();renderMoments();toast("Đã thêm “"+t+"” vào thư viện — giờ gõ tên bài ở khoảnh khắc cần gán.");
+}
+function setTrim(id,k,v){const s=SONGS[id];if(!s)return;TRIMS[id]=TRIMS[id]||{start:0,end:s.d,vol:80};
+ let val=parseFloat(v);if(k==="vol")val=Math.round(val);
+ if(k==="start")TRIMS[id].start=Math.min(val,TRIMS[id].end-1);
+ if(k==="end")TRIMS[id].end=Math.max(val,TRIMS[id].start+1);
+ if(k==="vol")TRIMS[id].vol=val;
+ save();
+ const card=document.querySelector(`.song[data-song="${id}"]`);
+ if(card){const outs=card.querySelectorAll(".trim output");if(outs[0])outs[0].textContent=fmt(TRIMS[id].start);if(outs[1])outs[1].textContent=fmt(TRIMS[id].end);if(outs[2])outs[2].textContent=TRIMS[id].vol+"%";if(outs[3])outs[3].textContent=fmt(Math.max(0,TRIMS[id].end-TRIMS[id].start));
+  const sm=card.querySelector(".trim .small");if(sm)sm.textContent="Bắt đầu "+fmt(TRIMS[id].start)+" – kết thúc "+fmt(TRIMS[id].end)+" – dài "+fmt(Math.max(0,TRIMS[id].end-TRIMS[id].start))+" – âm lượng "+TRIMS[id].vol+"%";
+  const rg=card.querySelectorAll(".trim input[type=range]");if(rg[0])rg[0].value=TRIMS[id].start;if(rg[1])rg[1].value=TRIMS[id].end;if(rg[2])rg[2].value=TRIMS[id].vol;}
+ applyVolume();
+}
+function applyTrim(id){save();toast("Đã lưu đoạn cắt cho “"+SONGS[id].t+"”: "+fmt(TRIMS[id].start)+" → "+fmt(TRIMS[id].end)+", âm lượng "+TRIMS[id].vol+"%.");}
+function ytSearch(id){const s=SONGS[id];window.open("https://www.youtube.com/results?search_query="+encodeURIComponent(s.t+" "+s.a),"_blank");}
+/* ===== FILE MP3 ===== */
+let pendingSong=null;
+function pickFile(id){pendingSong=id;$("#audioFile").click();}
+$("#audioFile").addEventListener("change",async e=>{
+ const f=e.target.files[0];e.target.value="";if(!f||!pendingSong)return;
+ try{await idbPut(pendingSong,f);files[pendingSong]={name:f.name,size:f.size};save();renderMoments();toast("Đã lưu file “"+f.name+"” cho bài “"+SONGS[pendingSong].t+"”.");}
+ catch(err){toast("Không lưu được file: "+err.message);}
+});
+async function removeFile(id){await idbDel(id);delete files[id];save();renderMoments();toast("Đã gỡ file MP3 của bài đó.");}
+</script>
+
+<script>
+/* ===== NHẠC TEST TỪ THIỆP (repo cũ DangTuyet — DT-v2 chưa có thư mục music) ===== */
+const TEST_BASE="https://raw.githubusercontent.com/Blvckd2096/DangTuyet/main/";
+const TEST_SONGS=[
+ {id:"test-i-do",t:"I Do",a:"911",d:184,size:"2,9 MB",file:"music/i-do-911.mp3"},
+ {id:"test-beautiful",t:"Beautiful In White",a:"Shane Filan",d:null,size:"2,7 MB",file:"music/Beautiful%20In%20White.mp3"},
+ {id:"test-breathless",t:"Breathless",a:"Shayne Ward",d:null,size:"3,5 MB",file:"music/Breathless.mp3"},
+ {id:"test-marry-you",t:"Marry You",a:"Bruno Mars",d:null,size:"3,9 MB",file:"music/Marry%20You.mp3"},
+ {id:"test-until-you",t:"Until You",a:"Shayne Ward",d:null,size:"3,9 MB",file:"music/Until%20You.mp3"},
+ {id:"test-hanh-phuc",t:"Hạnh Phúc Cuối Cùng",a:"—",d:null,size:"1,7 MB",file:"music/H%E1%BA%A1nh%20Ph%C3%BAc%20Cu%E1%BB%91i%20C%C3%B9ng.mp3"},
+ {id:"test-hon-ca-yeu",t:"Hơn Cả Yêu",a:"Đức Phúc",d:236,size:"3,8 MB",file:"music/%C4%90u%CC%9B%CC%81c%20Phu%CC%81c%20-%20Ho%CC%9Bn%20Ca%CC%89%20Ye%CC%82u.m4a"}
+];
+const TEST_AUDIO={"don-khach":"test-beautiful","mc":"test-hon-ca-yeu","chu-re":"test-hanh-phuc","co-dau":"test-i-do","song-than":"test-breathless","trao-nhan":"test-marry-you","rot-ruou":"test-until-you"};
+function renderTestSongs(){
+ const el=$("#testSongs");if(!el)return;
+ el.innerHTML=TEST_SONGS.map(s=>{
+  const inLib=!!files[s.id];
+  return `<div class="row" style="padding:8px 0;border-top:1px solid var(--line)">
+   <div style="flex:1;min-width:0"><b>${esc(s.t)}</b> <span class="small">— ${esc(s.a)} • ${s.d?fmtDur(s.d):"chưa rõ dài"} • ${s.size}</span>
+   ${inLib?'<span class="pill">Đã có trong thư viện</span>':""}</div>
+   <button class="btn" onclick="playTest('${s.id}')">Phát thử</button>
+   <button class="btn" onclick="addTestToLibrary('${s.id}')" ${inLib?"disabled":""}>Thêm vào thư viện</button></div>`;
+ }).join("");
+}
+function ensureTestTrim(id){
+ const s=TEST_SONGS.find(x=>x.id===id);
+ if(!TRIMS[id])TRIMS[id]={start:0,end:(s&&s.d)||3600,vol:80};
+ if(!SONGS[id]&&s)SONGS[id]={t:s.t,a:s.a,d:s.d||0,s:s.size};
+}
+function playTest(id,mid,goLive){
+ const s=TEST_SONGS.find(x=>x.id===id);if(!s)return;
+ ensureTestTrim(id);
+ if(player._url)URL.revokeObjectURL(player._url);
+ player._url=null;player.src=TEST_BASE+s.file;
+ current={momentId:mid||"test",songId:id};
+ const tr=TRIMS[id];
+ player.onloadedmetadata=()=>{
+  if(isFinite(player.duration)&&player.duration>0){
+   if(!s.d){s.d=Math.round(player.duration);SONGS[id].d=s.d;TRIMS[id].end=player.duration;renderTestSongs();}
+   try{player.currentTime=Math.min(tr.start,player.duration-1||0);}catch(e){}
+  }};
+ applyVolume();
+ player.play().then(syncPlayBtn).catch(()=>toast("Bấm Phát thử một lần nữa để nghe."));
+ if(goLive!==false)showTab("live");syncPlayBtn();renderLiveList();
+}
+async function addTestToLibrary(id){
+ const s=TEST_SONGS.find(x=>x.id===id);if(!s)return;
+ toast("Đang tải “"+s.t+"”…");
+ try{
+  const r=await fetch(TEST_BASE+s.file);if(!r.ok)throw new Error("HTTP "+r.status);
+  const blob=await r.blob();
+  const dur=await new Promise(res=>{const a=new Audio();a.preload="metadata";a.onloadedmetadata=()=>res(a.duration||0);a.onerror=()=>res(0);a.src=URL.createObjectURL(blob);});
+  await idbPut(id,blob);
+  SONGS[id]={t:s.t,a:s.a,d:Math.round(dur)||s.d||0,s:(blob.size/1048576).toFixed(1)+" MB"};
+  TRIMS[id]={start:0,end:dur||s.d||0,vol:80};
+  files[id]={name:decodeURIComponent(s.file.split("/").pop()),size:blob.size};
+  save();renderMoments();renderTestSongs();
+  toast("Đã thêm “"+s.t+"” vào thư viện — giờ gõ tên bài ở khoảnh khắc cần gán để cắt thử.");
+ }catch(e){toast("Không tải được “"+s.t+"”: "+e.message+". Kiểm tra mạng rồi thử lại.");}
+}
+async function loadAllTests(){
+ for(const s of TEST_SONGS){if(!files[s.id])await addTestToLibrary(s.id);}
+ toast("Đã nạp xong nhạc test vào thư viện.");
+}
+/* ===== PHÁT NHẠC ===== */
+const player=$("#player");
+let current={momentId:null,songId:null};
+let fadeTimer=null;
+function applyVolume(){
+ const tr=current.songId?TRIMS[current.songId]:null;
+ const v=(muted?0:masterVol/100)*((tr?tr.vol:80)/100);
+ player.volume=Math.max(0,Math.min(1,v));
+}
+function setMaster(v){masterVol=+v;$("#masterVol").value=masterVol;$("#masterVolOut").textContent=masterVol+"%";save();applyVolume();}
+function toggleMute(){muted=!muted;$("#muteBtn").textContent=muted?"Bật tiếng lại":"Tắt tiếng toàn bộ";applyVolume();}
+async function playSong(mid,songId){
+ const s=SONGS[songId];if(!s)return;
+ let blob=null;
+ try{blob=await idbGet(songId);}catch(e){toast("Không đọc được file đã lưu: "+e.message);return;}
+ if(!blob){const testId=TEST_AUDIO[mid];
+  if(testId){const ts=TEST_SONGS.find(x=>x.id===testId);toast("Bài “"+s.t+"” chưa có file — đang phát nhạc test “"+(ts?ts.t:"")+"” thay thế.");playTest(testId,mid,false);return;}
+  toast("Bài “"+s.t+"” chưa có file MP3 — bấm “Tải file MP3 lên” để chọn file trên máy anh.");pickFile(songId);return;}
+ if(current.songId===songId&&!player.paused){player.pause();syncPlayBtn();return;}
+ if(player._url)URL.revokeObjectURL(player._url);
+ player._url=URL.createObjectURL(blob);player.src=player._url;
+ current={momentId:mid,songId};
+ const tr=TRIMS[songId]||{start:0,end:s.d,vol:80};
+ player.onloadedmetadata=()=>{try{player.currentTime=Math.min(tr.start,player.duration-1||0);}catch(e){}};
+ applyVolume();
+ try{await player.play();}catch(e){toast("Trình duyệt chặn tự phát — bấm Phát một lần nữa.");}
+ syncPlayBtn();renderLiveList();
+}
+function toggleLive(){
+ if(!current.songId){const first=MOMENTS.find(m=>m.songs.length);if(first)playSong(first.id,first.songs[0]);return;}
+ if(player.paused)player.play().catch(()=>toast("Bấm Phát một lần nữa để phát."));else player.pause();
+ syncPlayBtn();
+}
+function setStatus(t){const el=$("#liveStatus");if(el)el.textContent=t;}
+function syncPlayBtn(){
+ const b=$("#livePlayBtn");if(!b)return;
+ b.textContent=(!player.paused&&current.songId)?"Tạm dừng":"Phát";
+ if(current.songId){const s=SONGS[current.songId];$("#liveTitle").textContent=s.t;
+  const mm=MOMENTS.find(m=>m.id===current.momentId);
+  const lbl=mm?mm.label:(current.momentId==="test"?"Nhạc test từ thiệp":"");
+  $("#liveArtist").textContent=s.a+(lbl?" • "+lbl:"");
+  const tr=TRIMS[current.songId];
+  if(tr)$("#liveTime").textContent="0:00 / "+fmt(Math.max(0,tr.end-tr.start));}
+}
+function fadeOut(){
+ if(player.paused)return;clearInterval(fadeTimer);const startVol=player.volume;const t0=Date.now();
+ fadeTimer=setInterval(()=>{const p=(Date.now()-t0)/3000;if(p>=1){clearInterval(fadeTimer);player.pause();applyVolume();syncPlayBtn();}else player.volume=startVol*(1-p);},100);
+ toast("Đang mờ dần trong 3 giây…");
+}
+function rehearse(){document.getElementById("autoAdv").checked=true;const first=MOMENTS.find(m=>m.songs.length);if(!first){toast("Chưa có khoảnh khắc nào có bài.");return;}if(!player.paused)player.pause();toast("Chạy thử cả lễ từ đầu — hết bài tự chuyển khoảnh khắc tiếp theo.");playSong(first.id,first.songs[0]);}
+function nextMoment(){
+ const idx=MOMENTS.findIndex(m=>m.id===current.momentId);
+ for(let k=1;k<=MOMENTS.length;k++){const m=MOMENTS[(idx+k)%MOMENTS.length];if(m&&m.songs.length){playSong(m.id,m.songs[0]);return;}}
+ toast("Chưa có khoảnh khắc nào có bài.");
+}
+player.addEventListener("timeupdate",()=>{
+ const tr=current.songId?TRIMS[current.songId]:null;if(!tr||!current.songId)return;
+ const s=SONGS[current.songId];
+ const pct=Math.max(0,Math.min(100,((player.currentTime-tr.start)/Math.max(1,tr.end-tr.start))*100));
+ const bar=document.querySelector("#prog-"+CSS.escape(current.songId));if(bar)bar.style.width=pct+"%";
+ $("#liveProg").style.width=pct+"%";
+ $("#liveTime").textContent=fmt(Math.max(0,player.currentTime-tr.start))+" / "+fmt(Math.max(0,tr.end-tr.start));
+ $("#liveTrim").textContent="Cắt: "+fmt(tr.start)+" → "+fmt(tr.end)+" • "+tr.vol+"%";
+ if(player.currentTime>=tr.end){player.pause();
+  if(current.momentId==="test"){syncPlayBtn();return;}
+  const m=MOMENTS.find(x=>x.id===current.momentId);
+  if(m&&m.id==="don-khach"&&m.medley){const i=m.songs.indexOf(current.songId);if(i>=0&&i<m.songs.length-1){playSong(m.id,m.songs[i+1]);return;}}
+  if(document.getElementById("autoAdv").checked){nextMoment();return;}
+  syncPlayBtn();
+ }
+});
+player.addEventListener("play",()=>{syncPlayBtn();setStatus("Đang phát");});
+player.addEventListener("pause",()=>{syncPlayBtn();setStatus("Tạm dừng");});
+player.addEventListener("waiting",()=>setStatus("Đang tải nhạc…"));
+player.addEventListener("playing",()=>setStatus("Đang phát"));
+player.addEventListener("error",()=>setStatus("Không tải được nhạc"));
+player.addEventListener("ended",()=>{if(current.momentId==="test")return;if(document.getElementById("autoAdv").checked)nextMoment();});
+/* ===== CHẾ ĐỘ LỄ ===== */
+function renderLiveList(){
+ const el=$("#liveList");if(!el)return;
+ el.innerHTML=MOMENTS.map((m,i)=>{
+  const s=m.songs[0]?SONGS[m.songs[0]]:null;
+  const on=current.momentId===m.id;
+  return `<button class="liverow ${on?"on":""}" onclick="cueMoment('${m.id}')">
+   <span class="n">${i+1}</span><span style="flex:1;min-width:0"><b>${esc(m.label)}</b><br><span class="small">${s?esc(s.t)+" — "+esc(s.a)+" • "+fmtDur(s.d):"Chưa chọn bài"}</span></span>
+   <span>${m.songs.length>1?"×"+m.songs.length:""}</span></button>`;
+ }).join("");
+}
+function cueMoment(mid){
+ const m=MOMENTS.find(x=>x.id===mid);if(!m||!m.songs.length){toast("Khoảnh khắc này chưa có bài — về tab Chuẩn bị để gán bài.");return;}
+ if(!player.paused){clearInterval(fadeTimer);player.pause();}
+ playSong(mid,m.songs[0]);
+}
+function showTab(which){
+ $("#tab-setup").hidden=which!=="setup";$("#tab-live").hidden=which!=="live";
+ $("#tabBtnSetup").classList.toggle("on",which==="setup");$("#tabBtnLive").classList.toggle("on",which==="live");
+ if(which==="live"){renderLiveList();syncPlayBtn();tryWake();}
+}
+let wakeLock=null;
+async function tryWake(){try{if("wakeLock" in navigator){wakeLock=await navigator.wakeLock.request("screen");}}catch(e){}}
+/* ===== SAO LƯU ===== */
+function exportBackup(){downloadBlob(new Blob([JSON.stringify({SONGS,MOMENTS,TRIMS,masterVol,files},null,2)],{type:"application/json"}),"sao-luu-nhac-cuoi-dang-tuyet.json");toast("Đã tải bản sao lưu (chưa gồm file MP3 — file MP3 nằm trong trình duyệt).");}
+function restoreBackup(input){
+ const f=input.files[0];input.value="";if(!f)return;
+ const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);
+  if(d.SONGS)SONGS=d.SONGS;if(d.MOMENTS)MOMENTS=d.MOMENTS;if(d.TRIMS)TRIMS=d.TRIMS;if(d.masterVol!=null)masterVol=d.masterVol;if(d.files)files=d.files;
+  save();renderMoments();toast("Đã khôi phục sao lưu.");
+ }catch(e){toast("File sao lưu không đọc được.");}};r.readAsText(f);
+}
+function resetAll(){if(!confirm("Đặt lại toàn bộ về đúng playlist TS4140 trong video? Các bài anh đổi/thêm và điểm cắt sẽ mất (file MP3 đã tải lên vẫn còn)."))return;
+ SONGS=JSON.parse(JSON.stringify(SONGS0));MOMENTS=JSON.parse(JSON.stringify(MOMENTS0));
+ TRIMS={};for(const id in SONGS0)TRIMS[id]={start:0,end:SONGS0[id].d,vol:80};for(const id in TRIM0)Object.assign(TRIMS[id],TRIM0[id]);
+ save();renderMoments();toast("Đã đặt lại như video gốc.");}
+/* ===== ĐỒNG HỒ / ĐẾM NGƯỢC ===== */
+function tick(){
+ const now=new Date();
+ const live=$("#liveClock");if(live)live.textContent=now.toLocaleString("vi-VN");
+ const target=new Date("2026-11-29T09:30:00+07:00");let ms=target-now;
+ const cd=$("#liveCountdown");if(cd){if(ms<=0)cd.textContent="đã tới giờ lễ!";else{const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),mi=Math.floor(ms%36e5/6e4);cd.textContent=d+" ngày "+h+" giờ "+mi+" phút";}}
+}
+setInterval(tick,1000);
+/* ===== KHỞI TẠO ===== */
+(function init(){
+ const mv=$("#masterVol");if(mv){mv.value=masterVol;$("#masterVolOut").textContent=masterVol+"%";}
+ const opened=localStorage.getItem("nhacCuoiDriveOpened");
+ if(opened)$("#syncState").textContent="Đã mở Drive lúc "+new Date(opened).toLocaleString("vi-VN")+" — tải ZIP lên thư mục TS4140 để hoàn tất đồng bộ.";
+ renderMoments();renderTestSongs();tick();applyVolume();
+})();
+</script>
+</body>
+</html>
