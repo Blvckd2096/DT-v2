@@ -489,8 +489,7 @@ function renderLiveList(){
   const s=m.songs[0]?SONGS[m.songs[0]]:null;
   const on=current.momentId===m.id;
   return `<button class="liverow ${on?"on":""}" onclick="cueMoment('${m.id}')">
-   <span class="n">${i+1}</span><span style="flex:1;min-width:0"><b>${esc(m.label)}</b><br><span class="small">${s?esc(s.t)+" — "+esc(s.a)+" • "+fmtDur(s.d):"Chưa chọn bài"}</span></span>
-   <span>${m.songs.length>1?"×"+m.songs.length:""}</span></button>`;
+   <span class="n">${i+1}</span><span style="flex:1;min-width:0"><b>${esc(m.label)}</b><br><span class="small">${s?esc(s.t)+" — "+esc(s.a)+" • "+fmtDur(s.d):"Chưa chọn bài"}</span></span></button>`;
  }).join("");
 }
 function cueMoment(mid){
