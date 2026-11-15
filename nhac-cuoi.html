@@ -5,19 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Nhạc Cưới — Đăng &amp; Tuyết — 29/11/2026</title>
 <style>
-:root{--bg:#f7f3ea;--card:#fff;--ink:#2d3142;--mut:#7a7568;--pink:#c2185b;--pink2:#d47a88;--pinkbg:#ffecee;--green:#1e7d32;--line:#e8e0d0;--blue:#2563eb}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-header{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line);padding:10px 12px 8px}
+:root{--bg:#eaf2fa;--card:#fff;--ink:#1c2b3a;--mut:#6b7d8f;--pink:#007aff;--pink2:#5ac8fa;--pinkbg:#e3f0ff;--green:#007aff;--line:#d7e5f2;--blue:#007aff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.86);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:10px 12px 8px}
 h1{font-size:17px;margin:0}h1 small{display:block;font-size:12px;color:var(--mut);font-weight:400;margin-top:2px}
 .sub{font-size:13px;color:var(--mut);margin-top:6px}.sub b{color:var(--ink)}
-.tabs{display:flex;gap:6px;margin-top:8px}.tabs button{flex:1;padding:8px;border-radius:10px;border:1px solid var(--line);background:#f3efe6;font-size:14px;font-weight:700;color:var(--ink)}
+.tabs{display:flex;gap:0;margin-top:8px;background:#dbe9f7;border-radius:10px;padding:3px}.tabs button{flex:1;padding:7px;border-radius:8px;border:0;background:transparent;font-size:14px;font-weight:700;color:var(--ink)}
 .tabs button.on{background:var(--pink);border-color:var(--pink);color:#fff}
 main{max-width:720px;margin:0 auto;padding:8px 8px 56px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px;margin-bottom:9px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,60,120,.06)}
 .card h2{font-size:16px;margin:0 0 6px}.card p{font-size:13px;color:var(--mut);margin:4px 0;line-height:1.5}
 .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 button{font-family:inherit;cursor:pointer}
-.btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 10px;font-size:13px;font-weight:600}
+.btn{border:1px solid #cfe0f2;background:#f4f9ff;border-radius:10px;padding:7px 10px;font-size:13px;font-weight:600;color:#005fcc}
 .btn.primary{background:var(--green);border-color:var(--green);color:#fff}
 .btn.pink{background:var(--pink);border-color:var(--pink);color:#fff}
 .btn.danger{color:#b00020}.btn:disabled{opacity:.45;cursor:not-allowed}
@@ -27,18 +27,18 @@ input[type=range]{width:100%;accent-color:var(--pink)}
 details{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fffdf7}
 details summary{font-weight:700;cursor:pointer;font-size:14px}
 details ol{margin:8px 0 0;padding-left:20px;font-size:13px;line-height:1.7;word-break:break-word}
-.moment{border:1px solid var(--line);border-radius:12px;background:#fff;margin-bottom:9px;overflow:hidden}
+.moment{border:1px solid var(--line);border-radius:16px;background:#fff;margin-bottom:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,60,120,.06)}
 .moment>header{position:static;background:var(--pinkbg);padding:8px 10px;border-bottom:1px solid var(--line)}
 .moment h3{margin:0;font-size:16px}.moment h3 span{font-weight:400;font-size:12px;color:var(--mut);display:block;margin-top:2px}
 .song{padding:9px;border-top:1px solid var(--line)}
 .song:first-of-type{border-top:0}
 .songtop{display:flex;gap:10px}
-.cover{width:40px;height:40px;border-radius:8px;background:var(--pink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;flex:none}
+.cover{width:40px;height:40px;border-radius:8px;background:#007aff;color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;flex:none}
 .cover.blue{background:#3b5bdb}.cover.green{background:#2e7d32}.cover.amber{background:#b45309}
 .stitle{font-weight:700;font-size:14px}.sartist{font-size:13px;color:var(--mut);margin-top:2px}
 .meta{font-size:12px;color:var(--mut);margin-top:4px}.meta b{color:var(--ink)}
-.badge{display:inline-block;background:#eef2ff;color:#3730a3;border-radius:6px;padding:1px 6px;font-size:11px;font-weight:700}
-.fileok{font-size:12px;color:var(--green);font-weight:700}.fileno{font-size:12px;color:#b45309;font-weight:700}
+.badge{display:inline-block;background:#e3f0ff;color:#005fcc;border-radius:6px;padding:1px 6px;font-size:11px;font-weight:700}
+.fileok{font-size:12px;color:#007aff;font-weight:700}.fileno{font-size:12px;color:#b45309;font-weight:700}
 .trim{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
 .trim label{font-size:12px;color:var(--mut);display:block}.trim output{font-size:14px;font-weight:700;color:var(--ink)}
 .trim .full{grid-column:1/-1}
@@ -54,7 +54,7 @@ details ol{margin:8px 0 0;padding-left:20px;font-size:13px;line-height:1.7;word-
 .liverow .n{width:28px;height:28px;border-radius:50%;background:#eee;display:flex;align-items:center;justify-content:center;font-weight:800;flex:none}
 .liverow.on .n{background:var(--pink);color:#fff}
 #toast{position:fixed;left:12px;right:12px;bottom:18px;background:#222;color:#fff;padding:12px 14px;border-radius:12px;font-size:14px;z-index:99;display:none}
-.pill{display:inline-block;background:#e8f5e9;color:#1b5e20;border-radius:99px;padding:3px 9px;font-size:12px;font-weight:700}
+.pill{display:inline-block;background:#e3f0ff;color:#005fcc;border-radius:99px;padding:3px 9px;font-size:12px;font-weight:700}
 .pill.warn{background:#fff3e0;color:#8d4e00}
 .small{font-size:12px;color:var(--mut);line-height:1.5}
 .kbd{font-variant-numeric:tabular-nums}
