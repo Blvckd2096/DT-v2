@@ -36,7 +36,7 @@ a{color:inherit;text-decoration:none}
 .js .shake-in.in{opacity:1;animation:shakeIn .9s ease}
 .rvl.in,.slide-l.in,.slide-r.in{opacity:1;transform:none}
 @keyframes shakeIn{0%{transform:translateX(0) rotate(0deg)}15%{transform:translateX(-18px) rotate(-2deg)}30%{transform:translateX(18px) rotate(2deg)}45%{transform:translateX(-14px) rotate(-1.5deg)}60%{transform:translateX(14px) rotate(1.5deg)}75%{transform:translateX(-8px) rotate(-1deg)}90%{transform:translateX(8px) rotate(1deg)}100%{transform:translateX(0) rotate(0deg)}}
-@media (prefers-reduced-motion:reduce){.js .rvl,.js .slide-l,.js .slide-r,.js .shake-in{opacity:1;transform:none;transition:none;animation:none}}
+@media (prefers-reduced-motion:reduce){.js .rvl,.js .slide-l,.js .slide-r,.js .shake-in,.story-item img{opacity:1;transform:none;transition:none;animation:none}}
 /* ---------- OPENER: sample-faithful fade, pink only ---------- */
 .opener{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#e89ba8 0%,#d47a88 100%);padding:24px;transition:opacity 2.1s ease}
 .opener.opening{opacity:0;pointer-events:none}
@@ -323,9 +323,11 @@ a{color:inherit;text-decoration:none}
 .love-quote{font-family:var(--serif);font-style:italic;font-size:1.5rem;text-align:center;line-height:1.5}
 .story-item{display:flex;gap:14px;align-items:center;margin-bottom:28px}.story-item:last-child{margin-bottom:0}
 .story-item:nth-child(even){flex-direction:row-reverse}
-.story-item img{width:56%;aspect-ratio:3/3.4;object-fit:cover;border-radius:16px;flex-shrink:0}
-.story-item:nth-child(odd) img{rotate:-1.5deg}
-.story-item:nth-child(even) img{rotate:1.5deg}
+.story-item img{width:56%;aspect-ratio:3/3.4;object-fit:cover;border-radius:16px;flex-shrink:0;box-shadow:0 10px 28px rgba(74,47,53,.20)}
+.story-item:nth-child(odd) img{rotate:-6deg;animation:storySwayL 5s ease-in-out infinite}
+.story-item:nth-child(even) img{rotate:6deg;animation:storySwayR 5s ease-in-out infinite}
+@keyframes storySwayL{0%,100%{rotate:-8deg}50%{rotate:-4deg}}
+@keyframes storySwayR{0%,100%{rotate:4deg}50%{rotate:8deg}}
 .story-item>div{flex:1;min-width:0;text-align:center}
 .story-date{color:var(--deep);font-weight:600;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
 .story-title{font-family:var(--serif);font-size:23px;font-weight:600;line-height:1.2;margin:6px 0 8px}
@@ -910,7 +912,7 @@ T</span></div>
     <audio id="bgMusic" preload="none"></audio>
   </div>
 </div></section>
-<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><span class="admin-only"><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 17/11/2026 08:38</span></span></footer>
+<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><span class="admin-only"><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 17/11/2026 10:22</span></span></footer>
 <!-- Floating controls (above content, below dialogs) -->
 <nav class="bottom-bar" aria-label="Điều hướng nhanh">
   <a href="#wishes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5z"/></svg><span>Gửi lời chúc</span></a>
