@@ -910,7 +910,7 @@ T</span></div>
     <audio id="bgMusic" preload="none"></audio>
   </div>
 </div></section>
-<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><span class="admin-only"><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 16/11/2026 20:47</span></span></footer>
+<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><span class="admin-only"><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 17/11/2026 08:29</span></span></footer>
 <!-- Floating controls (above content, below dialogs) -->
 <nav class="bottom-bar" aria-label="Điều hướng nhanh">
   <a href="#wishes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5z"/></svg><span>Gửi lời chúc</span></a>
@@ -1414,9 +1414,38 @@ function startPetals() {
 function setupGift() {
   const btn = $('#giftBoxBtn'), backdrop = $('#giftDialog'), closeBtn = $('#giftDialogClose'), dl = $('#giftQrDownload'), copyBtn = $('#copyAccBtn'), qrImg = $('#giftQrImg');
   if (!btn || !backdrop) return;
-  const open = () => { backdrop.hidden = false; document.body.style.overflow = 'hidden'; };
+  let giftAutoTimer = null, giftAutoDone = false;
+  const clearGiftAuto = () => { if (giftAutoTimer) { clearTimeout(giftAutoTimer); giftAutoTimer = null; } };
+  const open = () => { giftAutoDone = true; clearGiftAuto(); backdrop.hidden = false; document.body.style.overflow = 'hidden'; };
   const close = () => { backdrop.hidden = true; document.body.style.overflow = ''; };
   btn.addEventListener('click', open);
+  // Tu mo sau 3s khi khach luot toi nhin thay het bao li xi ma chua bam
+  const armGiftAuto = () => {
+    if (giftAutoDone || !backdrop.hidden) return;
+    clearGiftAuto();
+    giftAutoTimer = setTimeout(() => { giftAutoTimer = null; if (!giftAutoDone && backdrop.hidden) open(); }, 3000);
+  };
+  const checkGiftVisible = () => {
+    if (giftAutoDone || !backdrop.hidden) return;
+    const r = btn.getBoundingClientRect();
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+    const vw = window.innerWidth || document.documentElement.clientWidth;
+    if (r.top >= 0 && r.left >= 0 && r.bottom <= vh && r.right <= vw) armGiftAuto();
+    else clearGiftAuto();
+  };
+  if ('IntersectionObserver' in window) {
+    const giftIO = new IntersectionObserver(entries => {
+      for (const en of entries) {
+        if (en.isIntersecting && en.intersectionRatio >= 0.99) armGiftAuto();
+        else clearGiftAuto();
+      }
+    }, { threshold: [0.99, 1] });
+    giftIO.observe(btn);
+  }
+  // Du phong: kiem tra lai khi cuon / doi kich thuoc (phong khi IntersectionObserver cham)
+  window.addEventListener('scroll', checkGiftVisible, { passive: true });
+  window.addEventListener('resize', checkGiftVisible);
+  checkGiftVisible();
   closeBtn.addEventListener('click', close);
   backdrop.addEventListener('click', e => { if (e.target === backdrop) close(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !backdrop.hidden) close(); });
