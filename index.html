@@ -432,7 +432,7 @@ a{color:inherit;text-decoration:none}
 .music-btn.playing .mp-play{display:none}
 .music-btn.playing .mp-pause{display:block}
 .music-btn.play{width:56px;height:56px;font-size:20px;background:var(--ink);color:#fff}
-.music-progress{height:20px;display:flex;align-items:center;position:relative;width:80%;margin:0 auto 12px;cursor:pointer}
+.music-progress{height:20px;display:flex;align-items:center;position:relative;width:80%;margin:0 auto 12px;cursor:pointer;touch-action:pan-y}
 .music-handle{position:absolute;top:50%;left:0%;width:14px;height:14px;border-radius:50%;background:var(--ink);transform:translate(-50%,-50%);box-shadow:0 1px 4px rgba(0,0,0,.25)}
 .music-progress::before{content:'';position:absolute;left:0;right:0;height:3px;background:rgba(74,47,53,.15);border-radius:2px}
 .music-fill{position:absolute;left:0;height:3px;background:var(--ink);border-radius:2px;width:0%}
@@ -919,7 +919,7 @@ T</span></div>
     <audio id="bgMusic" preload="none"></audio>
   </div>
 </div></section>
-<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><span class="admin-only"><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 18/11/2026 22:38</span></span></footer>
+<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><span class="admin-only"><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 18/11/2026 22:54</span></span></footer>
 <!-- Floating controls (above content, below dialogs) -->
 <nav class="bottom-bar" aria-label="Điều hướng nhanh">
   <a href="#wishes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5z"/></svg><span>Gửi lời chúc</span></a>
@@ -1639,7 +1639,7 @@ function setupForms() {
     e.target.reset();
   });
 }
-let musicList = [], musicIdx = 0, audio = null, shuffleOn = false, repeatMode = 1;
+let musicList = [], musicIdx = 0, audio = null, shuffleOn = false, repeatMode = 1, __endAt = 0;
 function musicUI() {
   const playing = audio && !audio.paused;
   $('#musicPlay').classList.toggle('playing', !!playing);
@@ -1664,12 +1664,19 @@ function setupMusic() {
   const rpBtn = $('#musicRepeat'); if (rpBtn) rpBtn.addEventListener('click', () => { repeatMode = (repeatMode + 1) % 3; rpBtn.classList.toggle('on', repeatMode > 0); rpBtn.title = repeatMode === 2 ? 'Lặp lại 1 bài' : repeatMode === 1 ? 'Lặp lại tất cả' : 'Tắt lặp lại'; });
   $('#musicFloat').addEventListener('click', () => { if (audio.paused) { if (!audio.src) playTrack(musicIdx); else audio.play().then(musicUI); } else { audio.pause(); musicUI(); } });
   audio.addEventListener('play', musicUI); audio.addEventListener('pause', musicUI);
-  audio.addEventListener('ended', () => { if (repeatMode === 2) playTrack(musicIdx); else if (repeatMode === 1) playTrack(musicIdx + 1); else if (musicIdx < musicList.length - 1) playTrack(musicIdx + 1); else { audio.pause(); musicUI(); } });
-  audio.addEventListener('timeupdate', () => { if (audio.duration) { const pc = audio.currentTime / audio.duration * 100; $('#musicFill').style.width = pc + '%'; const hd = $('#musicHandle'); if (hd) hd.style.left = pc + '%'; } });
+  function onTrackEnd() { const __now = Date.now(); if (__now - __endAt < 1500) return; __endAt = __now; if (repeatMode === 2) playTrack(musicIdx); else if (repeatMode === 1) playTrack(musicIdx + 1); else if (musicIdx < musicList.length - 1) playTrack(musicIdx + 1); else { audio.pause(); musicUI(); } }
+  audio.addEventListener('ended', onTrackEnd);
+  audio.addEventListener('timeupdate', () => { if (audio.duration) { const pc = audio.currentTime / audio.duration * 100; $('#musicFill').style.width = pc + '%'; const hd = $('#musicHandle'); if (hd) hd.style.left = pc + '%'; if (isFinite(audio.duration) && !audio.paused && audio.currentTime >= audio.duration - 0.5) onTrackEnd(); } });
   $('#musicProgress').addEventListener('click', e => {
     if (!audio.duration) return;
     const r = e.currentTarget.getBoundingClientRect(); audio.currentTime = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * audio.duration;
   });
+  const __prog = $('#musicProgress'); let __seeking = false;
+  function __seekX(clientX) { if (!audio.duration) return; const r = __prog.getBoundingClientRect(); const ratio = Math.max(0, Math.min(1, (clientX - r.left) / r.width)); audio.currentTime = ratio * audio.duration; $('#musicFill').style.width = (ratio * 100) + '%'; const hd = $('#musicHandle'); if (hd) hd.style.left = (ratio * 100) + '%'; }
+  __prog.addEventListener('pointerdown', e => { __seeking = true; try { __prog.setPointerCapture(e.pointerId); } catch (err) {} __seekX(e.clientX); });
+  __prog.addEventListener('pointermove', e => { if (__seeking) __seekX(e.clientX); });
+  __prog.addEventListener('pointerup', () => { __seeking = false; });
+  __prog.addEventListener('pointercancel', () => { __seeking = false; });
   musicUI();
 }
 function setupOpener() {
