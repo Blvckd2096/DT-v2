@@ -934,7 +934,7 @@ T</span></div>
     <audio id="bgMusic" preload="none"></audio>
   </div>
 </div></section>
-<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><span class="admin-only"><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 19/11/2026 20:05</span></span></footer>
+<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><span class="admin-only"><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 19/11/2026 22:53</span></span></footer>
 <!-- Floating controls (above content, below dialogs) -->
 <nav class="bottom-bar" aria-label="Điều hướng nhanh">
   <a href="#wishes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5z"/></svg><span>Gửi lời chúc</span></a>
@@ -1094,11 +1094,22 @@ const $$ = (s, p = document) => Array.from(p.querySelectorAll(s));
 const esc = (s) => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 // Xưng hô riêng cho khách (?goi=Anh): thay "bạn"/"Bạn" bằng xưng hô của khách
 // trong các câu chữ của thiệp, nhưng giữ nguyên từ ghép như "bạn bè", "bạn thân".
-function applyPronoun(text){
-  var p = window.__guestPronoun;
-  if (!p || p === 'bạn') return text;
-  return String(text).replace(/(^|[^A-Za-zÀ-ỹ])([Bb]ạn)(?!\s*(?:bè|đọc|học|thân|đời|cùng|nhé))/g, function(m, pre){ return pre + p; });
-}
+// Xưng hô của cô dâu chú rể đổi theo khách: mời Anh/Chị/Thầy thì "chúng em",
+  // mời Bác/Ông/Bà/Cô/Chú thì "chúng cháu", còn Bạn/Em thì giữ "chúng tôi".
+  var SELF_PRONOUN = { 'Anh':'chúng em', 'Chị':'chúng em', 'Thầy':'chúng em',
+    'Bác':'chúng cháu', 'Ông':'chúng cháu', 'Bà':'chúng cháu', 'Cô':'chúng cháu', 'Chú':'chúng cháu' };
+  function selfPronoun(){
+    var p = window.__guestPronoun;
+    return (p && SELF_PRONOUN[p]) || 'chúng tôi';
+  }
+  function applyPronoun(text){
+    var p = window.__guestPronoun;
+    if (!p || p === 'bạn') return text;
+    var out = String(text).replace(/(^|[^A-Za-zÀ-ỹ])([Bb]ạn)(?!\s*(?:bè|đọc|học|thân|đời|cùng|nhé))/g, function(m, pre){ return pre + p; });
+    var self = selfPronoun();
+    if (self !== 'chúng tôi') out = out.replace(/chúng tôi/g, self);
+    return out;
+  }
 // Các câu chữ cố định trong form (không phải data-bind) cũng đổi theo xưng hô khách.
 function applyPronounToStatic(){
   if (!window.__guestPronoun || window.__guestPronoun === 'bạn') return;
