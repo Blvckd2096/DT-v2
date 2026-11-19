@@ -934,7 +934,7 @@ T</span></div>
     <audio id="bgMusic" preload="none"></audio>
   </div>
 </div></section>
-<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><span class="admin-only"><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 19/11/2026 23:46</span></span></footer>
+<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><span class="admin-only"><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 19/11/2026 23:52</span></span></footer>
 <!-- Floating controls (above content, below dialogs) -->
 <nav class="bottom-bar" aria-label="Điều hướng nhanh">
   <a href="#wishes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5z"/></svg><span>Gửi lời chúc</span></a>
@@ -1128,7 +1128,9 @@ function bindData() {
   applyPronounToStatic();
   // Riêng gia đình anh Sơn chị Liên: ngoài bìa (phong thư) ghi đủ
   // "Gia đình anh Sơn chị Liên", còn trong thiệp rút gọn "Gia đình anh chị".
-  if (weddingData.guestName === 'Gia đình anh Sơn chị Liên') {
+  // Nhận cả link mới (guest=Gia đình anh Sơn chị Liên) lẫn link cũ (guest=Anh Sơn - Chị Liên).
+  if (weddingData.guestName === 'Gia đình anh Sơn chị Liên' || weddingData.guestName === 'Anh Sơn - Chị Liên') {
+    document.querySelectorAll('#opener .env-invite-guest').forEach(el => { el.textContent = 'Gia đình anh Sơn chị Liên'; });
     document.querySelectorAll('p.invite-guest').forEach(el => { el.textContent = 'Gia đình anh chị'; });
   }
   $$('[data-bind-map]').forEach(el => { const v = weddingData[el.dataset.bindMap]; if (v) el.href = v; });
