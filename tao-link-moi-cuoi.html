@@ -71,7 +71,7 @@ A Đức - nhà gái"></textarea>
       <button id="btnClear" class="btn-secondary" type="button">Xóa hết</button>
     </div>
     <p id="parseMsg" class="msg"></p>
-    <div class="rule"><b>Quy tắc xưng hô:</b> A → Anh, C → Chị, E → Em, B → Bác, O → Ông, Ba → Bà, Co → Cô, Chu → Chú. Tên không có chữ đầu thì mặc định xưng “bạn”. Nhóm “bạn cao đẳng”: chỉ lấy tên gọi (chữ đầu tiên) và thêm “bạn” (vd “Cường” → “bạn Cường”). Trong thiệp, 2 đứa tự xưng theo khách: Bạn/Em → chúng tôi; Anh/Chị/Thầy → chúng em; Bác/Ông/Bà/Cô/Chú → chúng cháu. Chú ý: mời cả 2 vợ chồng thì ghi 1 dòng “A Hùng - C Lan”: thiệp xưng “anh chị”, 2 đứa xưng “chúng em”. Dòng “Nhà trai / Nhà gái” và “Tên nhóm:” dùng để chia bên và nhóm. Chữ viết tắt toàn chữ hoa ở cuối tên (vd “DD”) được coi là ghi chú nên sẽ bỏ khỏi tên trên thiệp, tên gốc vẫn hiện trong thẻ để đối chiếu.</div>
+    <div class="rule"><b>Quy tắc xưng hô:</b> A → Anh, C → Chị, E → Em, B → Bác, O → Ông, Ba → Bà, Co → Cô, Chu → Chú. Tên không có chữ đầu thì mặc định xưng “bạn”. Nhóm “bạn cao đẳng”: chỉ lấy tên gọi (chữ đầu tiên) và thêm “bạn” (vd “Cường” → “bạn Cường”). Trong thiệp, 2 đứa tự xưng theo khách: Bạn/Em → chúng tôi; Anh/Chị/Thầy → chúng em; Bác/Ông/Bà/Cô/Chú → chúng cháu. Chú ý: mời cả 2 vợ chồng thì ghi 1 dòng “A Hùng - C Lan”: thiệp xưng “anh chị”, 2 đứa xưng “chúng em”. Tên không có chữ đầu thì tự thêm “Bạn” phía trước (vd “Yến Oanh” → “Bạn Yến Oanh”); vợ chồng viết liền “Anh Hà chị Quỳnh” cũng nhận thành 1 khách. Dòng “Nhà trai / Nhà gái” và “Tên nhóm:” dùng để chia bên và nhóm. Chữ viết tắt toàn chữ hoa ở cuối tên (vd “DD”) được coi là ghi chú nên sẽ bỏ khỏi tên trên thiệp, tên gốc vẫn hiện trong thẻ để đối chiếu.</div>
   </section>
 
   <section class="card" id="resultCard" hidden>
@@ -130,21 +130,32 @@ A Đức - nhà gái"></textarea>
     return parts.join(' ');
   }
 
+  // Viết hoa chữ đầu mỗi từ trong tên (vd "Phạm ánh" -> "Phạm Ánh").
+  function capWords(s){
+    return String(s || '').split(/\s+/).filter(function(x){ return x; }).map(function(w){
+      return w.charAt(0).toUpperCase() + w.slice(1);
+    }).join(' ');
+  }
+  // Xưng hô không phân biệt hoa/thường (vd "c thu", "chị trang" vẫn nhận).
+  function titleOf(word){
+    var lw = String(word || '').toLowerCase();
+    var k = Object.keys(TITLE_MAP).filter(function(key){ return key.toLowerCase() === lw; })[0];
+    return k ? TITLE_MAP[k] : null;
+  }
   function parseName(raw){
     var name = String(raw || '').trim().replace(/^\d+\.\s*/, '');
     if (!name) return null;
     var parts = name.split(/\s+/);
-    var first = parts[0];
-    if (TITLE_MAP[first]) {
-      var title = TITLE_MAP[first];
-      var rest = parts.slice(1).join(' ');
+    var title = titleOf(parts[0]);
+    if (title) {
+      var rest = capWords(parts.slice(1).join(' '));
       if (!rest) return null;
       var full = title + ' ' + rest;
       var clean = title + ' ' + stripNoteTail(rest);
-      return { displayName: clean, pronoun: title, origName: (full !== clean) ? full : '' };
+      return { displayName: clean, pronoun: title, origName: (full.toLowerCase() !== clean.toLowerCase()) ? full : '' };
     }
-    var cleanName = stripNoteTail(name);
-    return { displayName: cleanName, pronoun: 'bạn', origName: (cleanName !== name) ? name : '' };
+    var cleanName = capWords(stripNoteTail(name));
+    return { displayName: cleanName, pronoun: 'bạn', origName: (cleanName.toLowerCase() !== name.toLowerCase()) ? name : '' };
   }
 
   function parseGuestList(text){
@@ -166,6 +177,22 @@ A Đức - nhà gái"></textarea>
       if (/^Nhà gái$/i.test(line)) { side = 'gai'; group = ''; return; }
       // Dòng tên nhóm kết thúc bằng ":"
       if (/:\s*$/.test(line) && !/^\d+\./.test(line)) { group = line.replace(/:\s*$/, '').trim(); return; }
+      // Dòng "2 bạn Đại Ánh" là 2 khách: bạn Đại, bạn Ánh.
+      var multi = line.match(/^(\d+)\s+bạn\s+(.+)$/i);
+      if (multi) {
+        var count = parseInt(multi[1], 10);
+        var mwords = multi[2].trim().split(/\s+/);
+        if (count > 1 && count <= 10 && mwords.length === count) {
+          mwords.forEach(function(w){
+            out.push({
+              id: 'g' + out.length + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+              name: 'Bạn ' + capWords(w), pronoun: 'bạn', orig: '',
+              side: side, group: group, invited: false
+            });
+          });
+          return;
+        }
+      }
       var invited = false, namePart = line, lineGroup = group;
       // Định dạng xuất CCM: "1. A Cường - Gia đình - Đã mời"
       var ccm = line.match(/^\d+\.\s+(.+?)\s+-\s+(.+?)\s+-\s+(Đã mời|Chưa mời)\s*$/);
@@ -178,14 +205,42 @@ A Đức - nhà gái"></textarea>
       }
       var parsed = null;
       if (!ccm) {
+        // Dòng bắt đầu bằng "Gia đình ..." thì đó là tên nhóm, phần sau mới là tên khách
+        // (vd "Gai đình Anh Sơn chị Liên" -> nhóm "Gia đình", khách "Anh Sơn - Chị Liên").
+        var gm = namePart.match(/^(gia đình|gai đình)\s+(.+)$/i);
+        if (gm) { lineGroup = 'Gia đình'; namePart = gm[2]; }
         // Mời cả 2 vợ chồng trong 1 dòng: "A Hùng - C Lan" -> 1 khách
         // "Anh Hùng - Chị Lan", xưng "anh chị" (chỉ khi 1 bên là Anh, 1 bên là Chị).
+        var ac = function(pr){ return pr === 'Anh' || pr === 'Chị'; };
         var coupleParts = namePart.split(' - ');
         if (coupleParts.length === 2) {
           var cp1 = parseName(coupleParts[0]), cp2 = parseName(coupleParts[1]);
-          var ac = function(pr){ return pr === 'Anh' || pr === 'Chị'; };
           if (cp1 && cp2 && ac(cp1.pronoun) && ac(cp2.pronoun) && cp1.pronoun !== cp2.pronoun) {
             parsed = { displayName: cp1.displayName + ' - ' + cp2.displayName, pronoun: 'anh chị', origName: '' };
+          }
+        }
+        if (!parsed) {
+          // Vợ chồng viết kiểu 2 xưng hô trước, 2 tên sau: "Anh chị Tùng Anh" -> "Anh Tùng - Chị Anh".
+          var w4 = namePart.split(/\s+/);
+          if (w4.length === 4) {
+            var t0 = titleOf(w4[0]), t1 = titleOf(w4[1]);
+            if (t0 && t1 && ac(t0) && ac(t1) && t0 !== t1) {
+              parsed = { displayName: t0 + ' ' + capWords(w4[2]) + ' - ' + t1 + ' ' + capWords(w4[3]), pronoun: 'anh chị', origName: '' };
+            }
+          }
+        }
+        if (!parsed) {
+          // Vợ chồng viết liền không gạch nối: "Anh Hà chị Quỳnh" -> "Anh Hà - Chị Quỳnh".
+          var words = namePart.split(/\s+/);
+          for (var wi = 2; wi < words.length; wi++) {
+            if (titleOf(words[wi])) {
+              var sp1 = parseName(words.slice(0, wi).join(' '));
+              var sp2 = parseName(words.slice(wi).join(' '));
+              if (sp1 && sp2 && ac(sp1.pronoun) && ac(sp2.pronoun) && sp1.pronoun !== sp2.pronoun) {
+                parsed = { displayName: sp1.displayName + ' - ' + sp2.displayName, pronoun: 'anh chị', origName: '' };
+              }
+              break;
+            }
           }
         }
         if (!parsed) {
@@ -203,6 +258,10 @@ A Đức - nhà gái"></textarea>
           if (!parsed.origName) parsed.origName = parsed.displayName;
           parsed.displayName = 'bạn ' + fw;
         }
+      }
+      // Tên không có xưng hô thì tự thêm "Bạn" phía trước (vd "Yến Oanh" -> "Bạn Yến Oanh").
+      if (parsed.pronoun === 'bạn' && !/^bạn\s/i.test(parsed.displayName)) {
+        parsed.displayName = 'Bạn ' + parsed.displayName;
       }
       out.push({
         id: 'g' + out.length + '_' + Date.now().toString(36),
