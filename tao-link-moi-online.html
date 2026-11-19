@@ -48,6 +48,10 @@
   .foot{color:var(--ink2);font-size:12.5px;line-height:1.6;text-align:center;margin-top:6px}
   .rule{font-size:12.5px;color:var(--ink2);line-height:1.6;background:var(--soft);border:1px dashed var(--line);border-radius:12px;padding:10px 12px;margin-top:10px}
   .rule b{color:var(--ink)}
+  .pager{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:12px 0 4px}
+  .pager button{padding:7px 12px;font-size:13.5px;background:var(--soft);color:var(--deep2);border:1px solid var(--line)}
+  .pager button.cur{background:var(--deep);color:#fff;border-color:var(--deep)}
+  .pager button:disabled{opacity:.45}
   .api{font-size:13px;color:var(--ink2);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:14px}
   .api summary{cursor:pointer;font-weight:600;color:var(--deep2)}
   .api input{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:13.5px;font-family:inherit;margin-top:8px;background:#fffdf7;color:var(--ink)}
@@ -76,7 +80,7 @@ A Đức - nhà gái"></textarea>
       <button id="btnClear" class="btn-secondary" type="button">Xóa hết</button>
     </div>
     <p id="parseMsg" class="msg"></p>
-    <div class="rule"><b>Quy tắc xưng hô:</b> A → Anh, C → Chị, E → Em, B → Bác, O → Ông, Ba → Bà, Co → Cô, Chu → Chú. Tên không có chữ đầu thì mặc định xưng “bạn”. Nhóm “bạn cao đẳng”: chỉ lấy tên gọi (chữ đầu tiên) và thêm “bạn” (vd “Cường” → “bạn Cường”). Trong thiệp, 2 đứa tự xưng theo khách: Bạn/Em → chúng tôi; Anh/Chị/Thầy → chúng em; Bác/Ông/Bà/Cô/Chú → chúng cháu. Chú ý: mời cả 2 vợ chồng thì ghi 1 dòng “A Hùng - C Lan”: thiệp xưng “anh chị”, 2 đứa xưng “chúng em”. Tên không có chữ đầu thì tự thêm “Bạn” phía trước (vd “Yến Oanh” → “Bạn Yến Oanh”); vợ chồng viết liền “Anh Hà chị Quỳnh” cũng nhận thành 1 khách. Dòng “Nhà trai / Nhà gái” và “Tên nhóm:” dùng để chia bên và nhóm. Chữ viết tắt toàn chữ hoa ở cuối tên (vd “DD”) được coi là ghi chú nên sẽ bỏ khỏi tên trên thiệp, tên gốc vẫn hiện trong thẻ để đối chiếu.</div>
+    <div class="rule"><b>Quy tắc xưng hô:</b> A → Anh, C → Chị, E → Em, B → Bác, O → Ông, Ba → Bà, Co → Cô, Chu → Chú. Tên không có chữ đầu thì mặc định xưng “bạn”. Nhóm “bạn cao đẳng”: chỉ lấy tên gọi (chữ đầu tiên) và thêm “bạn” (vd “Cường” → “bạn Cường”). Trong thiệp, 2 đứa tự xưng theo khách: Bạn/Em → chúng tôi; Anh/Chị/Thầy → chúng em; Bác/Ông/Bà/Cô/Chú → chúng cháu. Chú ý: mời cả 2 vợ chồng thì ghi 1 dòng “A Hùng - C Lan”: thiệp xưng “anh chị”, 2 đứa xưng “chúng em”. Tên không có chữ đầu thì tự thêm “Bạn” phía trước (vd “Yến Oanh” → “Bạn Yến Oanh”); vợ chồng viết liền “Anh Hà chị Quỳnh” cũng nhận thành 1 khách. “2 bạn Đại Ánh” là 1 link vợ chồng: “Bạn Đại - Bạn Ánh”, xưng “các bạn”. Dòng “Nhà trai / Nhà gái” và “Tên nhóm:” dùng để chia bên và nhóm. Chữ viết tắt toàn chữ hoa ở cuối tên (vd “DD”) được coi là ghi chú nên sẽ bỏ khỏi tên trên thiệp, tên gốc vẫn hiện trong thẻ để đối chiếu.</div>
   </section>
 
   <section class="card" id="resultCard" hidden>
@@ -95,10 +99,12 @@ A Đức - nhà gái"></textarea>
     <input id="search" type="search" placeholder="Tìm tên khách..." autocomplete="off">
     <h3>Chưa mời (<span id="countTodo">0</span>)</h3>
     <div id="listTodo"></div>
+    <div id="pagerTodo" class="pager"></div>
     <div class="invited-head">
       <button id="btnToggleInvited" type="button"><span>Link đã mời (<span id="countDone">0</span>)</span><span id="invitedArrow">▸</span></button>
     </div>
     <div id="listDone" hidden></div>
+    <div id="pagerDone" class="pager"></div>
   </section>
 
   <details class="api">
@@ -230,12 +236,21 @@ A Đức - nhà gái"></textarea>
       if (/^Nhà gái$/i.test(line)) { side = 'gai'; group = ''; return; }
       // Dòng tên nhóm kết thúc bằng ":"
       if (/:\s*$/.test(line) && !/^\d+\./.test(line)) { group = line.replace(/:\s*$/, '').trim(); return; }
-      // Dòng "2 bạn Đại Ánh" là 2 khách: bạn Đại, bạn Ánh.
+      // Dòng "2 bạn Đại Ánh" là 1 link vợ chồng: "Bạn Đại - Bạn Ánh", xưng "các bạn".
+      // Còn "3 bạn ..." trở lên thì mỗi bạn 1 link như thường.
       var multi = line.match(/^(\d+)\s+bạn\s+(.+)$/i);
       if (multi) {
         var count = parseInt(multi[1], 10);
         var mwords = multi[2].trim().split(/\s+/);
-        if (count > 1 && count <= 10 && mwords.length === count) {
+        if (count === 2 && mwords.length === 2) {
+          out.push({
+            id: 'g' + out.length + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+            name: 'Bạn ' + capWords(mwords[0]) + ' - Bạn ' + capWords(mwords[1]), pronoun: 'các bạn', orig: '',
+            side: side, group: group, invited: false
+          });
+          return;
+        }
+        if (count > 2 && count <= 10 && mwords.length === count) {
           mwords.forEach(function(w){
             out.push({
               id: 'g' + out.length + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
@@ -328,7 +343,11 @@ A Đức - nhà gái"></textarea>
   }
 
   function makeLink(g){
-    var url = BASE + '?guest=' + encodeURIComponent(g.name);
+    // Riêng gia đình anh Sơn chị Liên: link mang tên đầy đủ "Gia đình anh Sơn chị Liên"
+    // (ngoài bìa phong thư ghi đủ; trong thiệp rút gọn "Gia đình anh chị" — xem thiệp index.html).
+    // Chỉ áp dụng cho gia đình này, các khách khác giữ nguyên tên.
+    var guestName = (g.name === 'Anh Sơn - Chị Liên' && g.group === 'Gia đình') ? 'Gia đình anh Sơn chị Liên' : g.name;
+    var url = BASE + '?guest=' + encodeURIComponent(guestName);
     if (g.pronoun && g.pronoun !== 'bạn') url += '&goi=' + encodeURIComponent(g.pronoun);
     return url;
   }
@@ -396,6 +415,25 @@ A Đức - nhà gái"></textarea>
     } catch (e) { alert('Không copy được, hãy chạm giữ link để sao chép thủ công.'); }
   }
 
+  // Phân trang: 10 link/trang cho đỡ dài.
+  var PAGE_SIZE = 10;
+  var todoPage = 1, donePage = 1;
+  function pager(el, page, totalPages, setPage){
+    el.innerHTML = '';
+    if (totalPages <= 1) return;
+    var mk = function(label, p, disabled, cur){
+      var b = document.createElement('button');
+      b.type = 'button'; b.textContent = label;
+      if (disabled) b.disabled = true;
+      if (cur) b.className = 'cur';
+      b.addEventListener('click', function(){ setPage(p); });
+      el.appendChild(b);
+    };
+    mk('‹ Trước', page - 1, page <= 1, false);
+    for (var i = 1; i <= totalPages; i++) mk(String(i), i, false, i === page);
+    mk('Sau ›', page + 1, page >= totalPages, false);
+  }
+
   function render(){
     var q = (searchEl.value || '').trim().toLowerCase();
     var match = function(g){
@@ -416,13 +454,24 @@ A Đức - nhà gái"></textarea>
       var e1 = document.createElement('div'); e1.className = 'empty';
       e1.textContent = total === 0 ? 'Chưa có khách nào. Dán danh sách rồi bấm “Tạo link”.' : 'Đã mời hết rồi 🎉';
       listTodo.appendChild(e1);
-    } else { todo.forEach(function(g){ listTodo.appendChild(guestCard(g)); }); }
+    } else {
+      var todoPages = Math.max(1, Math.ceil(todo.length / PAGE_SIZE));
+      if (todoPage > todoPages) todoPage = todoPages;
+      todo.slice((todoPage - 1) * PAGE_SIZE, todoPage * PAGE_SIZE).forEach(function(g){ listTodo.appendChild(guestCard(g)); });
+      pager($('#pagerTodo'), todoPage, todoPages, function(p){ todoPage = p; render(); });
+    }
     listDone.innerHTML = '';
     if (!done.length) {
       var e2 = document.createElement('div'); e2.className = 'empty';
       e2.textContent = 'Chưa có link nào được đánh dấu đã mời.';
       listDone.appendChild(e2);
-    } else { done.forEach(function(g){ listDone.appendChild(guestCard(g)); }); }
+    } else {
+      var donePages = Math.max(1, Math.ceil(done.length / PAGE_SIZE));
+      if (donePage > donePages) donePage = donePages;
+      done.slice((donePage - 1) * PAGE_SIZE, donePage * PAGE_SIZE).forEach(function(g){ listDone.appendChild(guestCard(g)); });
+      pager($('#pagerDone'), donePage, donePages, function(p){ donePage = p; render(); });
+    }
+    var pd = $('#pagerDone'); if (pd) pd.style.display = listDone.hidden ? 'none' : '';
     resultCard.hidden = false;
   }
 
@@ -444,6 +493,7 @@ A Đức - nhà gái"></textarea>
     });
     setSync('Đang lưu lên Google Sheet…');
     apiPost({ action: 'replaceGuestLinks', guests: list }).then(function(){
+      todoPage = 1; donePage = 1;
       return loadOnline();
     }).then(function(ok){
       if (!ok) { msgEl.textContent = 'Không lưu được lên Google Sheet. Kiểm tra mạng rồi bấm “Tạo link” lại.'; msgEl.className = 'msg'; return; }
@@ -500,6 +550,7 @@ A Đức - nhà gái"></textarea>
       guests = []; inputEl.value = '';
       try { localStorage.removeItem(LS_INPUT); } catch (e) {}
       msgEl.textContent = '';
+      todoPage = 1; donePage = 1;
       return loadOnline();
     });
   });
@@ -538,6 +589,7 @@ A Đức - nhà gái"></textarea>
         if (typeof data.input === 'string') inputEl.value = data.input;
         save();
         setSync('Đang lưu lên Google Sheet…');
+        todoPage = 1; donePage = 1;
         apiPost({ action: 'replaceGuestLinks', guests: list }).then(function(){ return loadOnline(); }).then(function(ok){
           if (!ok) { backupMsg.textContent = 'Không lưu được lên Google Sheet. Kiểm tra mạng rồi thử lại.'; backupMsg.className = 'msg'; return; }
           backupMsg.textContent = 'Đã khôi phục ' + list.length + ' khách từ file sao lưu và lưu online.';
@@ -554,8 +606,9 @@ A Đức - nhà gái"></textarea>
     var hidden = listDone.hidden;
     listDone.hidden = !hidden;
     $('#invitedArrow').textContent = hidden ? '▾' : '▸';
+    var pd = $('#pagerDone'); if (pd) pd.style.display = hidden ? '' : 'none';
   });
-  searchEl.addEventListener('input', render);
+  searchEl.addEventListener('input', function(){ todoPage = 1; donePage = 1; render(); });
 
   // Dữ liệu lưu online trên Google Sheet — tải khi mở trang, tải lại khi quay lại trang.
   try {
