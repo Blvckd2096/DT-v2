@@ -71,7 +71,7 @@ A Đức - nhà gái"></textarea>
       <button id="btnClear" class="btn-secondary" type="button">Xóa hết</button>
     </div>
     <p id="parseMsg" class="msg"></p>
-    <div class="rule"><b>Quy tắc xưng hô:</b> A → Anh, C → Chị, E → Em, B → Bác, O → Ông, Ba → Bà, Co → Cô, Chu → Chú. Tên không có chữ đầu thì mặc định xưng “bạn”. Nhóm “bạn cao đẳng”: chỉ lấy tên gọi (chữ đầu tiên) và thêm “bạn” (vd “Cường” → “bạn Cường”). Dòng “Nhà trai / Nhà gái” và “Tên nhóm:” dùng để chia bên và nhóm. Chữ viết tắt toàn chữ hoa ở cuối tên (vd “DD”) được coi là ghi chú nên sẽ bỏ khỏi tên trên thiệp, tên gốc vẫn hiện trong thẻ để đối chiếu.</div>
+    <div class="rule"><b>Quy tắc xưng hô:</b> A → Anh, C → Chị, E → Em, B → Bác, O → Ông, Ba → Bà, Co → Cô, Chu → Chú. Tên không có chữ đầu thì mặc định xưng “bạn”. Nhóm “bạn cao đẳng”: chỉ lấy tên gọi (chữ đầu tiên) và thêm “bạn” (vd “Cường” → “bạn Cường”). Trong thiệp, 2 đứa tự xưng theo khách: Bạn/Em → chúng tôi; Anh/Chị/Thầy → chúng em; Bác/Ông/Bà/Cô/Chú → chúng cháu. Chú ý: mời cả 2 vợ chồng thì ghi 1 dòng “A Hùng - C Lan”: thiệp xưng “anh chị”, 2 đứa xưng “chúng em”. Dòng “Nhà trai / Nhà gái” và “Tên nhóm:” dùng để chia bên và nhóm. Chữ viết tắt toàn chữ hoa ở cuối tên (vd “DD”) được coi là ghi chú nên sẽ bỏ khỏi tên trên thiệp, tên gốc vẫn hiện trong thẻ để đối chiếu.</div>
   </section>
 
   <section class="card" id="resultCard" hidden>
@@ -172,13 +172,29 @@ A Đức - nhà gái"></textarea>
       if (ccm) {
         namePart = ccm[1]; lineGroup = ccm[2]; invited = (ccm[3] === 'Đã mời');
       } else {
-        // Dạng text thường: bỏ ghi chú trong ngoặc, bỏ phần sau " - "
+        // Dạng text thường: bỏ ghi chú trong ngoặc, bỏ số thứ tự đầu dòng.
         namePart = line.replace(/\s*\([^)]*\)\s*/g, ' ').trim();
-        var di = namePart.indexOf(' - ');
-        if (di > 0) namePart = namePart.slice(0, di).trim();
         namePart = namePart.replace(/^\d+\.\s*/, '');
       }
-      var parsed = parseName(namePart);
+      var parsed = null;
+      if (!ccm) {
+        // Mời cả 2 vợ chồng trong 1 dòng: "A Hùng - C Lan" -> 1 khách
+        // "Anh Hùng - Chị Lan", xưng "anh chị" (chỉ khi 1 bên là Anh, 1 bên là Chị).
+        var coupleParts = namePart.split(' - ');
+        if (coupleParts.length === 2) {
+          var cp1 = parseName(coupleParts[0]), cp2 = parseName(coupleParts[1]);
+          var ac = function(pr){ return pr === 'Anh' || pr === 'Chị'; };
+          if (cp1 && cp2 && ac(cp1.pronoun) && ac(cp2.pronoun) && cp1.pronoun !== cp2.pronoun) {
+            parsed = { displayName: cp1.displayName + ' - ' + cp2.displayName, pronoun: 'anh chị', origName: '' };
+          }
+        }
+        if (!parsed) {
+          // Không phải vợ chồng: bỏ phần sau " - " (ghi chú, vd " - nhà gái").
+          var di = namePart.indexOf(' - ');
+          if (di > 0) namePart = namePart.slice(0, di).trim();
+        }
+      }
+      if (!parsed) parsed = parseName(namePart);
       if (!parsed) return;
       // Nhóm bạn cao đẳng: chỉ lấy tên gọi (chữ đầu tiên), xưng "bạn" + tên.
       if (lineGroup && /cao đẳng/i.test(lineGroup) && parsed.pronoun === 'bạn') {
@@ -214,8 +230,18 @@ A Đức - nhà gái"></textarea>
     } catch (e) {}
   }
 
+  // Tự xưng của cô dâu chú rể trong thiệp, đổi theo xưng hô của khách (khớp với thiệp):
+  // khách lớn hơn 1 thế hệ (Anh/Chị/Thầy, kể cả "anh chị") -> chúng em;
+  // lớn hơn 2 thế hệ (Bác/Ông/Bà/Cô/Chú) -> chúng cháu; còn lại (Bạn/Em) -> chúng tôi.
+  function selfPronoun(p){
+    var s = String(p || '').toLowerCase();
+    if (/(bác|ông|bà|cô|chú)/.test(s)) return 'chúng cháu';
+    if (/(anh|chị|thầy)/.test(s)) return 'chúng em';
+    return 'chúng tôi';
+  }
+
   function guestCard(g){
-    var meta = sideLabel(g.side) + (g.group ? ' • ' + g.group : '') + (g.pronoun && g.pronoun !== 'bạn' ? ' • xưng “' + g.pronoun + '”' : '');
+    var meta = sideLabel(g.side) + (g.group ? ' • ' + g.group : '') + (g.pronoun && g.pronoun !== 'bạn' ? ' • xưng “' + g.pronoun + '”' : '') + ' • ' + selfPronoun(g.pronoun);
     var link = makeLink(g);
     var el = document.createElement('div');
     el.className = 'guest';
