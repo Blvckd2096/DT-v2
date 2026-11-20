@@ -85,7 +85,7 @@ A Đức - nhà gái"></textarea>
       <button id="btnClear" class="btn-secondary" type="button">Xóa hết</button>
     </div>
     <p id="parseMsg" class="msg"></p>
-    <div class="rule"><b>Quy tắc xưng hô:</b> A → Anh, C → Chị, E → Em, B → Bác, O → Ông, Ba → Bà, Co → Cô, Chu → Chú. Tên không có chữ đầu thì mặc định xưng “bạn”. Nhóm “bạn cao đẳng”: chỉ lấy tên gọi (chữ đầu tiên) và thêm “bạn” (vd “Cường” → “bạn Cường”). Trong thiệp, 2 đứa tự xưng theo khách: Bạn/Em → chúng tôi; Anh/Chị/Thầy → chúng em; Bác/Ông/Bà/Cô/Chú → chúng cháu. Chú ý: mời cả 2 vợ chồng thì ghi 1 dòng “A Hùng - C Lan”: thiệp xưng “anh chị”, 2 đứa xưng “chúng em”. Tên không có chữ đầu thì tự thêm “Bạn” phía trước (vd “Yến Oanh” → “Bạn Yến Oanh”); vợ chồng viết liền “Anh Hà chị Quỳnh” cũng nhận thành 1 khách. “2 bạn Đại Ánh” là 1 link vợ chồng: “Bạn Đại - Bạn Ánh”, xưng “các bạn”. Dòng “Nhà trai / Nhà gái” và “Tên nhóm:” dùng để chia bên và nhóm. Chữ viết tắt toàn chữ hoa ở cuối tên (vd “DD”) được coi là ghi chú nên sẽ bỏ khỏi tên trên thiệp, tên gốc vẫn hiện trong thẻ để đối chiếu. Nút “Dùng danh sách mẫu” chỉ điền mẫu vào ô nhập, không tự tạo link; bấm “Tạo link” khi trang đã có khách sẽ hỏi xác nhận trước khi thay.</div>
+    <div class="rule"><b>Quy tắc xưng hô:</b> A → Anh, C → Chị, E → Em, B → Bác, O → Ông, Ba → Bà, Co → Cô, Chu → Chú. Tên không có chữ đầu thì mặc định xưng “bạn”. Nhóm “bạn cao đẳng”: chỉ lấy tên gọi (chữ đầu tiên) và thêm “bạn” (vd “Cường” → “bạn Cường”). Trong thiệp, 2 đứa tự xưng theo khách: Bạn/Em → chúng tôi; Anh/Chị/Thầy → chúng em; Bác/Ông/Bà/Cô/Chú → chúng cháu. Chú ý: mời cả 2 vợ chồng thì ghi 1 dòng “A Hùng - C Lan”: thiệp xưng “anh chị”, 2 đứa xưng “chúng em”. Tên không có chữ đầu thì tự thêm “Bạn” phía trước (vd “Yến Oanh” → “Bạn Yến Oanh”); vợ chồng viết liền “Anh Hà chị Quỳnh” cũng nhận thành 1 khách. “2 bạn Đại Ánh” là 1 link vợ chồng: “Bạn Đại - Bạn Ánh”, xưng “các bạn”. Dòng “Nhà trai / Nhà gái” và “Tên nhóm:” dùng để chia bên và nhóm. Chữ viết tắt toàn chữ hoa ở cuối tên (vd “DD”) được coi là ghi chú nên sẽ bỏ khỏi tên trên thiệp, tên gốc vẫn hiện trong thẻ để đối chiếu. Nút “Dùng danh sách mẫu” chỉ điền mẫu vào ô nhập, không tự tạo link; bấm “Tạo link” khi trang đã có khách sẽ hỏi xác nhận trước khi thay. “Vợ chồng bạn Đạt” là 1 link vợ chồng: tên “Vợ chồng bạn Đạt”, xưng “các bạn”; “Vợ chồng anh Hùng” thì xưng “anh chị”.</div>
   </section>
 
   <section class="card" id="resultCard" hidden>
@@ -248,6 +248,21 @@ A Đức - nhà gái"></textarea>
         // (vd "Gai đình Anh Sơn chị Liên" -> nhóm "Gia đình", khách "Anh Sơn - Chị Liên").
         var gm = namePart.match(/^(gia đình|gai đình)\s+(.+)$/i);
         if (gm) { lineGroup = 'Gia đình'; namePart = gm[2]; }
+        // Dòng "Vợ chồng bạn Đạt" là 1 link vợ chồng (chỉ biết tên 1 người):
+        // tên khách "Vợ chồng bạn Đạt", xưng theo người đó: Bạn/Em -> "các bạn",
+        // Anh/Chị -> "anh chị", Bác/Ông/Bà/Cô/Chú/Thầy giữ nguyên xưng đó.
+        var vc = namePart.match(/^(vợ chồng)\s+(.+)$/i);
+        if (vc && !parsed) {
+          var vp = parseName(vc[2]);
+          if (vp) {
+            var vpl = vp.pronoun.toLowerCase();
+            var vname = vp.displayName.replace(/^(Anh|Chị|Em|Bác|Ông|Bà|Cô|Chú|Bạn|Thầy)\s/, function(m){ return m.toLowerCase(); });
+            if ((vpl === 'bạn' || vpl === 'em') && !/^(bạn|em)\s/i.test(vname)) vname = 'bạn ' + vname;
+            var vpron = (vpl === 'anh' || vpl === 'chị') ? 'anh chị'
+              : (vpl === 'bạn' || vpl === 'em') ? 'các bạn' : vp.pronoun;
+            parsed = { displayName: 'Vợ chồng ' + vname, pronoun: vpron, origName: vp.origName || '' };
+          }
+        }
         // Mời cả 2 vợ chồng trong 1 dòng: "A Hùng - C Lan" -> 1 khách
         // "Anh Hùng - Chị Lan", xưng "anh chị" (chỉ khi 1 bên là Anh, 1 bên là Chị).
         var ac = function(pr){ return pr === 'Anh' || pr === 'Chị'; };
