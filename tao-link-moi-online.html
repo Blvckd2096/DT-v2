@@ -52,6 +52,16 @@
   .pager button{padding:7px 12px;font-size:13.5px;background:var(--soft);color:var(--deep2);border:1px solid var(--line)}
   .pager button.cur{background:var(--deep);color:#fff;border-color:var(--deep)}
   .pager button:disabled{opacity:.45}
+  .check-modal{position:fixed;inset:0;background:rgba(60,20,30,.45);display:flex;align-items:center;justify-content:center;padding:18px;z-index:50}
+  .check-modal[hidden]{display:none}
+  .check-box{background:#fff;border-radius:16px;max-width:430px;width:100%;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+  .check-box h3{margin:0 0 10px;font-size:18px;color:var(--deep)}
+  .check-row{display:flex;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px dashed var(--line)}
+  .check-row span{color:var(--deep2);font-size:14px;white-space:nowrap}
+  .check-row b{font-size:20px;font-weight:700;color:var(--deep);line-height:1.25}
+  .check-row i{font-style:normal;font-size:14.5px;color:var(--ink)}
+  .check-link-box{display:flex;gap:8px;margin:10px 0 0}
+  .check-link-box input{flex:1;min-width:0}
   .api{font-size:13px;color:var(--ink2);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:14px}
   .api summary{cursor:pointer;font-weight:600;color:var(--deep2)}
   .api input{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:13.5px;font-family:inherit;margin-top:8px;background:#fffdf7;color:var(--ink)}
@@ -97,6 +107,11 @@ A Đức - nhà gái"></textarea>
     </div>
     <p id="backupMsg" class="msg"></p>
     <input id="search" type="search" placeholder="Tìm tên khách..." autocomplete="off">
+    <div class="check-link-box">
+      <input id="checkInput" type="text" placeholder="Dán link mời đã gửi vào đây để kiểm tra tên khách…" autocomplete="off">
+      <button id="btnCheckLink" class="btn-secondary" type="button">Kiểm tra link</button>
+    </div>
+    <p id="checkMsg" class="msg"></p>
     <h3>Chưa mời (<span id="countTodo">0</span>)</h3>
     <div id="listTodo"></div>
     <div id="pagerTodo" class="pager"></div>
@@ -118,6 +133,15 @@ A Đức - nhà gái"></textarea>
   <p class="foot">Mỗi link mở ra thiệp với tên và xưng hô riêng của khách đó. Danh sách và trạng thái “Đã mời” lưu trên Google Sheet, mở ở máy nào cũng thấy giống nhau.</p>
 </div>
 
+  <div id="checkModal" class="check-modal" hidden>
+    <div class="check-box">
+      <h3>Kiểm tra link mời</h3>
+      <div id="checkBody"></div>
+      <div class="btn-row" style="margin:12px 0 0">
+        <button id="checkClose" class="btn-secondary" type="button">Đóng</button>
+      </div>
+    </div>
+  </div>
 <script>
 (function(){
   'use strict';
@@ -342,15 +366,60 @@ A Đức - nhà gái"></textarea>
     return out;
   }
 
+  // Tên khách trong link: riêng gia đình anh Sơn chị Liên thì mang tên đầy đủ
+  // "Gia đình anh Sơn chị Liên" (ngoài bìa phong thư ghi đủ; trong thiệp rút gọn
+  // "Gia đình anh chị" — xem thiệp index.html). Chỉ áp dụng cho gia đình này.
+  function linkGuestName(g){
+    return (g.name === 'Anh Sơn - Chị Liên' && g.group === 'Gia đình') ? 'Gia đình anh Sơn chị Liên' : g.name;
+  }
+  // Tên khách hiện trong thiệp: ngoài bìa + trong thiệp (giống hệt thiệp index.html).
+  function inviteNames(linkGuest){
+    var env = linkGuest === 'Anh Sơn - Chị Liên' ? 'Gia đình anh Sơn chị Liên' : linkGuest;
+    var inside = (linkGuest === 'Gia đình anh Sơn chị Liên' || linkGuest === 'Anh Sơn - Chị Liên') ? 'Gia đình anh chị' : linkGuest;
+    return { env: env, inside: inside };
+  }
   function makeLink(g){
-    // Riêng gia đình anh Sơn chị Liên: link mang tên đầy đủ "Gia đình anh Sơn chị Liên"
-    // (ngoài bìa phong thư ghi đủ; trong thiệp rút gọn "Gia đình anh chị" — xem thiệp index.html).
-    // Chỉ áp dụng cho gia đình này, các khách khác giữ nguyên tên.
-    var guestName = (g.name === 'Anh Sơn - Chị Liên' && g.group === 'Gia đình') ? 'Gia đình anh Sơn chị Liên' : g.name;
+    var guestName = linkGuestName(g);
     var url = BASE + '?guest=' + encodeURIComponent(guestName);
     if (g.pronoun && g.pronoun !== 'bạn') url += '&goi=' + encodeURIComponent(g.pronoun);
     return url;
   }
+  function checkRow(label, value, big){
+    var row = document.createElement('div'); row.className = 'check-row';
+    var s = document.createElement('span'); s.textContent = label; row.appendChild(s);
+    var b = document.createElement(big ? 'b' : 'i'); b.textContent = value; row.appendChild(b);
+    return row;
+  }
+  // Xem trước tên khách sẽ hiện trong thiệp (không cần tải thiệp về).
+  function showCheck(linkGuest, pronoun, link){
+    var n = inviteNames(linkGuest);
+    var sp = selfPronoun(pronoun || 'bạn');
+    var pronText = (pronoun && pronoun !== 'bạn') ? 'xưng “' + pronoun + '” • ' + sp : sp;
+    var body = $('#checkBody');
+    body.innerHTML = '';
+    body.appendChild(checkRow('Ngoài bìa:', n.env, true));
+    body.appendChild(checkRow('Trong thiệp:', n.inside, true));
+    body.appendChild(checkRow('Tự xưng:', pronText, false));
+    if (link) {
+      var l = document.createElement('div'); l.className = 'g-link'; l.textContent = link; body.appendChild(l);
+    }
+    $('#checkModal').hidden = false;
+  }
+  $('#checkClose').addEventListener('click', function(){ $('#checkModal').hidden = true; });
+  $('#checkModal').addEventListener('click', function(e){ if (e.target.id === 'checkModal') $('#checkModal').hidden = true; });
+  $('#btnCheckLink').addEventListener('click', function(){
+    var raw = ($('#checkInput').value || '').trim();
+    var m = raw.match(/[?&]guest=([^&#]*)/);
+    var guest = '';
+    try { guest = m ? decodeURIComponent(m[1].replace(/\+/g, ' ')).trim() : ''; } catch (e) { guest = ''; }
+    var mg = raw.match(/[?&]goi=([^&#]*)/);
+    var goi = 'bạn';
+    try { goi = mg ? decodeURIComponent(mg[1].replace(/\+/g, ' ')).trim() || 'bạn' : 'bạn'; } catch (e) { goi = 'bạn'; }
+    var cm = $('#checkMsg');
+    if (!guest) { cm.textContent = 'Link này không có tên khách (?guest=…). Dán đúng link mời đã gửi.'; cm.className = 'msg'; return; }
+    cm.textContent = ''; cm.className = 'msg';
+    showCheck(guest, goi, raw);
+  });
 
   function sideLabel(s){ return s === 'trai' ? 'Nhà trai' : (s === 'gai' ? 'Nhà gái' : 'Chưa chia bên'); }
 
@@ -382,6 +451,7 @@ A Đức - nhà gái"></textarea>
       '<div class="g-actions">' +
         '<button class="btn-copy" type="button">Copy link</button>' +
         '<button class="btn-open" type="button">Mở ↗</button>' +
+        '<button class="btn-check" type="button">🔍 Kiểm tra</button>' +
         (g.invited
           ? '<button class="btn-uninvite" type="button">↩ Chưa mời</button>'
           : '<button class="btn-invite" type="button">✓ Đã mời</button>') +
@@ -395,6 +465,9 @@ A Đức - nhà gái"></textarea>
     });
     el.querySelector('.btn-open').addEventListener('click', function(){
       window.open(link, '_blank', 'noopener');
+    });
+    el.querySelector('.btn-check').addEventListener('click', function(){
+      showCheck(linkGuestName(g), g.pronoun, link);
     });
     var toggleBtn = el.querySelector('.btn-invite, .btn-uninvite');
     if (toggleBtn) toggleBtn.addEventListener('click', function(){
