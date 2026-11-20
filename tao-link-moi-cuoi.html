@@ -75,7 +75,7 @@ A Đức - nhà gái"></textarea>
       <button id="btnClear" class="btn-secondary" type="button">Xóa hết</button>
     </div>
     <p id="parseMsg" class="msg"></p>
-    <div class="rule"><b>Quy tắc xưng hô:</b> A → Anh, C → Chị, E → Em, B → Bác, O → Ông, Ba → Bà, Co → Cô, Chu → Chú. Tên không có chữ đầu thì mặc định xưng “bạn”. Nhóm “bạn cao đẳng”: chỉ lấy tên gọi (chữ đầu tiên) và thêm “bạn” (vd “Cường” → “bạn Cường”). Trong thiệp, 2 đứa tự xưng theo khách: Bạn/Em → chúng tôi; Anh/Chị/Thầy → chúng em; Bác/Ông/Bà/Cô/Chú → chúng cháu. Chú ý: mời cả 2 vợ chồng thì ghi 1 dòng “A Hùng - C Lan”: thiệp xưng “anh chị”, 2 đứa xưng “chúng em”. Tên không có chữ đầu thì tự thêm “Bạn” phía trước (vd “Yến Oanh” → “Bạn Yến Oanh”); vợ chồng viết liền “Anh Hà chị Quỳnh” cũng nhận thành 1 khách. “2 bạn Đại Ánh” là 1 link vợ chồng: “Bạn Đại - Bạn Ánh”, xưng “các bạn”. Dòng “Nhà trai / Nhà gái” và “Tên nhóm:” dùng để chia bên và nhóm. Chữ viết tắt toàn chữ hoa ở cuối tên (vd “DD”) được coi là ghi chú nên sẽ bỏ khỏi tên trên thiệp, tên gốc vẫn hiện trong thẻ để đối chiếu.</div>
+    <div class="rule"><b>Quy tắc xưng hô:</b> A → Anh, C → Chị, E → Em, B → Bác, O → Ông, Ba → Bà, Co → Cô, Chu → Chú. Tên không có chữ đầu thì mặc định xưng “bạn”. Nhóm “bạn cao đẳng”: chỉ lấy tên gọi (chữ đầu tiên) và thêm “bạn” (vd “Cường” → “bạn Cường”). Trong thiệp, 2 đứa tự xưng theo khách: Bạn/Em → chúng tôi; Anh/Chị/Thầy → chúng em; Bác/Ông/Bà/Cô/Chú → chúng cháu. Chú ý: mời cả 2 vợ chồng thì ghi 1 dòng “A Hùng - C Lan”: thiệp xưng “anh chị”, 2 đứa xưng “chúng em”. Tên không có chữ đầu thì tự thêm “Bạn” phía trước (vd “Yến Oanh” → “Bạn Yến Oanh”); vợ chồng viết liền “Anh Hà chị Quỳnh” cũng nhận thành 1 khách. “2 bạn Đại Ánh” là 1 link vợ chồng: “Bạn Đại - Bạn Ánh”, xưng “các bạn”. Dòng “Nhà trai / Nhà gái” và “Tên nhóm:” dùng để chia bên và nhóm. Chữ viết tắt toàn chữ hoa ở cuối tên (vd “DD”) được coi là ghi chú nên sẽ bỏ khỏi tên trên thiệp, tên gốc vẫn hiện trong thẻ để đối chiếu. Nút “Dùng danh sách mẫu” chỉ điền mẫu vào ô nhập, không tự tạo link; bấm “Tạo link” khi trang đã có khách sẽ hỏi xác nhận trước khi thay.</div>
   </section>
 
   <section class="card" id="resultCard" hidden>
@@ -430,6 +430,8 @@ A Đức - nhà gái"></textarea>
       msgEl.className = 'msg';
       return;
     }
+    // Chống ghi đè nhầm: đang có khách mà tạo lại từ danh sách khác thì hỏi trước.
+    if (guests.length && !confirm('Trang đang có ' + guests.length + ' khách. Thay bằng danh sách mới (' + list.length + ' khách)?')) return;
     // Giữ lại trạng thái Đã mời của những khách đã có trước đó (khớp theo tên,
     // cả tên gốc để không mất dấu khi tên được làm sạch đuôi ghi chú)
     var prev = {};
@@ -484,7 +486,10 @@ A Đức - nhà gái"></textarea>
       'Gia đình:\n' +
       'A Hùng\n' +
       'C Mai (bạn thân)\n';
-    generate(true);
+    // Chỉ điền mẫu vào ô nhập, KHÔNG tự tạo link — để khỏi ghi đè nhầm danh sách đang có.
+    try { localStorage.setItem(LS_INPUT, inputEl.value); } catch (e) {}
+    msgEl.textContent = 'Đã điền danh sách mẫu vào ô nhập. Kiểm tra rồi bấm “Tạo link” nếu muốn dùng mẫu này.';
+    msgEl.className = 'msg';
   });
   $('#btnClear').addEventListener('click', function(){
     if (!confirm('Xóa hết danh sách và link đã tạo?')) return;
