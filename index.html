@@ -933,7 +933,7 @@ T</span></div>
     <audio id="bgMusic" preload="none"></audio>
   </div>
 </div></section>
-<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><span class="admin-only"><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 20/11/2026 08:55</span></span></footer>
+<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><span class="admin-only"><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 20/11/2026 09:21</span></span></footer>
 <!-- Floating controls (above content, below dialogs) -->
 <nav class="bottom-bar" aria-label="Điều hướng nhanh">
   <a href="#wishes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5z"/></svg><span>Gửi lời chúc</span></a>
@@ -1122,7 +1122,10 @@ function bindData() {
   $$('[data-bind]').forEach(el => {
     let v = weddingData[el.dataset.bind];
     if (v === undefined || v === '') return;
-    if (el.tagName === 'IMG') el.src = v; else el.textContent = applyPronoun(v);
+    if (el.tagName === 'IMG') el.src = v;
+    // Tên khách đã ghi đúng xưng hô ("Vợ chồng bạn Đạt", "Bạn Đại - Bạn Ánh"):
+    // không thay "bạn" trong tên bằng xưng hô nữa, kẻo thành "Vợ chồng các bạn Đạt".
+    else el.textContent = (el.dataset.bind === 'guestName') ? v : applyPronoun(v);
   });
   applyPronounToStatic();
   // Riêng gia đình anh Sơn chị Liên: ngoài bìa (phong thư) ghi đủ
