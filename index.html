@@ -1130,10 +1130,13 @@ function bindData() {
     else el.textContent = (el.dataset.bind === 'guestName') ? v : applyPronoun(v);
   });
   applyPronounToStatic();
-  // Riêng gia đình anh Sơn chị Liên: ngoài bìa (phong thư) ghi đủ
-  // "Gia đình anh Sơn chị Liên", còn trong thiệp rút gọn "Gia đình anh chị".
-  // Nhận cả link mới (guest=Gia đình anh Sơn chị Liên) lẫn link cũ (guest=Anh Sơn - Chị Liên).
-  if (weddingData.guestName === 'Gia đình anh Sơn chị Liên' || weddingData.guestName === 'Anh Sơn - Chị Liên') {
+  // Gia đình mời cả 2 vợ chồng ("Gia đình anh X chị Y", vd Sơn-Liên, Huy-Quỳnh):
+  // ngoài bìa (phong thư) ghi đủ tên, trong thiệp rút gọn "Gia đình anh chị".
+  // Link mới mang guest=Gia đình anh X chị Y (ngoài bìa đã đúng nhờ bindData);
+  // link cũ của Sơn-Liên (guest=Anh Sơn - Chị Liên) vẫn sửa cả bìa lẫn trong thiệp.
+  if (/^gia đình (anh|chị) \S+ (anh|chị) \S+$/i.test(weddingData.guestName)) {
+    document.querySelectorAll('p.invite-guest').forEach(el => { el.textContent = 'Gia đình anh chị'; });
+  } else if (weddingData.guestName === 'Anh Sơn - Chị Liên') {
     document.querySelectorAll('#opener .env-invite-guest').forEach(el => { el.textContent = 'Gia đình anh Sơn chị Liên'; });
     document.querySelectorAll('p.invite-guest').forEach(el => { el.textContent = 'Gia đình anh chị'; });
   }
