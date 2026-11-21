@@ -16,7 +16,7 @@
   .card h2{font-size:17px;margin:0 0 6px}
   .card h3{font-size:15px;margin:16px 0 8px}
   .hint{color:var(--ink2);font-size:13px;line-height:1.5;margin:0 0 10px}
-  textarea{width:100%;min-height:150px;border:1px solid var(--line);border-radius:12px;padding:10px;font-size:15px;line-height:1.55;font-family:inherit;resize:vertical;background:#fffdf7;color:var(--ink)}
+  textarea{width:100%;height:88px;min-height:88px;border:1px solid var(--line);border-radius:12px;padding:10px;font-size:15px;line-height:1.55;font-family:inherit;resize:vertical;background:#fffdf7;color:var(--ink)}
   textarea:focus{outline:2px solid var(--deep);outline-offset:1px}
   .btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
   button{font-family:inherit;cursor:pointer;border-radius:999px;border:0;padding:10px 18px;font-size:15px;font-weight:600}
@@ -83,11 +83,10 @@ A Đức - nhà gái"></textarea>
     <div class="btn-row">
       <button id="btnPaste" class="btn-secondary" type="button">📋 Dán nhanh</button>
       <button id="btnGen" class="btn-primary" type="button">Tạo link</button>
-      <button id="btnSample" class="btn-secondary" type="button">Dùng danh sách mẫu</button>
       <button id="btnClear" class="btn-secondary" type="button">Xóa hết</button>
     </div>
     <p id="parseMsg" class="msg"></p>
-    <details class="rule"><summary>Quy tắc xưng hô</summary>A → Anh, C → Chị, E → Em, B → Bác, O → Ông, Ba → Bà, Co → Cô, Chu → Chú. Tên không có chữ đầu thì mặc định xưng “bạn”. Nhóm “bạn cao đẳng”: chỉ lấy tên gọi (chữ đầu tiên) và thêm “bạn” (vd “Cường” → “bạn Cường”). Trong thiệp, 2 đứa tự xưng theo khách: Bạn/Em → chúng tôi; Anh/Chị/Thầy → chúng em; Bác/Ông/Bà/Cô/Chú → chúng cháu. Chú ý: mời cả 2 vợ chồng thì ghi 1 dòng “A Hùng - C Lan”: thiệp xưng “anh chị”, 2 đứa xưng “chúng em”. Tên không có chữ đầu thì tự thêm “Bạn” phía trước (vd “Yến Oanh” → “Bạn Yến Oanh”); vợ chồng viết liền “Anh Hà chị Quỳnh” cũng nhận thành 1 khách. “2 bạn Đại Ánh” là 1 link vợ chồng: “Bạn Đại - Bạn Ánh”, xưng “các bạn”. Dòng “Nhà trai / Nhà gái” và “Tên nhóm:” dùng để chia bên và nhóm. Chữ viết tắt toàn chữ hoa ở cuối tên (vd “DD”) được coi là ghi chú nên sẽ bỏ khỏi tên trên thiệp, tên gốc vẫn hiện trong thẻ để đối chiếu. Nút “Dùng danh sách mẫu” chỉ điền mẫu vào ô nhập, không tự tạo link; bấm “Tạo link” sẽ THÊM khách mới lên đầu danh sách, không xóa khách đã có (muốn xóa hết thì bấm “Xóa hết”). “Vợ chồng bạn Đạt” là 1 link vợ chồng: tên “Vợ chồng bạn Đạt”, xưng “các bạn”; “Vợ chồng anh Hùng” thì xưng “anh chị”.</details>
+    <details class="rule"><summary>Quy tắc xưng hô</summary>A → Anh, C → Chị, E → Em, B → Bác, O → Ông, Ba → Bà, Co → Cô, Chu → Chú. Tên không có chữ đầu thì mặc định xưng “bạn”. Nhóm “bạn cao đẳng”: chỉ lấy tên gọi (chữ đầu tiên) và thêm “bạn” (vd “Cường” → “bạn Cường”). Trong thiệp, 2 đứa tự xưng theo khách: Bạn/Em → chúng tôi; Anh/Chị/Thầy → chúng em; Bác/Ông/Bà/Cô/Chú → chúng cháu. Chú ý: mời cả 2 vợ chồng thì ghi 1 dòng “A Hùng - C Lan”: thiệp xưng “anh chị”, 2 đứa xưng “chúng em”. Tên không có chữ đầu thì tự thêm “Bạn” phía trước (vd “Yến Oanh” → “Bạn Yến Oanh”); vợ chồng viết liền “Anh Hà chị Quỳnh” cũng nhận thành 1 khách. “2 bạn Đại Ánh” là 1 link vợ chồng: “Bạn Đại - Bạn Ánh”, xưng “các bạn”. Dòng “Nhà trai / Nhà gái” và “Tên nhóm:” dùng để chia bên và nhóm. Chữ viết tắt toàn chữ hoa ở cuối tên (vd “DD”) được coi là ghi chú nên sẽ bỏ khỏi tên trên thiệp, tên gốc vẫn hiện trong thẻ để đối chiếu. Bấm “Tạo link” sẽ THÊM khách mới lên đầu danh sách, không xóa khách đã có (muốn xóa hết thì bấm “Xóa hết”). “Vợ chồng bạn Đạt” là 1 link vợ chồng: tên “Vợ chồng bạn Đạt”, xưng “các bạn”; “Vợ chồng anh Hùng” thì xưng “anh chị”.</details>
   </section>
 
   <section class="card" id="resultCard" hidden>
@@ -533,7 +532,7 @@ A Đức - nhà gái"></textarea>
     fitGuestNames();
   }
 
-  function generate(fromSample){
+  function generate(){
     var text = inputEl.value;
     var list = parseGuestList(text);
     if (!list.length) {
@@ -574,25 +573,7 @@ A Đức - nhà gái"></textarea>
       msgEl.className = 'msg';
     });
   });
-  $('#btnGen').addEventListener('click', function(){ generate(false); });
-  $('#btnSample').addEventListener('click', function(){
-    inputEl.value =
-      'Danh sách khách mời - Nhà trai\n' +
-      'Tất cả các nhóm\n' +
-      '1. A Cường - Gia đình - Đã mời\n' +
-      '2. C Thu - Bạn bè - Chưa mời\n' +
-      '3. A Đức - Gia đình - Chưa mời\n' +
-      'Tổng: 3 khách (1 đã mời, 2 chưa mời)\n' +
-      '\n' +
-      'Nhà gái\n' +
-      'Gia đình:\n' +
-      'A Hùng\n' +
-      'C Mai (bạn thân)\n';
-    // Chỉ điền mẫu vào ô nhập, KHÔNG tự tạo link — để khỏi ghi đè nhầm danh sách đang có.
-    try { localStorage.setItem(LS_INPUT, inputEl.value); } catch (e) {}
-    msgEl.textContent = 'Đã điền danh sách mẫu vào ô nhập. Kiểm tra rồi bấm “Tạo link” nếu muốn dùng mẫu này.';
-    msgEl.className = 'msg';
-  });
+  $('#btnGen').addEventListener('click', function(){ generate(); });
   $('#btnClear').addEventListener('click', function(){
     if (!confirm('Xóa hết danh sách và link đã tạo?')) return;
     guests = []; inputEl.value = '';
