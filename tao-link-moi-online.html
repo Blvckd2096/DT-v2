@@ -42,6 +42,7 @@
   .btn-copy.done{background:#2e7d32}
   .btn-invite{background:#fff;color:var(--deep2);border:1px solid var(--deep)}
   .btn-uninvite{background:#fff;color:var(--ink2);border:1px solid var(--line)}
+  .btn-delete{background:#fff;color:#b3261e;border:1px solid #e5b8b0}
   .empty{color:var(--ink2);font-size:14px;text-align:center;padding:14px 0}
   .invited-head{margin:18px 0 8px}
   .invited-head button{width:100%;background:var(--soft);color:var(--deep2);border:1px solid var(--line);text-align:left;padding:11px 14px;font-size:15px;display:flex;justify-content:space-between;align-items:center}
@@ -181,6 +182,13 @@ A Đức - nhà gái"></textarea>
   function apiPost(body){
     return fetch(apiUrl(), { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) })
       .then(function(r){ return r.json(); }).catch(function(){ return null; });
+  }
+  // Hàng đợi ghi lên Sheet: các lần lưu nối đuôi nhau để lần lưu sau
+  // (mới hơn) không bị lần lưu trước (cũ hơn) ghi đè khi bấm liên tiếp.
+  var writeQueue = Promise.resolve();
+  function queuePost(body){
+    writeQueue = writeQueue.then(function(){ return apiPost(body); });
+    return writeQueue;
   }
   function setSync(text, ok){
     if (!syncEl) return;
@@ -471,6 +479,7 @@ A Đức - nhà gái"></textarea>
         (g.invited
           ? '<button class="btn-uninvite" type="button">↩ Chưa mời</button>'
           : '<button class="btn-invite" type="button">✓ Đã mời</button>') +
+        '<button class="btn-delete" type="button">🗑 Xóa</button>' +
       '</div>';
     el.querySelector('.btn-copy').addEventListener('click', function(btn){
       var b = btn.currentTarget;
@@ -490,7 +499,20 @@ A Đức - nhà gái"></textarea>
       var next = !g.invited;
       g.invited = next; render();
       setSync('Đang lưu lên Google Sheet…');
-      apiPost({ action: 'setInvited', id: g.id, invited: next }).then(function(){ return loadOnline(); });
+      queuePost({ action: 'setInvited', id: g.id, invited: next }).then(function(d){
+        if (d && d.ok) { setSync('Đã lưu online ✓', true); }
+        else { g.invited = !next; render(); setSync('Chưa lưu online được — đã hoàn lại trạng thái.'); }
+      });
+    });
+    el.querySelector('.btn-delete').addEventListener('click', function(){
+      if (!confirm('Xóa link của "' + g.name + '"?')) return;
+      guests = guests.filter(function(x){ return x.id !== g.id; });
+      render();
+      setSync('Đang xóa khỏi Google Sheet…');
+      queuePost({ action: 'deleteGuest', id: g.id }).then(function(d){
+        if (d && d.ok) { setSync('Đã xóa online ✓', true); }
+        else { setSync('Chưa xóa online được — tải lại trang để kiểm tra.'); }
+      });
     });
     return el;
   }
@@ -589,16 +611,17 @@ A Đức - nhà gái"></textarea>
     }
     // Thêm khách mới lên ĐẦU danh sách, không xóa khách đã có.
     guests = list.concat(guests);
+    todoPage = 1; donePage = 1;
+    render();
+    var preInvited = list.filter(function(g){ return g.invited; }).length;
+    msgEl.textContent = 'Đã thêm ' + list.length + ' link mới lên đầu danh sách (tổng ' + guests.length + ' khách)' + (preInvited ? ' (' + preInvited + ' khách đã mời sẵn theo CCM)' : '') + '. Kiểm tra lại tên rồi copy gửi từng người.';
+    msgEl.className = 'msg ok';
+    resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Lưu lên Google Sheet chạy ngầm, không chặn việc copy link.
     setSync('Đang lưu lên Google Sheet…');
-    apiPost({ action: 'replaceGuestLinks', guests: guests }).then(function(){
-      todoPage = 1; donePage = 1;
-      return loadOnline();
-    }).then(function(ok){
-      if (!ok) { msgEl.textContent = 'Không lưu được lên Google Sheet. Kiểm tra mạng rồi bấm “Tạo link” lại.'; msgEl.className = 'msg'; return; }
-      var preInvited = list.filter(function(g){ return g.invited; }).length;
-      msgEl.textContent = 'Đã thêm ' + list.length + ' link mới lên đầu danh sách và lưu online (tổng ' + guests.length + ' khách)' + (preInvited ? ' (' + preInvited + ' khách đã mời sẵn theo CCM)' : '') + '. Kiểm tra lại tên rồi copy gửi từng người.';
-      msgEl.className = 'msg ok';
-      resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    queuePost({ action: 'replaceGuestLinks', guests: guests }).then(function(d){
+      if (d && d.ok) { setSync('Đã lưu online ✓', true); }
+      else { setSync('Chưa lưu online được — kiểm tra mạng rồi tải lại trang.'); }
     });
   }
 

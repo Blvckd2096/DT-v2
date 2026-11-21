@@ -42,6 +42,7 @@
   .btn-copy.done{background:#2e7d32}
   .btn-invite{background:#fff;color:var(--deep2);border:1px solid var(--deep)}
   .btn-uninvite{background:#fff;color:var(--ink2);border:1px solid var(--line)}
+  .btn-delete{background:#fff;color:#b3261e;border:1px solid #e5b8b0}
   .empty{color:var(--ink2);font-size:14px;text-align:center;padding:14px 0}
   .invited-head{margin:18px 0 8px}
   .invited-head button{width:100%;background:var(--soft);color:var(--deep2);border:1px solid var(--line);text-align:left;padding:11px 14px;font-size:15px;display:flex;justify-content:space-between;align-items:center}
@@ -420,6 +421,7 @@ A Đức - nhà gái"></textarea>
         (g.invited
           ? '<button class="btn-uninvite" type="button">↩ Chưa mời</button>'
           : '<button class="btn-invite" type="button">✓ Đã mời</button>') +
+        '<button class="btn-delete" type="button">🗑 Xóa</button>' +
       '</div>';
     el.querySelector('.btn-copy').addEventListener('click', function(btn){
       var b = btn.currentTarget;
@@ -437,6 +439,11 @@ A Đức - nhà gái"></textarea>
     var toggleBtn = el.querySelector('.btn-invite, .btn-uninvite');
     if (toggleBtn) toggleBtn.addEventListener('click', function(){
       g.invited = !g.invited;
+      save(); render();
+    });
+    el.querySelector('.btn-delete').addEventListener('click', function(){
+      if (!confirm('Xóa link của "' + g.name + '"?')) return;
+      guests = guests.filter(function(x){ return x.id !== g.id; });
       save(); render();
     });
     return el;
