@@ -84,6 +84,7 @@ A Đức - nhà gái"></textarea>
       <button id="btnPaste" class="btn-secondary" type="button">📋 Dán nhanh</button>
       <button id="btnGen" class="btn-primary" type="button">Tạo link</button>
       <button id="btnClear" class="btn-secondary" type="button">Xóa hết</button>
+      <button id="btnDedupe" class="btn-secondary" type="button">Xóa trùng</button>
     </div>
     <p id="parseMsg" class="msg"></p>
     <details class="rule"><summary>Quy tắc xưng hô</summary>A → Anh, C → Chị, E → Em, B → Bác, O → Ông, Ba → Bà, Co → Cô, Chu → Chú. Tên không có chữ đầu thì mặc định xưng “bạn”. Nhóm “bạn cao đẳng”: chỉ lấy tên gọi (chữ đầu tiên) và thêm “bạn” (vd “Cường” → “bạn Cường”). Trong thiệp, 2 đứa tự xưng theo khách: Bạn/Em → chúng tôi; Anh/Chị/Thầy → chúng em; Bác/Ông/Bà/Cô/Chú → chúng cháu. Chú ý: mời cả 2 vợ chồng thì ghi 1 dòng “A Hùng - C Lan”: thiệp xưng “anh chị”, 2 đứa xưng “chúng em”. Tên không có chữ đầu thì tự thêm “Bạn” phía trước (vd “Yến Oanh” → “Bạn Yến Oanh”); vợ chồng viết liền “Anh Hà chị Quỳnh” cũng nhận thành 1 khách. “2 bạn Đại Ánh” là 1 link vợ chồng: “Bạn Đại - Bạn Ánh”, xưng “các bạn”. Dòng “Nhà trai / Nhà gái” và “Tên nhóm:” dùng để chia bên và nhóm. Chữ viết tắt toàn chữ hoa ở cuối tên (vd “DD”) được coi là ghi chú nên sẽ bỏ khỏi tên trên thiệp, tên gốc vẫn hiện trong thẻ để đối chiếu. Bấm “Tạo link” sẽ THÊM khách mới lên đầu danh sách, không xóa khách đã có (muốn xóa hết thì bấm “Xóa hết”). “Vợ chồng bạn Đạt” là 1 link vợ chồng: tên “Vợ chồng bạn Đạt”, xưng “các bạn”; “Vợ chồng anh Hùng” thì xưng “anh chị”.</details>
@@ -532,6 +533,24 @@ A Đức - nhà gái"></textarea>
     fitGuestNames();
   }
 
+  // Khóa trùng: cùng tên + xưng hô + tên gốc. Bên/nhóm KHÔNG tính,
+  // vì cùng 1 người dán từ bản xuất CCM (có bên/nhóm) hay gõ tay
+  // (không bên/nhóm) vẫn là 1 người. So sánh đúng cả hoa/thường
+  // để không gộp nhầm 2 người trùng tên (vd "Bạn Trang").
+  function dupKey(g){
+    return JSON.stringify([g.name, g.pronoun || '', g.orig || '']);
+  }
+  // Gộp trùng trong 1 mảng: giữ bản đầu tiên, đã mời thì giữ (OR).
+  function dedupeGuests(arr){
+    var seen = {}, out = [];
+    arr.forEach(function(g){
+      var k = dupKey(g);
+      if (seen[k]) { if (g.invited) seen[k].invited = true; return; }
+      seen[k] = g; out.push(g);
+    });
+    return out;
+  }
+
   function generate(){
     var text = inputEl.value;
     var list = parseGuestList(text);
@@ -541,14 +560,33 @@ A Đức - nhà gái"></textarea>
       return;
     }
     // Thêm khách mới lên ĐẦU danh sách, không xóa khách đã có.
-    guests = list.concat(guests);
+    // Tên nào đã có link rồi thì bỏ qua (tránh nhân đôi khi dán lại
+    // cùng danh sách); nếu bản mới ghi đã mời thì giữ dấu đã mời.
+    var seen = {};
+    guests.forEach(function(g){ seen[dupKey(g)] = g; });
+    var fresh = [], skipped = 0;
+    list.forEach(function(g){
+      var k = dupKey(g);
+      if (seen[k]) { if (g.invited) seen[k].invited = true; skipped++; return; }
+      seen[k] = g; fresh.push(g);
+    });
+    list = fresh;
     // Tên nào đã tạo link xong thì mất khỏi ô nhập để gõ đợt tiếp.
     inputEl.value = '';
     save();
+    if (!list.length) {
+      // Toàn bộ đều đã có link: chỉ cập nhật dấu đã mời rồi báo, không thêm gì.
+      todoPage = 1; donePage = 1;
+      render();
+      msgEl.textContent = 'Các tên này đã có link rồi (' + skipped + ' tên trùng), không thêm trùng.';
+      msgEl.className = 'msg';
+      return;
+    }
+    guests = list.concat(guests);
     todoPage = 1; donePage = 1;
     save(); render();
     var preInvited = list.filter(function(g){ return g.invited; }).length;
-    msgEl.textContent = 'Đã thêm ' + list.length + ' link mới lên đầu danh sách (tổng ' + guests.length + ' khách)' + (preInvited ? ' (' + preInvited + ' khách đã mời sẵn theo CCM)' : '') + '. Kiểm tra lại tên rồi copy gửi từng người.';
+    msgEl.textContent = 'Đã thêm ' + list.length + ' link mới lên đầu danh sách (tổng ' + guests.length + ' khách)' + (skipped ? ' (bỏ qua ' + skipped + ' tên đã có)' : '') + (preInvited ? ' (' + preInvited + ' khách đã mời sẵn theo CCM)' : '') + '. Kiểm tra lại tên rồi copy gửi từng người.';
     msgEl.className = 'msg ok';
     resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
@@ -582,6 +620,18 @@ A Đức - nhà gái"></textarea>
     guests = []; inputEl.value = '';
     try { localStorage.removeItem(LS_GUESTS); localStorage.removeItem(LS_INPUT); } catch (e) {}
     msgEl.textContent = ''; todoPage = 1; donePage = 1; render();
+  });
+  $('#btnDedupe').addEventListener('click', function(){
+    var before = guests.length;
+    var cleaned = dedupeGuests(guests);
+    var removed = before - cleaned.length;
+    if (!removed) { msgEl.textContent = 'Không có khách trùng.'; msgEl.className = 'msg'; return; }
+    if (!confirm('Tìm thấy ' + removed + ' bản trùng. Chỉ giữ lại 1 bản mỗi tên, xóa ' + removed + ' bản trùng?')) return;
+    guests = cleaned;
+    todoPage = 1; donePage = 1;
+    save(); render();
+    msgEl.textContent = 'Đã xóa ' + removed + ' bản trùng, còn ' + guests.length + ' khách.';
+    msgEl.className = 'msg ok';
   });
   // Sao lưu / khôi phục: tải file JSON chứa danh sách + trạng thái Đã mời,
   // để khôi phục lại khi đổi máy hoặc khi bộ nhớ trình duyệt bị xóa.
