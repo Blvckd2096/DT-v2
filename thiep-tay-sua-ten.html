@@ -1146,6 +1146,16 @@ A Đức - nhà gái"></textarea>
     return { displayName: cleanName, pronoun: 'bạn', origName: (cleanName.toLowerCase() !== name.toLowerCase()) ? name : '' };
   }
 
+  // Cặp vợ chồng "Anh X - Chị Y" / "Chị X - Anh Y" thuộc nhóm "Gia đình"
+  // thì tên khách đầy đủ là "Gia đình anh X chị Y" (xưng hô viết thường,
+  // bỏ dấu gạch nối). Không phải cặp Anh/Chị khác nhau thì trả về ''.
+  function familyNameFromCouple(name){
+    var m = String(name || '').match(/^(Anh|Chị)\s+(.+?)\s+-\s+(Anh|Chị)\s+(.+)$/);
+    if (!m || m[1] === m[3]) return '';
+    return 'Gia đình ' + m[1].toLowerCase() + ' ' + m[2].trim() + ' ' + m[3].toLowerCase() + ' ' + m[4].trim();
+  }
+  function isFamilyGroup(g){ return /^(gia đình|gai đình)$/i.test(String(g || '').trim()); }
+
   function parseGuestList(text){
     var out = [];
     var side = '', group = '';
@@ -1191,8 +1201,10 @@ A Đức - nhà gái"></textarea>
         }
       }
       var invited = false, namePart = line, lineGroup = group;
-      // Định dạng xuất CCM: "1. A Cường - Gia đình - Đã mời"
-      var ccm = line.match(/^\d+\.\s+(.+?)\s+-\s+(.+?)\s+-\s+(Đã mời|Chưa mời)\s*$/);
+      // Định dạng xuất CCM: "1. A Cường - Gia đình - Đã mời".
+      // Tên khách lấy tham lam (đoạn dài nhất) để cặp vợ chồng
+      // "Anh X - Chị Y" không bị cắt mất nửa sau vào tên nhóm.
+      var ccm = line.match(/^\d+\.\s+(.+)\s+-\s+(.+?)\s+-\s+(Đã mời|Chưa mời)\s*$/);
       if (ccm) {
         namePart = ccm[1]; lineGroup = ccm[2]; invited = (ccm[3] === 'Đã mời');
       } else {
@@ -1202,8 +1214,11 @@ A Đức - nhà gái"></textarea>
       }
       var parsed = null;
       if (!ccm) {
-        // Dòng bắt đầu bằng "Gia đình ..." thì đó là tên nhóm, phần sau mới là tên khách
-        // (vd "Gai đình Anh Sơn chị Liên" -> nhóm "Gia đình", khách "Anh Sơn - Chị Liên").
+        // Dòng bắt đầu bằng "Gia đình ..." là MỘT khách gia đình: "Gia đình"
+        // thuộc về tên khách, không phải tên nhóm tách riêng. Gán nhóm
+        // "Gia đình" ở đây, còn tên đầy đủ "Gia đình anh X chị Y" được
+        // ghép lại ở bước đổi tên cặp vợ chồng thuộc nhóm Gia đình bên dưới
+        // (vd "Gia đình Anh Sơn chị Liên", "Gia đình anh Huy chị Quỳnh").
         var gm = namePart.match(/^(gia đình|gai đình)\s+(.+)$/i);
         if (gm) { lineGroup = 'Gia đình'; namePart = gm[2]; }
         // Dòng "Vợ chồng bạn Đạt" là 1 link vợ chồng (chỉ biết tên 1 người):
@@ -1263,6 +1278,14 @@ A Đức - nhà gái"></textarea>
       }
       if (!parsed) parsed = parseName(namePart);
       if (!parsed) return;
+      // Cặp vợ chồng thuộc nhóm "Gia đình" là 1 khách gia đình: giữ tên
+      // đầy đủ "Gia đình anh X chị Y", xưng "anh chị" — áp cho mọi gia
+      // đình, từ dòng gõ thẳng "Gia đình anh X chị Y", cặp trong nhóm
+      // "Gia đình", tới dòng xuất CCM "... - Gia đình - Đã mời".
+      if (isFamilyGroup(lineGroup)) {
+        var famName = familyNameFromCouple(parsed.displayName);
+        if (famName) { parsed.displayName = famName; parsed.pronoun = 'anh chị'; parsed.origName = ''; }
+      }
       // Nhóm bạn cao đẳng: chỉ lấy tên gọi (chữ đầu tiên), xưng "bạn" + tên.
       if (lineGroup && /cao đẳng/i.test(lineGroup) && parsed.pronoun === 'bạn') {
         var fw = parsed.displayName.split(/\s+/)[0];
@@ -1286,16 +1309,27 @@ A Đức - nhà gái"></textarea>
     return out;
   }
 
-  // Tên khách trong link: riêng gia đình anh Sơn chị Liên thì mang tên đầy đủ
-  // "Gia đình anh Sơn chị Liên" (ngoài bìa phong thư ghi đủ; trong thiệp rút gọn
-  // "Gia đình anh chị" — xem thiệp index.html). Chỉ áp dụng cho gia đình này.
+  // Tên khách trong link: cặp vợ chồng thuộc nhóm "Gia đình" thì mang tên
+  // đầy đủ "Gia đình anh X chị Y" (ngoài bìa phong thư ghi đủ; trong thiệp
+  // rút gọn "Gia đình anh chị" — xem thiệp index.html). Áp cho mọi gia
+  // đình dạng này, gồm cả gia đình anh Sơn chị Liên như trước.
   function linkGuestName(g){
-    return (g.name === 'Anh Sơn - Chị Liên' && g.group === 'Gia đình') ? 'Gia đình anh Sơn chị Liên' : g.name;
+    if (g && isFamilyGroup(g.group)) {
+      var fam = familyNameFromCouple(g.name);
+      if (fam) return fam;
+    }
+    return g.name;
   }
   // Tên khách hiện trong thiệp: ngoài bìa + trong thiệp (giống hệt thiệp index.html).
   function inviteNames(linkGuest){
     var env = linkGuest === 'Anh Sơn - Chị Liên' ? 'Gia đình anh Sơn chị Liên' : linkGuest;
-    var inside = (linkGuest === 'Gia đình anh Sơn chị Liên' || linkGuest === 'Anh Sơn - Chị Liên') ? 'Gia đình anh chị' : linkGuest;
+    var inside = linkGuest;
+    // Khách "Gia đình anh X chị Y" (mọi gia đình): bìa ghi đủ tên,
+    // trong thiệp rút gọn "Gia đình anh chị". Link cũ của riêng gia đình
+    // Sơn – Liên (tên trong link chưa có chữ "Gia đình") cũng vậy.
+    if (/^Gia đình (anh|chị) .+ (anh|chị) .+$/i.test(linkGuest) || linkGuest === 'Anh Sơn - Chị Liên') {
+      inside = 'Gia đình anh chị';
+    }
     return { env: env, inside: inside };
   }
   function makeLink(g){
