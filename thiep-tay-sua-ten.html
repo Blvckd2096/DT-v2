@@ -442,6 +442,16 @@
 
         <div class="row" style="margin-top:14px">
           <div class="field grow">
+            <label>Thiệp của</label>
+            <div class="seg" role="group" aria-label="Thiệp của nhà trai hay nhà gái">
+              <button type="button" id="sideTrai" aria-pressed="true">Nhà trai</button>
+              <button type="button" id="sideGai" aria-pressed="false">Nhà gái</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:14px">
+          <div class="field grow">
             <label>Ảnh tải xuống gồm</label>
             <div class="seg" role="group" aria-label="Phạm vi ảnh">
               <button type="button" id="scopeBoth" aria-pressed="true">Cả thiệp · 2 mặt (ngang)</button>
@@ -762,6 +772,47 @@ A Đức - nhà gái"></textarea>
         scopeBoth.addEventListener('click', function () { setScope(true); });
         scopeOne.addEventListener('click', function () { setScope(false); });
 
+        /* ---------- Nút gạt Thiệp của: Nhà trai / Nhà gái ----------
+           Chỉ đổi chữ bên trong khung thiệp (#capture): phía Nhà gái đưa
+           tên cô dâu lên trước, đảo khối 2 gia đình, mặt lễ thành
+           "Lễ Vu Quy" 9:00 tại nhà gái và monogram TĐ. Lựa chọn được nhớ
+           bằng localStorage để tải lại trang vẫn giữ nguyên phía. */
+        var sideTrai = document.getElementById('sideTrai');
+        var sideGai = document.getElementById('sideGai');
+        var coupleEl = document.querySelector('#panelParty .couple');
+        var familiesEl = document.querySelector('#panelParty .families');
+        var famBlocks = familiesEl ? familiesEl.querySelectorAll('.fam') : [];
+        var famTrai = famBlocks[0];
+        var famGai = famBlocks[1];
+        var ceremonyTitle = document.querySelector('#panelCeremony .ceremony');
+        var ceremonyVenue = document.querySelector('#panelCeremony .venue');
+        var monoTxt = document.querySelector('#panelCeremony .mono-txt');
+        var COUPLE_TRAI = 'Dương Hải Đăng<span class="amp">&amp;</span>Nguyễn Ánh Tuyết';
+        var COUPLE_GAI = 'Nguyễn Ánh Tuyết<span class="amp">&amp;</span>Dương Hải Đăng';
+        var VENUE_TRAI = 'Tại: <b>Nhà Văn Hóa Thôn Đình</b><br /><b>Xã Tam Hồng - Tỉnh Phú Thọ</b>';
+        var VENUE_GAI = 'Tại: <b>SN 225 Thôn Chùa</b><br /><b>Tam Hồng - Yên Lạc - Phú Thọ</b>';
+        var sideState = 'trai';
+        try { if (localStorage.getItem('thiepTaySide') === 'gai') sideState = 'gai'; } catch (e) {}
+
+        function setSide(gai) {
+          sideState = gai ? 'gai' : 'trai';
+          sideTrai.setAttribute('aria-pressed', gai ? 'false' : 'true');
+          sideGai.setAttribute('aria-pressed', gai ? 'true' : 'false');
+          if (coupleEl) coupleEl.innerHTML = gai ? COUPLE_GAI : COUPLE_TRAI;
+          if (familiesEl && famTrai && famGai) {
+            if (gai) { familiesEl.appendChild(famGai); familiesEl.appendChild(famTrai); }
+            else { familiesEl.appendChild(famTrai); familiesEl.appendChild(famGai); }
+          }
+          if (ceremonyTitle) ceremonyTitle.textContent = gai ? 'Lễ Vu Quy' : 'Lễ Thành Hôn';
+          if (ceremonyVenue) ceremonyVenue.innerHTML = gai ? VENUE_GAI : VENUE_TRAI;
+          if (monoTxt) monoTxt.textContent = gai ? 'TĐ' : 'ĐT';
+          try { localStorage.setItem('thiepTaySide', sideState); } catch (e) {}
+          requestAnimationFrame(fitStage);
+        }
+        sideTrai.addEventListener('click', function () { setSide(false); });
+        sideGai.addEventListener('click', function () { setSide(true); });
+        setSide(sideState === 'gai');
+
         btnClear.addEventListener('click', function () {
           guestName.value = '';
           refresh();
@@ -773,7 +824,7 @@ A Đức - nhà gái"></textarea>
           var clean = name.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
             .replace(/đ/g, 'd').replace(/Đ/g, 'D')
             .replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-          return 'Thiep-moi-' + (clean || 'Khach-moi') + '.png';
+          return 'Thiep-moi-' + (sideState === 'gai' ? 'nha-gai-' : '') + (clean || 'Khach-moi') + '.png';
         }
 
         function showSaved(blob) {
