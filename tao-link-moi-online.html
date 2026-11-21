@@ -90,7 +90,7 @@ A Đức - nhà gái"></textarea>
       <button id="btnClear" class="btn-secondary" type="button">Xóa hết</button>
     </div>
     <p id="parseMsg" class="msg"></p>
-    <div class="rule"><b>Quy tắc xưng hô:</b> A → Anh, C → Chị, E → Em, B → Bác, O → Ông, Ba → Bà, Co → Cô, Chu → Chú. Tên không có chữ đầu thì mặc định xưng “bạn”. Nhóm “bạn cao đẳng”: chỉ lấy tên gọi (chữ đầu tiên) và thêm “bạn” (vd “Cường” → “bạn Cường”). Trong thiệp, 2 đứa tự xưng theo khách: Bạn/Em → chúng tôi; Anh/Chị/Thầy → chúng em; Bác/Ông/Bà/Cô/Chú → chúng cháu. Chú ý: mời cả 2 vợ chồng thì ghi 1 dòng “A Hùng - C Lan”: thiệp xưng “anh chị”, 2 đứa xưng “chúng em”. Tên không có chữ đầu thì tự thêm “Bạn” phía trước (vd “Yến Oanh” → “Bạn Yến Oanh”); vợ chồng viết liền “Anh Hà chị Quỳnh” cũng nhận thành 1 khách. “2 bạn Đại Ánh” là 1 link vợ chồng: “Bạn Đại - Bạn Ánh”, xưng “các bạn”. Dòng “Nhà trai / Nhà gái” và “Tên nhóm:” dùng để chia bên và nhóm. Chữ viết tắt toàn chữ hoa ở cuối tên (vd “DD”) được coi là ghi chú nên sẽ bỏ khỏi tên trên thiệp, tên gốc vẫn hiện trong thẻ để đối chiếu. Nút “Dùng danh sách mẫu” chỉ điền mẫu vào ô nhập, không tự tạo link; bấm “Tạo link” khi trang đã có khách sẽ hỏi xác nhận trước khi thay. “Vợ chồng bạn Đạt” là 1 link vợ chồng: tên “Vợ chồng bạn Đạt”, xưng “các bạn”; “Vợ chồng anh Hùng” thì xưng “anh chị”.</div>
+    <div class="rule"><b>Quy tắc xưng hô:</b> A → Anh, C → Chị, E → Em, B → Bác, O → Ông, Ba → Bà, Co → Cô, Chu → Chú. Tên không có chữ đầu thì mặc định xưng “bạn”. Nhóm “bạn cao đẳng”: chỉ lấy tên gọi (chữ đầu tiên) và thêm “bạn” (vd “Cường” → “bạn Cường”). Trong thiệp, 2 đứa tự xưng theo khách: Bạn/Em → chúng tôi; Anh/Chị/Thầy → chúng em; Bác/Ông/Bà/Cô/Chú → chúng cháu. Chú ý: mời cả 2 vợ chồng thì ghi 1 dòng “A Hùng - C Lan”: thiệp xưng “anh chị”, 2 đứa xưng “chúng em”. Tên không có chữ đầu thì tự thêm “Bạn” phía trước (vd “Yến Oanh” → “Bạn Yến Oanh”); vợ chồng viết liền “Anh Hà chị Quỳnh” cũng nhận thành 1 khách. “2 bạn Đại Ánh” là 1 link vợ chồng: “Bạn Đại - Bạn Ánh”, xưng “các bạn”. Dòng “Nhà trai / Nhà gái” và “Tên nhóm:” dùng để chia bên và nhóm. Chữ viết tắt toàn chữ hoa ở cuối tên (vd “DD”) được coi là ghi chú nên sẽ bỏ khỏi tên trên thiệp, tên gốc vẫn hiện trong thẻ để đối chiếu. Nút “Dùng danh sách mẫu” chỉ điền mẫu vào ô nhập, không tự tạo link; bấm “Tạo link” sẽ THÊM khách mới lên đầu danh sách, không xóa khách đã có (muốn xóa hết thì bấm “Xóa hết”). “Vợ chồng bạn Đạt” là 1 link vợ chồng: tên “Vợ chồng bạn Đạt”, xưng “các bạn”; “Vợ chồng anh Hùng” thì xưng “anh chị”.</div>
   </section>
 
   <section class="card" id="resultCard" hidden>
@@ -522,6 +522,20 @@ A Đức - nhà gái"></textarea>
     mk('Sau ›', page + 1, page >= totalPages, false);
   }
 
+  // Tên dài thì thu nhỏ cỡ chữ để vừa 1 hàng ngang; tên ngắn giữ nguyên 16px.
+  function fitGuestNames(){
+    document.querySelectorAll('.g-name').forEach(function(el){
+      el.style.whiteSpace = 'nowrap';
+      el.style.overflow = 'hidden';
+      el.style.textOverflow = 'ellipsis';
+      el.style.fontSize = '';
+      var fs = 16;
+      el.style.fontSize = fs + 'px';
+      while (fs > 11 && el.scrollWidth > el.clientWidth) { fs -= 1; el.style.fontSize = fs + 'px'; }
+    });
+  }
+  window.addEventListener('resize', fitGuestNames);
+
   function render(){
     var q = (searchEl.value || '').trim().toLowerCase();
     var match = function(g){
@@ -561,6 +575,7 @@ A Đức - nhà gái"></textarea>
     }
     var pd = $('#pagerDone'); if (pd) pd.style.display = listDone.hidden ? 'none' : '';
     resultCard.hidden = false;
+    fitGuestNames();
   }
 
   function generate(fromSample){
@@ -571,24 +586,16 @@ A Đức - nhà gái"></textarea>
       msgEl.className = 'msg';
       return;
     }
-    // Chống ghi đè nhầm: đang có khách mà tạo lại từ danh sách khác thì hỏi trước.
-    if (guests.length && !confirm('Trang đang có ' + guests.length + ' khách. Thay bằng danh sách mới (' + list.length + ' khách)?')) return;
-    // Giữ lại trạng thái Đã mời của những khách đã có trước đó (khớp theo tên,
-    // cả tên gốc để không mất dấu khi tên được làm sạch đuôi ghi chú)
-    var prev = {};
-    guests.forEach(function(g){ prev[g.name] = g.invited; if (g.orig) prev[g.orig] = g.invited; });
-    list.forEach(function(g){
-      if (prev[g.name] !== undefined) g.invited = prev[g.name];
-      else if (g.orig && prev[g.orig] !== undefined) g.invited = prev[g.orig];
-    });
+    // Thêm khách mới lên ĐẦU danh sách, không xóa khách đã có.
+    guests = list.concat(guests);
     setSync('Đang lưu lên Google Sheet…');
-    apiPost({ action: 'replaceGuestLinks', guests: list }).then(function(){
+    apiPost({ action: 'replaceGuestLinks', guests: guests }).then(function(){
       todoPage = 1; donePage = 1;
       return loadOnline();
     }).then(function(ok){
       if (!ok) { msgEl.textContent = 'Không lưu được lên Google Sheet. Kiểm tra mạng rồi bấm “Tạo link” lại.'; msgEl.className = 'msg'; return; }
       var preInvited = list.filter(function(g){ return g.invited; }).length;
-      msgEl.textContent = 'Đã tạo ' + list.length + ' link và lưu online' + (preInvited ? ' (' + preInvited + ' khách đã mời sẵn theo CCM)' : '') + '. Kiểm tra lại tên rồi copy gửi từng người.';
+      msgEl.textContent = 'Đã thêm ' + list.length + ' link mới lên đầu danh sách và lưu online (tổng ' + guests.length + ' khách)' + (preInvited ? ' (' + preInvited + ' khách đã mời sẵn theo CCM)' : '') + '. Kiểm tra lại tên rồi copy gửi từng người.';
       msgEl.className = 'msg ok';
       resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
