@@ -1,0 +1,1784 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Thiệp Tay Sửa Tên — Đăng &amp; Tuyết</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Noto+Serif:ital,wght@0,400;0,600;1,400&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #eef0e6;
+        --bg-soft: #f7f7f0;
+        --surface: #ffffff;
+        --ink: #2e3527;
+        --ink-soft: #5c6650;
+        --line: #d5dbc6;
+        --accent: #4a7c59;
+        --accent-deep: #356245;
+        --accent-ink: #ffffff;
+        --field-bg: #ffffff;
+        --shadow: 0 10px 30px rgba(53, 74, 47, 0.14);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #171a14;
+          --bg-soft: #1e221a;
+          --surface: #23281f;
+          --ink: #e8ecdd;
+          --ink-soft: #aab39b;
+          --line: #3a4231;
+          --accent: #7fae8d;
+          --accent-deep: #9cc4a9;
+          --accent-ink: #14201a;
+          --field-bg: #1a1e16;
+          --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+        }
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; overflow-x: hidden; }
+      body {
+        font-family: "Be Vietnam Pro", system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+        -webkit-font-smoothing: antialiased;
+      }
+      button, select, input { min-height: 44px; font-family: inherit; }
+      .wrap { max-width: 1180px; margin: 0 auto; padding: 20px 16px 48px; }
+      /* Header, controls and the saved-image box stay in a readable column;
+         only the invitation preview uses the full landscape width. */
+      h1, .lede, .controls, .saved-box { max-width: 720px; margin-left: auto; margin-right: auto; }
+
+      h1 {
+        font-family: "Playfair Display", "Noto Serif", serif;
+        font-size: 26px; line-height: 1.25; margin: 4px 0 6px; font-weight: 700;
+      }
+      .lede { margin: 0 0 18px; color: var(--ink-soft); font-size: 14.5px; line-height: 1.55; }
+
+      /* ---------- Nút chuyển 2 trang (góc trên bên phải) ----------
+         Mỗi trang có đúng 1 nút ở góc trên bên phải, bấm là qua trang
+         kia — không còn thanh tab chiếm chỗ, mỗi trang hiện full màn hình. */
+      .switchrow { display: flex; justify-content: flex-end; margin: 0 0 14px; }
+      .switchbtn {
+        border: 0; background: var(--accent); color: var(--accent-ink);
+        border-radius: 999px; font-size: 14px; font-weight: 600; cursor: pointer;
+        padding: 10px 16px; min-height: 42px;
+        display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
+        box-shadow: var(--shadow); font-family: inherit;
+      }
+      .switchbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+      /* Khi ở trang "Mời nhiều người": trang đó chiếm trọn màn hình —
+         bỏ khung .wrap bên ngoài (max-width + padding) để nó hiện đúng
+         kích thước như khi mở riêng trang tạo link. */
+      body.bulk-mode { background: #FFECEE; }
+      body.bulk-mode main.wrap { max-width: none; padding: 0; }
+      #panelBulk { background: #FFECEE; }
+
+      /* ---------- Bulk invite tab: the real link-creator page, inlined ----------
+         Nguyên trang tao-link-moi-online.html nằm ngay trong tab này.
+         Toàn bộ CSS của trang đó được đóng khung dưới .bulk-app để không
+         chạm vào giao diện thiệp tay; biến màu của nó cũng chỉ sống trong
+         .bulk-app. Trang giữ nguyên nền hồng như bản gốc. */
+      .panel-bulk .hint a { color: #c05a72; font-weight: 600; }
+      .panel-bulk > .hint { max-width: 640px; margin: 0 auto; padding: 2px 14px 26px; color: #6f4b54; }
+      .bulk-app { border-radius: 0; box-shadow: none; }
+      /* Nút qua trang Thiệp tay: góc trên bên phải của trang tạo link,
+         đúng vị trí khoanh đỏ trong ảnh anh gửi. */
+      .bulk-app .page-switch-row { display: flex; justify-content: flex-end; margin: 0 0 4px; }
+      .bulk-app .page-switch-btn { background: #fff; color: var(--deep2); border: 1px solid var(--line); box-shadow: 0 4px 14px rgba(212,122,136,.18); font-size: 14px; font-weight: 600; padding: 9px 14px; min-height: 40px; display: inline-flex; align-items: center; gap: 7px; }
+      /* Công tắc 2 bản Online / Offline trong tab Mời nhiều người */
+      .bulk-app .mode-switch { display: flex; gap: 3px; padding: 3px; background: #fff; border: 1px solid var(--line); border-radius: 999px; margin: 0 0 8px; }
+      .bulk-app .mode-switch button { flex: 1; background: transparent; color: var(--ink2); border-radius: 999px; padding: 9px 6px; font-size: 14px; font-weight: 600; min-height: 40px; }
+      .bulk-app .mode-switch button[aria-pressed="true"] { background: var(--deep); color: #fff; }
+      .bulk-app .sync-row { display: flex; align-items: flex-start; justify-content: center; gap: 8px; }
+      .bulk-app .sync-row .msg { flex: 1; text-align: center; }
+      .bulk-app .sync-row > button { flex: 0 0 auto; padding: 6px 12px; font-size: 13px; margin-top: 6px; }
+      .bulk-app { --bg:#FFECEE;--card:#fff;--ink:#4a2f35;--ink2:#6f4b54;--deep:#d47a88;--deep2:#c05a72;--line:rgba(212,122,136,.45);--soft:#FFF0F2 }
+      .bulk-app * { box-sizing:border-box }
+      .bulk-app { margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Be Vietnam Pro',sans-serif }
+      .bulk-app .wrap { max-width:640px;margin:0 auto;padding:20px 14px 48px }
+      .bulk-app header { text-align:center;margin:6px 0 18px }
+      .bulk-app h1 { font-family:Georgia,serif;font-size:28px;margin:0;color:var(--deep2) }
+      .bulk-app .sub { color:var(--ink2);font-size:14px;margin:6px 0 0 }
+      .bulk-app .card { background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 14px;margin-bottom:14px;box-shadow:0 8px 28px rgba(212,122,136,.16) }
+      .bulk-app .card h2 { font-size:17px;margin:0 0 6px }
+      .bulk-app .card h3 { font-size:15px;margin:16px 0 8px }
+      .bulk-app .hint { color:var(--ink2);font-size:13px;line-height:1.5;margin:0 0 10px }
+      .bulk-app textarea { width:100%;height:88px;min-height:88px;border:1px solid var(--line);border-radius:12px;padding:10px;font-size:15px;line-height:1.55;font-family:inherit;resize:vertical;background:#fffdf7;color:var(--ink) }
+      .bulk-app textarea:focus { outline:2px solid var(--deep);outline-offset:1px }
+      .bulk-app .btn-row { display:flex;gap:8px;flex-wrap:wrap;margin-top:10px }
+      .bulk-app button { font-family:inherit;cursor:pointer;border-radius:999px;border:0;padding:10px 18px;font-size:15px;font-weight:600 }
+      .bulk-app .btn-primary { background:var(--deep);color:#fff }
+      .bulk-app .btn-secondary { background:var(--soft);color:var(--deep2);border:1px solid var(--line) }
+      .bulk-app .msg { font-size:13px;color:var(--ink2);margin:10px 0 0;min-height:18px }
+      .bulk-app .msg.ok { color:#2e7d32 }
+      .bulk-app .stats { display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 12px }
+      .bulk-app .stat { flex:1;min-width:90px;background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:8px 10px;text-align:center }
+      .bulk-app .stat b { display:block;font-size:20px;color:var(--deep2) }
+      .bulk-app .stat span { font-size:12px;color:var(--ink2) }
+      .bulk-app #search { width:100%;border:1px solid var(--line);border-radius:999px;padding:10px 14px;font-size:15px;font-family:inherit;background:#fffdf7;color:var(--ink) }
+      .bulk-app #search:focus { outline:2px solid var(--deep);outline-offset:1px }
+      .bulk-app .guest { border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px;background:#fffdf7 }
+      .bulk-app .g-name { font-size:16px;font-weight:700 }
+      .bulk-app .g-meta { font-size:12.5px;color:var(--ink2);margin-top:2px }
+      .bulk-app .g-orig { font-size:12.5px;color:var(--ink2);margin-top:2px;font-style:italic }
+      .bulk-app .g-link { font-size:12.5px;color:var(--deep2);word-break:break-all;margin-top:8px;background:#fff;border:1px dashed var(--line);border-radius:8px;padding:7px 9px }
+      .bulk-app .g-actions { display:flex;gap:8px;margin-top:10px }
+      .bulk-app .g-actions button { flex:1;padding:9px 10px;font-size:14px }
+      .bulk-app .btn-copy { background:var(--deep);color:#fff }
+      .bulk-app .btn-open { background:var(--soft);color:var(--deep2);border:1px solid var(--line) }
+      .bulk-app .btn-copy.done { background:#2e7d32 }
+      .bulk-app .btn-invite { background:#fff;color:var(--deep2);border:1px solid var(--deep) }
+      .bulk-app .btn-uninvite { background:#fff;color:var(--ink2);border:1px solid var(--line) }
+      .bulk-app .btn-delete { background:#fff;color:#b3261e;border:1px solid #e5b8b0 }
+      .bulk-app .empty { color:var(--ink2);font-size:14px;text-align:center;padding:14px 0 }
+      .bulk-app .invited-head { margin:18px 0 8px }
+      .bulk-app .invited-head button { width:100%;background:var(--soft);color:var(--deep2);border:1px solid var(--line);text-align:left;padding:11px 14px;font-size:15px;display:flex;justify-content:space-between;align-items:center }
+      .bulk-app .foot { color:var(--ink2);font-size:12.5px;line-height:1.6;text-align:center;margin-top:6px }
+      .bulk-app .rule { font-size:12.5px;color:var(--ink2);line-height:1.6;background:var(--soft);border:1px dashed var(--line);border-radius:12px;padding:10px 12px;margin-top:10px }
+      .bulk-app .rule summary { font-weight:700;cursor:pointer }
+      .bulk-app .rule b { color:var(--ink) }
+      .bulk-app .pager { display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:12px 0 4px }
+      .bulk-app .pager button { padding:7px 12px;font-size:13.5px;background:var(--soft);color:var(--deep2);border:1px solid var(--line) }
+      .bulk-app .pager button.cur { background:var(--deep);color:#fff;border-color:var(--deep) }
+      .bulk-app .pager button:disabled { opacity:.45 }
+      .bulk-app .check-modal { position:fixed;inset:0;background:rgba(60,20,30,.45);display:flex;align-items:center;justify-content:center;padding:18px;z-index:50 }
+      .bulk-app .check-modal[hidden] { display:none }
+      .bulk-app .check-box { background:#fff;border-radius:16px;max-width:430px;width:100%;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,.2) }
+      .bulk-app .check-box h3 { margin:0 0 10px;font-size:18px;color:var(--deep) }
+      .bulk-app .check-row { display:flex;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px dashed var(--line) }
+      .bulk-app .check-row span { color:var(--deep2);font-size:14px;white-space:nowrap }
+      .bulk-app .check-row b { font-size:20px;font-weight:700;color:var(--deep);line-height:1.25 }
+      .bulk-app .check-row i { font-style:normal;font-size:14.5px;color:var(--ink) }
+      .bulk-app .check-link-box { display:flex;gap:8px;margin:10px 0 0 }
+      .bulk-app .check-link-box input { flex:1;min-width:0 }
+      .bulk-app .api { font-size:13px;color:var(--ink2);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:14px }
+      .bulk-app .api summary { cursor:pointer;font-weight:600;color:var(--deep2) }
+      .bulk-app .api input { width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:13.5px;font-family:inherit;margin-top:8px;background:#fffdf7;color:var(--ink) }
+
+      /* ---------- Link tab ---------- */
+      .link-out {
+        width: 100%;
+        border: 1.5px solid var(--line);
+        background: var(--bg-soft);
+        color: var(--ink);
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-size: 16px; line-height: 1.5;
+        font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+        word-break: break-all;
+        resize: none;
+      }
+      .check-line { font-size: 13.5px; color: var(--ink-soft); line-height: 1.55; margin: 12px 2px 0; }
+      .check-line b { color: var(--ink); }
+
+      /* ---------- Controls ---------- */
+      .controls {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 16px;
+        box-shadow: var(--shadow);
+        margin-bottom: 20px;
+      }
+      .controls h2 { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 12px; font-weight: 600; }
+      .row { display: flex; gap: 10px; flex-wrap: wrap; }
+      .field { display: flex; flex-direction: column; gap: 6px; }
+      .field.grow { flex: 1 1 200px; }
+      .field label { font-size: 13px; font-weight: 600; }
+      .field select, .field input[type="text"] {
+        border: 1.5px solid var(--line);
+        background: var(--field-bg);
+        color: var(--ink);
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-size: 16px;
+        width: 100%;
+      }
+      .field select:focus, .field input[type="text"]:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+      .seg { display: flex; background: var(--bg-soft); border: 1px solid var(--line); border-radius: 10px; padding: 3px; gap: 3px; }
+      .seg button {
+        flex: 1; border: 0; background: transparent; color: var(--ink-soft);
+        border-radius: 8px; font-size: 13.5px; font-weight: 600; cursor: pointer; padding: 8px 6px; min-height: 40px;
+      }
+      .seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 4px rgba(0,0,0,.12); }
+      .slider-row { display: flex; align-items: center; gap: 12px; }
+      .slider-row input[type="range"] { flex: 1; accent-color: var(--accent); min-height: 36px; }
+      .slider-val { font-size: 13px; color: var(--ink-soft); min-width: 42px; text-align: right; font-variant-numeric: tabular-nums; }
+      .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+      .btn-download {
+        flex: 1 1 220px;
+        border: 0; border-radius: 12px; cursor: pointer;
+        background: var(--accent); color: var(--accent-ink);
+        font-size: 16px; font-weight: 700; padding: 13px 18px;
+        display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+      }
+      .btn-download:disabled { opacity: .6; cursor: wait; }
+      .btn-ghost {
+        border: 1.5px solid var(--line); background: transparent; color: var(--ink);
+        border-radius: 12px; cursor: pointer; font-size: 14px; font-weight: 600; padding: 11px 16px;
+      }
+      .hint { font-size: 13px; color: var(--ink-soft); line-height: 1.55; margin: 12px 2px 0; }
+      .toast {
+        position: fixed; left: 50%; bottom: 22px; transform: translate(-50%, 80px);
+        background: #2e4634; color: #fff; padding: 11px 18px; border-radius: 999px;
+        font-size: 14px; font-weight: 600; box-shadow: 0 8px 24px rgba(0,0,0,.25);
+        transition: transform .3s ease; z-index: 50; pointer-events: none; max-width: 92vw; text-align: center;
+      }
+      .toast.show { transform: translate(-50%, 0); }
+
+      /* ---------- Saved image (in-app save fallback) ---------- */
+      .saved-box {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 16px;
+        box-shadow: var(--shadow);
+        margin-bottom: 20px;
+      }
+      .saved-box h2 { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 8px; font-weight: 600; }
+      .saved-box p { font-size: 14px; line-height: 1.6; margin: 0 0 12px; }
+      .saved-box img {
+        display: block; width: 100%; height: auto;
+        border: 1px solid var(--line); border-radius: 8px;
+        -webkit-touch-callout: default;
+      }
+      .saved-box .actions { margin-top: 12px; }
+      .btn-share {
+        flex: 1 1 200px;
+        border: 0; border-radius: 12px; cursor: pointer;
+        background: var(--accent); color: var(--accent-ink);
+        font-size: 15px; font-weight: 700; padding: 12px 16px;
+        display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+      }
+
+      /* ---------- Invitation replica (landscape / khổ ngang) ---------- */
+      .preview-label { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; margin: 0 2px 10px; }
+      /* The card is designed at a fixed landscape width and scaled down by
+         JS to fit the screen, so the preview and the exported PNG are
+         always the same wide layout — never stacked portrait. */
+      .stage {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        border-radius: 6px;
+        box-shadow: var(--shadow);
+        background: #a9bf97;
+      }
+      #capture {
+        position: absolute;
+        top: 0; left: 0;
+        width: 1180px;
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        gap: 14px;
+        background: #a9bf97;
+        padding: 14px;
+        transform-origin: top left;
+      }
+      #capture.single { width: 590px; }
+      .panel {
+        position: relative;
+        flex: 1 1 0;
+        display: flex;
+        flex-direction: column;
+        /* Flat paper colour only: a white-to-transparent radial gradient here
+           renders as a grey smudge in the html2canvas PNG export on iOS. */
+        background: #fbfaf1;
+        border: 1px solid #8fa87c;
+        outline: 1px solid #c3d2ae;
+        outline-offset: -7px;
+        color: #3c4433;
+        padding: 34px 26px 28px;
+        text-align: center;
+        overflow: hidden;
+      }
+      /* The ceremony face has less content; centre it vertically so both
+         landscape faces fill the same height evenly. */
+      #panelCeremony { justify-content: center; }
+      .sprig { position: absolute; color: #7d9b6a; opacity: .55; pointer-events: none; }
+      .sprig.tl { top: 8px; left: 10px; }
+      .sprig.br { bottom: 8px; right: 10px; transform: rotate(180deg); }
+      .sprig.tr { top: 8px; right: 10px; transform: scaleX(-1); }
+      .sprig.bl { bottom: 8px; left: 10px; transform: scaleY(-1); }
+
+      .kicker {
+        font-family: "Playfair Display", "Noto Serif", serif;
+        font-weight: 700; letter-spacing: .22em; font-size: 15px; color: #414a35;
+        margin: 0 0 14px;
+      }
+      .guest-line {
+        display: flex; align-items: flex-end; justify-content: center; gap: 2px;
+        margin: 0 auto 16px; max-width: 92%;
+        border-bottom: 2px dotted #9aa583;
+        padding: 0 10px 3px;
+        min-height: 44px;
+      }
+      .guest-name {
+        font-family: "Dancing Script", cursive;
+        font-weight: 700;
+        color: #22389e;
+        line-height: 1.05;
+        white-space: nowrap;
+      }
+      .guest-name.empty { color: #b9bfa9; font-family: "Noto Serif", serif; font-weight: 400; font-size: 15px !important; letter-spacing: .3em; }
+      .body-serif { font-family: "Noto Serif", serif; font-size: 15.5px; line-height: 1.5; color: #454e38; margin: 0; }
+      .couple {
+        font-family: "Dancing Script", cursive;
+        font-weight: 700; color: #41755a;
+        font-size: 40px; line-height: 1.18; margin: 14px 0 4px;
+      }
+      .couple .amp { font-size: 26px; color: #7d9b6a; display: block; line-height: .9; margin: 1px 0; }
+      .org { font-family: "Noto Serif", serif; letter-spacing: .28em; font-size: 11.5px; color: #6b7557; margin: 10px 0 0; }
+      .when {
+        display: grid; grid-template-columns: 1fr 1.6fr; max-width: 400px; margin: 12px auto 0;
+        border-top: 1.5px solid #7d8c66; border-bottom: 1.5px solid #7d8c66;
+      }
+      .when > div { padding: 8px 6px 9px; }
+      .when > div + div { border-left: 1px solid #a7b48f; }
+      .when .lab { font-family: "Noto Serif", serif; font-size: 11px; letter-spacing: .18em; color: #6b7557; display: block; margin-bottom: 2px; }
+      .when .big { font-family: "Playfair Display", "Noto Serif", serif; font-weight: 700; font-size: 23px; color: #39412c; letter-spacing: .02em; }
+      .when .dow { font-family: "Noto Serif", serif; font-size: 11px; letter-spacing: .18em; color: #6b7557; display: block; margin-bottom: 2px; }
+      .lunar { font-family: "Noto Serif", serif; font-style: italic; font-size: 13.5px; color: #5c6650; margin: 10px 0 0; }
+      .venue { font-family: "Noto Serif", serif; font-size: 15.5px; line-height: 1.55; margin: 8px 0 0; color: #454e38; }
+      .venue b { color: #333b28; }
+      .closing { font-family: "Noto Serif", serif; font-style: italic; font-size: 14.5px; color: #4c563e; margin: 14px 0 0; line-height: 1.55; }
+      .families {
+        display: grid; grid-template-columns: 1fr 1fr; margin-top: 20px;
+        border-top: 1px solid #c9d3b4; padding-top: 14px; gap: 8px;
+      }
+      .families .fam + .fam { border-left: 1px solid #c9d3b4; }
+      .fam .side { font-family: "Noto Serif", serif; font-weight: 600; font-size: 13.5px; color: #39412c; margin-bottom: 5px; }
+      .fam .names { font-size: 11px; letter-spacing: .03em; line-height: 1.7; color: #55604a; text-transform: uppercase; font-weight: 600; white-space: nowrap; }
+      .fam .role { font-family: "Noto Serif", serif; font-style: italic; font-size: 13px; color: #55604a; margin-top: 6px; }
+      .fam .role b { font-style: normal; text-transform: uppercase; letter-spacing: .05em; color: #39412c; }
+
+      .monogram { width: 118px; height: 118px; margin: 2px auto 4px; position: relative; }
+      .monogram svg { width: 100%; height: 100%; }
+      .monogram .mono-txt {
+        position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+        font-family: "Dancing Script", cursive; font-weight: 700; font-size: 46px; color: #41755a;
+        transform: translateY(2px);
+      }
+      .ceremony {
+        font-family: "Dancing Script", cursive; font-weight: 700; color: #41755a;
+        font-size: 38px; margin: 4px 0 0; line-height: 1.15;
+      }
+      /* No phone-width shrinking of the card itself: the fixed-width
+         landscape stage is scaled to fit instead (see fitStage in the
+         script), so the PNG export is identical on phone and desktop. */
+    </style>
+  </head>
+  <body>
+    <!-- Baby's-breath sprig, reused as corner decoration on the card -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <symbol id="sprig" viewBox="0 0 90 90">
+        <g fill="none" stroke="currentColor" stroke-width="1.4">
+          <path d="M6 84 C 26 62, 44 44, 78 14" />
+          <path d="M22 68 C 34 66, 44 60, 52 50" />
+          <path d="M38 52 C 50 52, 60 47, 67 38" />
+          <path d="M14 76 C 24 74, 32 69, 38 61" />
+        </g>
+        <g fill="currentColor">
+          <circle cx="78" cy="14" r="3.4"/><circle cx="70" cy="20" r="2.4"/><circle cx="83" cy="23" r="2.2"/>
+          <circle cx="52" cy="50" r="2.8"/><circle cx="46" cy="43" r="2"/><circle cx="58" cy="42" r="1.9"/>
+          <circle cx="67" cy="38" r="2.6"/><circle cx="61" cy="31" r="1.9"/>
+          <circle cx="38" cy="61" r="2.5"/><circle cx="32" cy="55" r="1.8"/>
+          <circle cx="24" cy="70" r="2.1"/><circle cx="86" cy="33" r="1.7"/><circle cx="44" cy="56" r="1.6"/>
+        </g>
+      </symbol>
+    </svg>
+
+    <main class="wrap">
+      <div id="panelCard" aria-label="Thiệp tay sửa tên">
+      <div class="switchrow">
+        <button type="button" class="switchbtn" id="toBulkBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Mời nhiều người
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+      <h1>Thiệp mời Đăng &amp; Tuyết — bản sửa tên khách</h1>
+      <p class="lede">Điền xưng hô và tên khách mời, thiệp khổ ngang bên dưới thay tên ngay như viết tay trên thiệp giấy — mặt mời tiệc bên trái, mặt lễ thành hôn bên phải. Link thiệp online của khách đó cũng tự hiện ngay ở dưới để sao chép gửi kèm. Xong bấm <b>Tải ảnh thiệp</b> để lưu ảnh PNG nét cao.</p>
+
+      <section class="controls" aria-label="Sửa tên khách">
+        <h2>Tên khách mời</h2>
+        <div class="row">
+          <div class="field" style="flex:0 1 150px">
+            <label for="honorific">Xưng hô</label>
+            <select id="honorific">
+              <option value="Anh">Anh</option>
+              <option value="Chị">Chị</option>
+              <option value="Anh chị">Anh chị</option>
+              <option value="Ông">Ông</option>
+              <option value="Bà">Bà</option>
+              <option value="Bác">Bác</option>
+              <option value="Cô">Cô</option>
+              <option value="Chú">Chú</option>
+              <option value="Thầy">Thầy</option>
+              <option value="Bạn">Bạn</option>
+              <option value="Em">Em</option>
+              <option value="Gia đình anh chị">Gia đình anh chị</option>
+              <option value="Gia đình">Gia đình</option>
+              <option value="Quý khách">Quý khách</option>
+              <option value="">(không ghi)</option>
+            </select>
+          </div>
+          <div class="field grow">
+            <label for="guestName">Tên khách</label>
+            <input type="text" id="guestName" placeholder="Ví dụ: Nguyễn Văn A" autocomplete="off" />
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:14px">
+          <div class="field grow">
+            <label>Ảnh tải xuống gồm</label>
+            <div class="seg" role="group" aria-label="Phạm vi ảnh">
+              <button type="button" id="scopeBoth" aria-pressed="true">Cả thiệp · 2 mặt (ngang)</button>
+              <button type="button" id="scopeOne" aria-pressed="false">Chỉ mặt mời tiệc</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:14px">
+          <label for="sizeRange">Cỡ chữ tên khách</label>
+          <div class="slider-row">
+            <input type="range" id="sizeRange" min="75" max="125" value="100" step="1" />
+            <span class="slider-val" id="sizeVal">100%</span>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn-download" id="btnDownload">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span id="btnDownloadTxt">Tải ảnh thiệp (PNG)</span>
+          </button>
+          <button type="button" class="btn-ghost" id="btnClear">Xóa tên</button>
+        </div>
+        <p class="hint">Tên dài sẽ tự thu nhỏ cho vừa dòng kẻ chấm. Ảnh cả thiệp xuất ra khổ ngang, nét cao nên gửi Messenger / Zalo vẫn nét.</p>
+      </section>
+
+      <section class="controls" aria-label="Link mời online của khách này">
+        <h2>Link mời online — tự tạo theo tên vừa nhập</h2>
+        <div class="field">
+          <label for="inlineLinkOut">Link thiệp online của khách</label>
+          <textarea id="inlineLinkOut" class="link-out" rows="3" readonly></textarea>
+        </div>
+        <p class="check-line" id="inlineLinkCheck"></p>
+        <div class="actions">
+          <button type="button" class="btn-download" id="btnCopyInlineLink">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span>Sao chép link</span>
+          </button>
+          <a class="btn-ghost" id="inlineLinkOpen" href="https://blvckd2096.github.io/DT-v2/" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;text-decoration:none">Mở thử thiệp</a>
+        </div>
+        <p class="hint">Gõ tên ở trên là link này tự đổi theo — không cần chuyển tab. Khách bấm link là thiệp online hiện đúng tên mình. Gửi qua Messenger thì dán link vào khung chat, đợi hiện ảnh xem trước rồi mới bấm gửi.</p>
+      </section>
+
+      <section class="saved-box" id="savedBox" hidden aria-label="Ảnh thiệp đã tạo">
+        <h2>Ảnh thiệp của khách này</h2>
+        <p id="savedText">Ảnh đã tạo xong. Nếu máy không tự lưu, <b>nhấn giữ vào ảnh</b> bên dưới rồi chọn <b>“Lưu hình ảnh”</b> — hoặc bấm nút Chia sẻ để gửi thẳng qua Messenger / Zalo.</p>
+        <img id="savedImg" alt="Ảnh thiệp mời đã tạo" />
+        <div class="actions">
+          <button type="button" class="btn-share" id="btnShare">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg>
+            Chia sẻ ảnh thiệp
+          </button>
+          <a class="btn-ghost" id="savedOpen" href="#" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;text-decoration:none">Mở ảnh cỡ lớn</a>
+        </div>
+      </section>
+
+      <p class="preview-label">Xem trước thiệp — khổ ngang</p>
+
+      <div class="stage" id="stage">
+      <div id="capture">
+        <!-- MẶT 1: MỜI TIỆC -->
+        <article class="panel" id="panelParty" aria-label="Mặt mời tiệc">
+          <svg class="sprig tl" width="72" height="72"><use href="#sprig"/></svg>
+          <svg class="sprig br" width="72" height="72"><use href="#sprig"/></svg>
+          <p class="kicker">TRÂN TRỌNG KÍNH MỜI</p>
+          <div class="guest-line"><span class="guest-name empty" id="guestDisplay">…………………………</span></div>
+          <p class="body-serif">Tới dự bữa tiệc thân mật<br />chung vui cùng gia đình chúng tôi</p>
+          <p class="couple">Dương Hải Đăng<span class="amp">&amp;</span>Nguyễn Ánh Tuyết</p>
+          <p class="org">ĐƯỢC TỔ CHỨC</p>
+          <div class="when">
+            <div><span class="lab">VÀO LÚC</span><span class="big">15:00</span></div>
+            <div><span class="dow">THỨ BẢY</span><span class="big">28.11.2026</span></div>
+          </div>
+          <p class="lunar">Tức ngày 20 tháng 10 năm Bính Ngọ</p>
+          <p class="venue">Tại: <b>Nhà Văn Hóa Thôn Đình</b><br /><b>Xã Tam Hồng - Tỉnh Phú Thọ</b></p>
+          <p class="closing">Rất hân hạnh được đón tiếp!</p>
+          <div class="families">
+            <div class="fam">
+              <div class="side">Nhà Trai</div>
+              <div class="names">Dương Quang Sứ<br />Nguyễn Thị Tuyền</div>
+              <div class="role">Chú rể: <b>Hải Đăng</b></div>
+            </div>
+            <div class="fam">
+              <div class="side">Nhà Gái</div>
+              <div class="names">Nguyễn Hữu Thông<br />Nguyễn Thị Thanh Huyền</div>
+              <div class="role">Cô dâu: <b>Ánh Tuyết</b></div>
+            </div>
+          </div>
+        </article>
+
+        <!-- MẶT 2: LỄ THÀNH HÔN -->
+        <article class="panel" id="panelCeremony" aria-label="Mặt lễ thành hôn">
+          <svg class="sprig tr" width="72" height="72"><use href="#sprig"/></svg>
+          <svg class="sprig bl" width="72" height="72"><use href="#sprig"/></svg>
+          <div class="monogram" aria-hidden="true">
+            <svg viewBox="0 0 120 120" fill="none" stroke="#7d9b6a" stroke-width="1.5">
+              <path d="M60 6 C 30 10, 10 32, 10 60 C 10 90, 32 110, 58 114" stroke-dasharray="3 4"/>
+              <path d="M60 6 C 90 10, 110 32, 110 60 C 110 90, 88 110, 62 114" stroke-dasharray="3 4"/>
+              <circle cx="18" cy="34" r="2.4" fill="#7d9b6a" stroke="none"/><circle cx="102" cy="34" r="2.4" fill="#7d9b6a" stroke="none"/>
+              <circle cx="14" cy="66" r="2" fill="#7d9b6a" stroke="none"/><circle cx="106" cy="66" r="2" fill="#7d9b6a" stroke="none"/>
+              <circle cx="34" cy="102" r="2.2" fill="#7d9b6a" stroke="none"/><circle cx="86" cy="102" r="2.2" fill="#7d9b6a" stroke="none"/>
+            </svg>
+            <span class="mono-txt">ĐT</span>
+          </div>
+          <p class="ceremony">Lễ Thành Hôn</p>
+          <p class="org">ĐƯỢC TỔ CHỨC</p>
+          <div class="when">
+            <div><span class="lab">VÀO LÚC</span><span class="big">9:00</span></div>
+            <div><span class="dow">CHỦ NHẬT</span><span class="big">29.11.2026</span></div>
+          </div>
+          <p class="lunar">Tức ngày 21 tháng 10 năm Bính Ngọ</p>
+          <p class="venue">Tại: <b>Nhà Văn Hóa Thôn Đình</b><br /><b>Xã Tam Hồng - Tỉnh Phú Thọ</b></p>
+          <p class="closing">Sự hiện diện của Quý khách là<br />niềm vinh hạnh cho gia đình chúng tôi!</p>
+        </article>
+      </div>
+      </div>
+      </div><!-- /panelCard -->
+
+      <!-- TAB 2: TẠO LINK MỜI NHIỀU NGƯỜI — nguyên trang tạo link mời
+           online (tao-link-moi-online.html) được đưa thẳng vào trang này:
+           không iframe, không mở trang mới. Bấm tab là thấy đúng trang đó,
+           danh sách vẫn đọc/ghi Google Sheet qua Apps Script như bản gốc,
+           chuyển qua lại giữa 2 tab không tải lại gì. -->
+      <section id="panelBulk" class="panel-bulk" role="tabpanel" aria-label="Tạo link mời cho nhiều người" hidden>
+        <div class="bulk-app">
+<div class="wrap">
+  <div class="page-switch-row">
+    <button type="button" class="page-switch-btn" id="toCardBtn">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Thiệp tay
+    </button>
+  </div>
+  <header>
+    <h1>Tạo link mời cưới</h1>
+    <p class="sub" id="bulkSub">Dương Đăng &amp; Ánh Tuyết • 29 · 11 · 2026 • Lưu online trên Google Sheet</p>
+  </header>
+
+  <div class="mode-switch" role="group" aria-label="Chọn bản online hoặc offline">
+    <button type="button" id="btnModeOnline" aria-pressed="true">Online · Google Sheet</button>
+    <button type="button" id="btnModeOffline" aria-pressed="false">Offline · Trên máy này</button>
+  </div>
+  <div class="sync-row">
+    <p id="syncMsg" class="msg">Đang tải danh sách online…</p>
+    <button id="btnReloadSync" class="btn-secondary" type="button">↻ Tải lại</button>
+  </div>
+
+  <section class="card">
+    <h2>1. Dán danh sách khách</h2>
+    <p class="hint">Dán danh sách từ CCM (nút “Xuất Text”) hoặc gõ mỗi khách 1 dòng. Ghi chú trong ngoặc hoặc sau dấu “–” sẽ được bỏ qua.</p>
+    <textarea id="input" rows="8" placeholder="Ví dụ:
+A Cường
+C Thu (bạn cấp 3)
+A Đức - nhà gái"></textarea>
+    <div class="btn-row">
+      <button id="btnPaste" class="btn-secondary" type="button">📋 Dán nhanh</button>
+      <button id="btnGen" class="btn-primary" type="button">Tạo link</button>
+      <button id="bulkBtnClear" class="btn-secondary" type="button">Xóa hết</button>
+      <button id="btnDedupe" class="btn-secondary" type="button">Xóa trùng</button>
+    </div>
+    <p id="parseMsg" class="msg"></p>
+    <details class="rule"><summary>Quy tắc xưng hô</summary>A → Anh, C → Chị, E → Em, B → Bác, O → Ông, Ba → Bà, Co → Cô, Chu → Chú. Tên không có chữ đầu thì mặc định xưng “bạn”. Nhóm “bạn cao đẳng”: chỉ lấy tên gọi (chữ đầu tiên) và thêm “bạn” (vd “Cường” → “bạn Cường”). Trong thiệp, 2 đứa tự xưng theo khách: Bạn/Em → chúng tôi; Anh/Chị/Thầy → chúng em; Bác/Ông/Bà/Cô/Chú → chúng cháu. Chú ý: mời cả 2 vợ chồng thì ghi 1 dòng “A Hùng - C Lan”: thiệp xưng “anh chị”, 2 đứa xưng “chúng em”. Tên không có chữ đầu thì tự thêm “Bạn” phía trước (vd “Yến Oanh” → “Bạn Yến Oanh”); vợ chồng viết liền “Anh Hà chị Quỳnh” cũng nhận thành 1 khách. “2 bạn Đại Ánh” là 1 link vợ chồng: “Bạn Đại - Bạn Ánh”, xưng “các bạn”. Dòng “Nhà trai / Nhà gái” và “Tên nhóm:” dùng để chia bên và nhóm. Chữ viết tắt toàn chữ hoa ở cuối tên (vd “DD”) được coi là ghi chú nên sẽ bỏ khỏi tên trên thiệp, tên gốc vẫn hiện trong thẻ để đối chiếu. Bấm “Tạo link” sẽ THÊM khách mới lên đầu danh sách, không xóa khách đã có (muốn xóa hết thì bấm “Xóa hết”). “Vợ chồng bạn Đạt” là 1 link vợ chồng: tên “Vợ chồng bạn Đạt”, xưng “các bạn”; “Vợ chồng anh Hùng” thì xưng “anh chị”.</details>
+  </section>
+
+  <section class="card" id="resultCard" hidden>
+    <h2>2. Link mời</h2>
+    <div class="stats">
+      <div class="stat"><b id="statTotal">0</b><span>Tổng khách</span></div>
+      <div class="stat"><b id="statDone">0</b><span>Đã mời</span></div>
+      <div class="stat"><b id="statTodo">0</b><span>Chưa mời</span></div>
+    </div>
+    <div class="btn-row" style="margin:0 0 4px">
+      <button id="btnBackup" class="btn-secondary" type="button">💾 Sao lưu</button>
+      <button id="btnRestore" class="btn-secondary" type="button">📂 Khôi phục</button>
+      <input type="file" id="restoreFile" accept="application/json,.json" hidden>
+    </div>
+    <p id="backupMsg" class="msg"></p>
+    <input id="search" type="search" placeholder="Tìm tên khách..." autocomplete="off">
+    <div class="check-link-box">
+      <input id="checkInput" type="text" placeholder="Dán link mời đã gửi vào đây để kiểm tra tên khách…" autocomplete="off">
+      <button id="btnCheckLink" class="btn-secondary" type="button">Kiểm tra link</button>
+    </div>
+    <p id="checkMsg" class="msg"></p>
+    <h3>Chưa mời (<span id="countTodo">0</span>)</h3>
+    <div id="listTodo"></div>
+    <div id="pagerTodo" class="pager"></div>
+    <div class="invited-head">
+      <button id="btnToggleInvited" type="button"><span>Link đã mời (<span id="countDone">0</span>)</span><span id="invitedArrow">▸</span></button>
+    </div>
+    <div id="listDone" hidden></div>
+    <div id="pagerDone" class="pager"></div>
+  </section>
+
+  <details class="api" id="apiDetails">
+    <summary>Cài đặt kết nối (link Apps Script)</summary>
+    <p class="hint">Trang này đọc/ghi danh sách qua Apps Script của thiệp. Chỉ đổi khi anh deploy Apps Script mới và có link /exec mới — mặc định đã dùng đúng link hiện tại của thiệp.</p>
+    <input id="apiUrl" type="text" placeholder="https://script.google.com/macros/s/.../exec">
+    <div class="btn-row"><button id="btnApiSave" class="btn-secondary" type="button">Lưu link</button></div>
+    <p id="apiMsg" class="msg"></p>
+  </details>
+
+  <p class="foot" id="bulkFoot">Mỗi link mở ra thiệp với tên và xưng hô riêng của khách đó. Danh sách và trạng thái “Đã mời” lưu trên Google Sheet, mở ở máy nào cũng thấy giống nhau.</p>
+</div>
+
+  <div id="checkModal" class="check-modal" hidden>
+    <div class="check-box">
+      <h3>Kiểm tra link mời</h3>
+      <div id="checkBody"></div>
+      <div class="btn-row" style="margin:12px 0 0">
+        <button id="checkClose" class="btn-secondary" type="button">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="bulkConfirm" class="check-modal" hidden>
+    <div class="check-box">
+      <h3>Xác nhận</h3>
+      <p id="bulkConfirmText" style="font-size:15px;line-height:1.55;margin:0"></p>
+      <div class="btn-row" style="margin:14px 0 0">
+        <button id="bulkConfirmYes" class="btn-primary" type="button">Đồng ý</button>
+        <button id="bulkConfirmNo" class="btn-secondary" type="button">Hủy</button>
+      </div>
+    </div>
+  </div>
+        </div>
+        <p class="hint">Nếu danh sách không tải được (mất mạng hoặc Google Sheet đang bận), anh <a href="https://blvckd2096.github.io/DT-v2/tao-link-moi-online.html" target="_blank" rel="noopener">mở trang tạo link mời riêng</a> để dùng tạm.</p>
+      </section>
+
+    </main>
+
+    <div class="toast" id="toast" role="status"></div>
+
+    <script>
+      (function () {
+        var honorific = document.getElementById('honorific');
+        var guestName = document.getElementById('guestName');
+        var display = document.getElementById('guestDisplay');
+        var sizeRange = document.getElementById('sizeRange');
+        var sizeVal = document.getElementById('sizeVal');
+        var panelCeremony = document.getElementById('panelCeremony');
+        var scopeBoth = document.getElementById('scopeBoth');
+        var scopeOne = document.getElementById('scopeOne');
+        var btnDownload = document.getElementById('btnDownload');
+        var btnDownloadTxt = document.getElementById('btnDownloadTxt');
+        var btnClear = document.getElementById('btnClear');
+        var savedBox = document.getElementById('savedBox');
+        var savedImg = document.getElementById('savedImg');
+        var savedText = document.getElementById('savedText');
+        var savedOpen = document.getElementById('savedOpen');
+        var btnShare = document.getElementById('btnShare');
+        var stage = document.getElementById('stage');
+        var capture = document.getElementById('capture');
+        var scopeBothState = true;
+        var lastBlob = null;
+        var lastUrl = '';
+        var toast = document.getElementById('toast');
+        var toastTimer = null;
+
+        /* Scale the fixed-width landscape card down to fit the screen.
+           offsetWidth/offsetHeight ignore transforms, so measuring while
+           scaled is safe. */
+        function fitStage() {
+          if (!stage || !capture) return;
+          var avail = stage.clientWidth;
+          var cw = capture.offsetWidth;
+          var ch = capture.offsetHeight;
+          if (!avail || !cw || !ch) return;
+          var s = avail / cw;
+          if (s > 1) s = 1;
+          capture.style.transform = 'scale(' + s + ')';
+          stage.style.height = Math.ceil(ch * s) + 'px';
+        }
+        window.addEventListener('resize', fitStage);
+        window.addEventListener('orientationchange', function () { setTimeout(fitStage, 60); });
+
+        function showToast(msg) {
+          toast.textContent = msg;
+          toast.classList.add('show');
+          clearTimeout(toastTimer);
+          toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 3200);
+        }
+
+        function fullName() {
+          var h = honorific.value.trim();
+          var n = guestName.value.trim().replace(/\s+/g, ' ');
+          return (h && n) ? h + ' ' + n : (h || n);
+        }
+
+        function refresh() {
+          var name = fullName();
+          var pct = parseInt(sizeRange.value, 10) || 100;
+          sizeVal.textContent = pct + '%';
+          if (!name) {
+            display.textContent = '…………………………';
+            display.classList.add('empty');
+            display.style.fontSize = '';
+            return;
+          }
+          display.classList.remove('empty');
+          display.textContent = name;
+          /* Auto-fit: shrink as the name grows, then apply the user's scale. */
+          var len = name.length;
+          var base = len <= 12 ? 31 : len <= 18 ? 28 : len <= 24 ? 25 : len <= 32 ? 22 : 19;
+          display.style.fontSize = Math.round(base * pct / 100) + 'px';
+        }
+
+        honorific.addEventListener('change', refresh);
+        guestName.addEventListener('input', refresh);
+        sizeRange.addEventListener('input', refresh);
+
+        function setScope(both) {
+          scopeBothState = both;
+          scopeBoth.setAttribute('aria-pressed', both ? 'true' : 'false');
+          scopeOne.setAttribute('aria-pressed', both ? 'false' : 'true');
+          panelCeremony.style.display = both ? '' : 'none';
+          capture.classList.toggle('single', !both);
+          requestAnimationFrame(fitStage);
+        }
+        scopeBoth.addEventListener('click', function () { setScope(true); });
+        scopeOne.addEventListener('click', function () { setScope(false); });
+
+        btnClear.addEventListener('click', function () {
+          guestName.value = '';
+          refresh();
+          guestName.focus();
+        });
+
+        function fileName() {
+          var name = fullName() || 'Khach-moi';
+          var clean = name.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .replace(/đ/g, 'd').replace(/Đ/g, 'D')
+            .replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+          return 'Thiep-moi-' + (clean || 'Khach-moi') + '.png';
+        }
+
+        function showSaved(blob) {
+          if (lastUrl) { try { URL.revokeObjectURL(lastUrl); } catch (e) {} }
+          lastBlob = blob;
+          lastUrl = URL.createObjectURL(blob);
+          savedImg.src = lastUrl;
+          savedOpen.href = lastUrl;
+          savedText.innerHTML = 'Ảnh đã tạo xong' + (fullName() ? ' cho <b>' + fullName().replace(/</g, '&lt;') + '</b>' : '') +
+            '. Nếu máy không tự lưu, <b>nhấn giữ vào ảnh</b> bên dưới rồi chọn <b>“Lưu hình ảnh”</b> — hoặc bấm nút Chia sẻ để gửi thẳng qua Messenger / Zalo.';
+          savedBox.hidden = false;
+          savedBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        btnDownload.addEventListener('click', function () {
+          if (typeof html2canvas !== 'function') {
+            showToast('Chưa tải được thư viện tạo ảnh — kiểm tra mạng rồi thử lại.');
+            return;
+          }
+          btnDownload.disabled = true;
+          btnDownloadTxt.textContent = 'Đang tạo ảnh…';
+          var target = capture;
+          /* Wait for the script fonts so the PNG matches the preview. */
+          var ready = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+          ready.then(function () {
+            /* Capture at the card's full design size, not the scaled-down
+               preview: drop the fit transform and let the stage flow
+               naturally while html2canvas works, then restore. */
+            target.style.transform = 'none';
+            target.style.position = 'static';
+            stage.style.height = 'auto';
+            stage.style.overflow = 'visible';
+            return html2canvas(target, {
+              /* 1180px wide landscape at scale 2 ≈ 2360px PNG; a single
+                 face is 590px wide, so scale 3 keeps it just as crisp. */
+              scale: scopeBothState ? 2 : 3,
+              backgroundColor: '#a9bf97',
+              logging: false,
+              useCORS: true
+            });
+          }).then(function (canvas) {
+            target.style.position = '';
+            stage.style.overflow = '';
+            fitStage();
+            return new Promise(function (resolve) {
+              if (canvas.toBlob) {
+                canvas.toBlob(function (blob) { resolve(blob || null); }, 'image/png');
+              } else { resolve(null); }
+            }).then(function (blob) {
+              if (blob) {
+                /* In-app browsers (Muse, Messenger…) often block the classic
+                   download click, so always show the image in-page as well:
+                   a long-press on it saves it on iOS/Android. */
+                showSaved(blob);
+                try {
+                  var a = document.createElement('a');
+                  a.download = fileName();
+                  a.href = lastUrl;
+                  document.body.appendChild(a);
+                  a.click();
+                  a.remove();
+                } catch (e) {}
+                showToast('Đã tạo ảnh thiệp ✓ Nhấn giữ vào ảnh để lưu nếu máy chưa tự tải.');
+              } else {
+                var a2 = document.createElement('a');
+                a2.download = fileName();
+                a2.href = canvas.toDataURL('image/png');
+                document.body.appendChild(a2);
+                a2.click();
+                a2.remove();
+                showToast('Đã tải ảnh thiệp' + (fullName() ? ' cho ' + fullName() : '') + ' ✓');
+              }
+            });
+          }).catch(function () {
+            target.style.position = '';
+            stage.style.overflow = '';
+            fitStage();
+            showToast('Tạo ảnh chưa được — anh thử lại giúp em nhé.');
+          }).finally(function () {
+            btnDownload.disabled = false;
+            btnDownloadTxt.textContent = 'Tải ảnh thiệp (PNG)';
+          });
+        });
+
+        btnShare.addEventListener('click', function () {
+          if (!lastBlob) { showToast('Bấm “Tải ảnh thiệp” trước để tạo ảnh nhé.'); return; }
+          var file = null;
+          try { file = new File([lastBlob], fileName(), { type: 'image/png' }); } catch (e) {}
+          if (file && navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
+            navigator.share({ files: [file], title: 'Thiệp mời cưới Đăng & Tuyết' }).catch(function () {});
+          } else if (navigator.share && lastUrl) {
+            navigator.share({ title: 'Thiệp mời cưới Đăng & Tuyết', url: lastUrl }).catch(function () {
+              showToast('Máy này không chia sẻ trực tiếp được — nhấn giữ vào ảnh rồi chọn “Lưu hình ảnh”.');
+            });
+          } else {
+            showToast('Nhấn giữ vào ảnh rồi chọn “Lưu hình ảnh” để lưu về máy.');
+          }
+        });
+
+        /* ---------- Link mời online tự hiện ở dưới ----------
+           Same link format as the full link-creator page:
+           DT-v2/?guest=<Xưng hô + Tên> plus &goi=<xưng hô> when the
+           pronoun is not the default "bạn". Typing the name in the
+           thiệp tay form updates this link live, right below. */
+        var LINK_BASE = 'https://blvckd2096.github.io/DT-v2/';
+        var inlineLinkOut = document.getElementById('inlineLinkOut');
+        var inlineLinkCheck = document.getElementById('inlineLinkCheck');
+        var inlineLinkOpen = document.getElementById('inlineLinkOpen');
+        var btnCopyInlineLink = document.getElementById('btnCopyInlineLink');
+
+        function goiFor(h) {
+          if (!h) return '';
+          var low = h.toLowerCase();
+          if (low === 'bạn' || low === 'quý khách' || low === 'gia đình') return '';
+          if (low === 'gia đình anh chị') return 'anh chị';
+          return h;
+        }
+        /* Same self-address rule as the invitation: older generation ->
+           "chúng cháu", one generation up -> "chúng em", peers -> "chúng tôi". */
+        function selfPronoun(goi) {
+          var s = (goi || '').toLowerCase();
+          if (/(bác|ông|bà|cô|chú)/.test(s)) return 'chúng cháu';
+          if (/(anh|chị|thầy)/.test(s)) return 'chúng em';
+          return 'chúng tôi';
+        }
+
+        function updateInlineLink() {
+          if (!inlineLinkOut) return;
+          var h = honorific.value.trim();
+          var n = guestName.value.trim().replace(/\s+/g, ' ');
+          var guest = (h && n) ? h + ' ' + n : (h || n);
+          var goi = goiFor(h);
+          var url = LINK_BASE;
+          if (n) {
+            url += '?guest=' + encodeURIComponent(guest);
+            if (goi) url += '&goi=' + encodeURIComponent(goi);
+          }
+          inlineLinkOut.value = url;
+          inlineLinkOpen.href = url;
+          if (n) {
+            inlineLinkCheck.innerHTML = 'Tên khách trên thiệp: <b>' + guest.replace(/</g, '&lt;') +
+              '</b> &nbsp;•&nbsp; Trong thiệp, gia đình tự xưng: <b>' + selfPronoun(goi) + '</b>';
+          } else {
+            inlineLinkCheck.textContent = 'Chưa nhập tên khách — link bên trên là link thiệp chung, chưa có tên riêng của khách. Gõ tên ở trên là link tự đổi theo.';
+          }
+        }
+        honorific.addEventListener('change', updateInlineLink);
+        guestName.addEventListener('input', updateInlineLink);
+        btnClear.addEventListener('click', updateInlineLink);
+
+        if (btnCopyInlineLink) {
+          btnCopyInlineLink.addEventListener('click', function () {
+            var url = inlineLinkOut.value;
+            function done() { showToast('Đã sao chép link mời ✓ Dán vào Messenger / Zalo để gửi khách.'); }
+            function fallbackCopy() {
+              inlineLinkOut.focus();
+              inlineLinkOut.select();
+              try {
+                if (document.execCommand('copy')) { done(); }
+                else { showToast('Chưa sao chép được — anh nhấn giữ vào link rồi chọn Sao chép nhé.'); }
+              } catch (e) {
+                showToast('Chưa sao chép được — anh nhấn giữ vào link rồi chọn Sao chép nhé.');
+              }
+              inlineLinkOut.blur();
+            }
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(url).then(done, fallbackCopy);
+            } else { fallbackCopy(); }
+          });
+        }
+
+        updateInlineLink();
+
+        /* ---------- Chuyển 2 trang bằng 1 nút ở góc trên bên phải ----------
+           Mỗi trang có 1 nút ở góc trên bên phải để qua trang kia. Cả hai
+           trang đều nằm sẵn trong trang này: bấm nút chỉ ẩn/hiện, không mở
+           trang mới, không tải lại — tên khách đang nhập ở thiệp tay và
+           danh sách đang làm bên tạo link đều giữ nguyên khi chuyển qua
+           lại. Khi sang trang tạo link, bật class bulk-mode để trang đó
+           chiếm trọn màn hình (bỏ khung bao ngoài), và phát sự kiện
+           resize để nó tự căn lại cỡ chữ tên khách (lúc ẩn nó không đo
+           được chiều rộng). */
+        var toBulkBtn = document.getElementById('toBulkBtn');
+        var toCardBtn = document.getElementById('toCardBtn');
+        var panelCard = document.getElementById('panelCard');
+        var panelBulk = document.getElementById('panelBulk');
+
+        function switchTab(bulk) {
+          panelCard.hidden = bulk;
+          panelBulk.hidden = !bulk;
+          document.body.classList.toggle('bulk-mode', bulk);
+          if (bulk) { window.dispatchEvent(new Event('resize')); }
+          if (!bulk) { requestAnimationFrame(fitStage); }
+          window.scrollTo(0, 0);
+        }
+        toBulkBtn.addEventListener('click', function () { switchTab(true); });
+        toCardBtn.addEventListener('click', function () { switchTab(false); });
+
+        refresh();
+        fitStage();
+        if (document.fonts && document.fonts.ready) { document.fonts.ready.then(fitStage); }
+        window.addEventListener('load', fitStage);
+      })();
+    </script>
+
+    <!-- Script của trang tạo link mời online (nguyên bản, chỉ đổi hộp
+         confirm()/alert() của trình duyệt thành hộp vẽ trong trang và
+         nút Mở link dùng thẻ a, để chạy được trong khung nhúng của app;
+         id nút "Xóa hết" đổi thành bulkBtnClear vì trùng với thiệp tay). -->
+    <script>
+(function(){
+  'use strict';
+  var BASE = 'https://blvckd2096.github.io/DT-v2/';
+  var LS_INPUT = 'linkmoi_online_input_v1';
+  var LS_API = 'linkmoi_online_api';
+  // Link Apps Script hiện tại của thiệp (cùng link ở tab Admin). Sau khi anh
+  // deploy bản Code.gs mới (thêm action link mời) thì link này vẫn giữ nguyên.
+  var API_DEFAULT = 'https://script.google.com/macros/s/AKfycbxGkVC-pnendP4VVX-q6tGdiqhG1HqLvpXZWuMOvdmOPOY68ssIzxvGwYrYHY4zQxe8_A/exec';
+
+  // Chữ đầu trong tên CCM -> xưng hô đầy đủ (cả dạng viết tắt và dạng đã đầy đủ)
+  var TITLE_MAP = {
+    'A':'Anh','C':'Chị','E':'Em','B':'Bác','O':'Ông',
+    'Ba':'Bà','Co':'Cô','Chu':'Chú',
+    'Anh':'Anh','Chị':'Chị','Em':'Em','Bác':'Bác','Ông':'Ông',
+    'Bà':'Bà','Cô':'Cô','Chú':'Chú','Bạn':'Bạn','Thầy':'Thầy'
+  };
+
+  var $ = function(s){ return document.querySelector(s); };
+  var inputEl = $('#input'), msgEl = $('#parseMsg'), resultCard = $('#resultCard');
+  var searchEl = $('#search'), listTodo = $('#listTodo'), listDone = $('#listDone');
+  var guests = [];
+  var syncEl = $('#syncMsg');
+
+  // Hai bản trong tab này: Online (đọc/ghi Google Sheet) và Offline
+  // (chỉ lưu trên máy người mở, như trang tạo link cũ). Mỗi bản giữ
+  // danh sách riêng; gạt công tắc chỉ đổi danh sách đang hiện, bản
+  // kia giữ nguyên trạng thái đang làm.
+  var LS_MODE = 'linkmoi_mode_v1';
+  var LS_OFFLINE = 'linkmoi_offline_guests_v1';
+  var mode = 'online';
+  try { if (localStorage.getItem(LS_MODE) === 'offline') mode = 'offline'; } catch (e) {}
+  var onlineGuests = null;
+  var offlineGuests = loadOfflineGuests();
+  function loadOfflineGuests(){
+    try {
+      var raw = localStorage.getItem(LS_OFFLINE);
+      var arr = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(arr)) return [];
+      return arr.filter(function(g){ return g && g.name; }).map(function(g){
+        return { id: g.id || ('g' + Math.random().toString(36).slice(2, 10)), name: g.name, pronoun: g.pronoun || 'bạn', orig: g.orig || '', side: g.side || '', group: g.group || '', invited: !!g.invited };
+      });
+    } catch (e) { return []; }
+  }
+  function saveOfflineGuests(){
+    try { localStorage.setItem(LS_OFFLINE, JSON.stringify(offlineGuests)); } catch (e) {}
+  }
+
+  // Đọc/ghi Google Sheet qua Apps Script (cùng cách thiệp vẫn dùng:
+  // GET ?action=..., POST text/plain rồi tải lại để kiểm chứng).
+  function apiUrl(){
+    try { var u = localStorage.getItem(LS_API); if (u && u.trim()) return u.trim(); } catch (e) {}
+    return API_DEFAULT;
+  }
+  function waitMs(ms){ return new Promise(function(res){ setTimeout(res, ms); }); }
+  // Tự thử lại vài lần khi mạng chớp chờn hoặc Sheet trả chậm, thay vì
+  // báo lỗi ngay ở lần đầu (trong app rất dễ rớt 1 nhịp mạng).
+  function apiGet(action){
+    var u = apiUrl();
+    var url = u + (u.indexOf('?') >= 0 ? '&' : '?') + 'action=' + action;
+    var attempt = function(n){
+      return fetch(url).then(function(r){ return r.json(); }).catch(function(){
+        return n < 2 ? waitMs(900).then(function(){ return attempt(n + 1); }) : null;
+      });
+    };
+    return attempt(0);
+  }
+  function apiPost(body){
+    var attempt = function(n){
+      return fetch(apiUrl(), { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) })
+        .then(function(r){ return r.json(); }).catch(function(){
+          return n < 1 ? waitMs(900).then(function(){ return attempt(n + 1); }) : null;
+        });
+    };
+    return attempt(0);
+  }
+  // Hàng đợi ghi lên Sheet: các lần lưu nối đuôi nhau để lần lưu sau
+  // (mới hơn) không bị lần lưu trước (cũ hơn) ghi đè khi bấm liên tiếp.
+  var writeQueue = Promise.resolve();
+  function queuePost(body){
+    writeQueue = writeQueue.then(function(){ return apiPost(body); });
+    return writeQueue;
+  }
+  function setSync(text, ok){
+    if (!syncEl) return;
+    syncEl.textContent = text;
+    syncEl.className = 'msg' + (ok === true ? ' ok' : '');
+  }
+  function loadOnline(){
+    if (mode === 'online') setSync('Đang tải danh sách online…');
+    return apiGet('getGuestLinks').then(function(d){
+      if (!d || !d.ok || !Array.isArray(d.links)) {
+        if (mode === 'online') setSync('Không kết nối được Google Sheet (đã tự thử lại 3 lần). Kiểm tra mạng rồi bấm “Tải lại”, hoặc gạt sang bản Offline để làm tạm trên máy này.');
+        return false;
+      }
+      onlineGuests = d.links.filter(function(g){ return g && g.name; }).map(function(g){
+        return { id: g.id, name: g.name, pronoun: g.pronoun || 'bạn', orig: g.orig || '', side: g.side || '', group: g.group || '', invited: !!g.invited };
+      });
+      if (mode === 'online') {
+        guests = onlineGuests;
+        setSync('Đã đồng bộ online ✓ (' + guests.length + ' khách)', true);
+        render();
+      }
+      return true;
+    });
+  }
+
+  // Lưu toàn bộ danh sách hiện tại theo bản đang dùng: Online thì ghi
+  // lên Google Sheet, Offline thì ghi vào bộ nhớ của máy này.
+  function persistAll(){
+    if (mode === 'offline') {
+      offlineGuests = guests;
+      saveOfflineGuests();
+      setSync('Đã lưu trên máy này ✓ (bản Offline)', true);
+      return Promise.resolve({ ok: true });
+    }
+    setSync('Đang lưu lên Google Sheet…');
+    return queuePost({ action: 'replaceGuestLinks', guests: guests }).then(function(d){
+      if (d && d.ok) { setSync('Đã lưu online ✓', true); }
+      else { setSync('Chưa lưu online được — kiểm tra mạng rồi tải lại trang.'); }
+      return d;
+    });
+  }
+
+  function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+  // Chữ viết tắt toàn chữ hoa ở cuối tên (vd "DD") thường là ghi chú, không phải tên.
+  // Loại khỏi tên hiển thị/link, nhưng giữ tên gốc để đối chiếu.
+  var NOTE_TAIL = /^[A-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝĐ]{2,}$/;
+  function stripNoteTail(rest){
+    var parts = String(rest || '').split(/\s+/).filter(function(x){ return x; });
+    while (parts.length > 1 && NOTE_TAIL.test(parts[parts.length-1])) parts.pop();
+    return parts.join(' ');
+  }
+
+  // Viết hoa chữ đầu mỗi từ trong tên (vd "Phạm ánh" -> "Phạm Ánh").
+  function capWords(s){
+    return String(s || '').split(/\s+/).filter(function(x){ return x; }).map(function(w){
+      return w.charAt(0).toUpperCase() + w.slice(1);
+    }).join(' ');
+  }
+  // Xưng hô không phân biệt hoa/thường (vd "c thu", "chị trang" vẫn nhận).
+  function titleOf(word){
+    var lw = String(word || '').toLowerCase();
+    var k = Object.keys(TITLE_MAP).filter(function(key){ return key.toLowerCase() === lw; })[0];
+    return k ? TITLE_MAP[k] : null;
+  }
+  function parseName(raw){
+    var name = String(raw || '').trim().replace(/^\d+\.\s*/, '');
+    if (!name) return null;
+    var parts = name.split(/\s+/);
+    var title = titleOf(parts[0]);
+    if (title) {
+      var rest = capWords(parts.slice(1).join(' '));
+      if (!rest) return null;
+      var full = title + ' ' + rest;
+      var clean = title + ' ' + stripNoteTail(rest);
+      return { displayName: clean, pronoun: title, origName: (full.toLowerCase() !== clean.toLowerCase()) ? full : '' };
+    }
+    var cleanName = capWords(stripNoteTail(name));
+    return { displayName: cleanName, pronoun: 'bạn', origName: (cleanName.toLowerCase() !== name.toLowerCase()) ? name : '' };
+  }
+
+  function parseGuestList(text){
+    var out = [];
+    var side = '', group = '';
+    var lines = String(text || '').replace(/^\uFEFF/, '').split(/\r?\n/);
+    lines.forEach(function(rawLine){
+      var line = rawLine.trim();
+      if (!line) return;
+      // Dòng tiêu đề của bản xuất CCM: "Danh sách khách mời - Nhà trai"
+      if (/^Danh sách khách mời/i.test(line)) {
+        var m = line.match(/Nhà\s+(trai|gái)/i);
+        if (m) side = m[1].toLowerCase() === 'trai' ? 'trai' : 'gai';
+        return;
+      }
+      if (/^Tổng:/i.test(line)) return;
+      if (/^Tất cả các nhóm/i.test(line)) return;
+      if (/^Nhà trai$/i.test(line)) { side = 'trai'; group = ''; return; }
+      if (/^Nhà gái$/i.test(line)) { side = 'gai'; group = ''; return; }
+      // Dòng tên nhóm kết thúc bằng ":"
+      if (/:\s*$/.test(line) && !/^\d+\./.test(line)) { group = line.replace(/:\s*$/, '').trim(); return; }
+      // Dòng "2 bạn Đại Ánh" là 1 link vợ chồng: "Bạn Đại - Bạn Ánh", xưng "các bạn".
+      // Còn "3 bạn ..." trở lên thì mỗi bạn 1 link như thường.
+      var multi = line.match(/^(\d+)\s+bạn\s+(.+)$/i);
+      if (multi) {
+        var count = parseInt(multi[1], 10);
+        var mwords = multi[2].trim().split(/\s+/);
+        if (count === 2 && mwords.length === 2) {
+          out.push({
+            id: 'g' + out.length + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+            name: 'Bạn ' + capWords(mwords[0]) + ' - Bạn ' + capWords(mwords[1]), pronoun: 'các bạn', orig: '',
+            side: side, group: group, invited: false
+          });
+          return;
+        }
+        if (count > 2 && count <= 10 && mwords.length === count) {
+          mwords.forEach(function(w){
+            out.push({
+              id: 'g' + out.length + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+              name: 'Bạn ' + capWords(w), pronoun: 'bạn', orig: '',
+              side: side, group: group, invited: false
+            });
+          });
+          return;
+        }
+      }
+      var invited = false, namePart = line, lineGroup = group;
+      // Định dạng xuất CCM: "1. A Cường - Gia đình - Đã mời"
+      var ccm = line.match(/^\d+\.\s+(.+?)\s+-\s+(.+?)\s+-\s+(Đã mời|Chưa mời)\s*$/);
+      if (ccm) {
+        namePart = ccm[1]; lineGroup = ccm[2]; invited = (ccm[3] === 'Đã mời');
+      } else {
+        // Dạng text thường: bỏ ghi chú trong ngoặc, bỏ số thứ tự đầu dòng.
+        namePart = line.replace(/\s*\([^)]*\)\s*/g, ' ').trim();
+        namePart = namePart.replace(/^\d+\.\s*/, '');
+      }
+      var parsed = null;
+      if (!ccm) {
+        // Dòng bắt đầu bằng "Gia đình ..." thì đó là tên nhóm, phần sau mới là tên khách
+        // (vd "Gai đình Anh Sơn chị Liên" -> nhóm "Gia đình", khách "Anh Sơn - Chị Liên").
+        var gm = namePart.match(/^(gia đình|gai đình)\s+(.+)$/i);
+        if (gm) { lineGroup = 'Gia đình'; namePart = gm[2]; }
+        // Dòng "Vợ chồng bạn Đạt" là 1 link vợ chồng (chỉ biết tên 1 người):
+        // tên khách "Vợ chồng bạn Đạt", xưng theo người đó: Bạn/Em -> "các bạn",
+        // Anh/Chị -> "anh chị", Bác/Ông/Bà/Cô/Chú/Thầy giữ nguyên xưng đó.
+        var vc = namePart.match(/^(vợ chồng)\s+(.+)$/i);
+        if (vc && !parsed) {
+          var vp = parseName(vc[2]);
+          if (vp) {
+            var vpl = vp.pronoun.toLowerCase();
+            var vname = vp.displayName.replace(/^(Anh|Chị|Em|Bác|Ông|Bà|Cô|Chú|Bạn|Thầy)\s/, function(m){ return m.toLowerCase(); });
+            if ((vpl === 'bạn' || vpl === 'em') && !/^(bạn|em)\s/i.test(vname)) vname = 'bạn ' + vname;
+            var vpron = (vpl === 'anh' || vpl === 'chị') ? 'anh chị'
+              : (vpl === 'bạn' || vpl === 'em') ? 'các bạn' : vp.pronoun;
+            parsed = { displayName: 'Vợ chồng ' + vname, pronoun: vpron, origName: vp.origName || '' };
+          }
+        }
+        // Mời cả 2 vợ chồng trong 1 dòng: "A Hùng - C Lan" -> 1 khách
+        // "Anh Hùng - Chị Lan", xưng "anh chị" (chỉ khi 1 bên là Anh, 1 bên là Chị).
+        var ac = function(pr){ return pr === 'Anh' || pr === 'Chị'; };
+        var coupleParts = namePart.split(' - ');
+        if (coupleParts.length === 2) {
+          var cp1 = parseName(coupleParts[0]), cp2 = parseName(coupleParts[1]);
+          if (cp1 && cp2 && ac(cp1.pronoun) && ac(cp2.pronoun) && cp1.pronoun !== cp2.pronoun) {
+            parsed = { displayName: cp1.displayName + ' - ' + cp2.displayName, pronoun: 'anh chị', origName: '' };
+          }
+        }
+        if (!parsed) {
+          // Vợ chồng viết kiểu 2 xưng hô trước, 2 tên sau: "Anh chị Tùng Anh" -> "Anh Tùng - Chị Anh".
+          var w4 = namePart.split(/\s+/);
+          if (w4.length === 4) {
+            var t0 = titleOf(w4[0]), t1 = titleOf(w4[1]);
+            if (t0 && t1 && ac(t0) && ac(t1) && t0 !== t1) {
+              parsed = { displayName: t0 + ' ' + capWords(w4[2]) + ' - ' + t1 + ' ' + capWords(w4[3]), pronoun: 'anh chị', origName: '' };
+            }
+          }
+        }
+        if (!parsed) {
+          // Vợ chồng viết liền không gạch nối: "Anh Hà chị Quỳnh" -> "Anh Hà - Chị Quỳnh".
+          var words = namePart.split(/\s+/);
+          for (var wi = 2; wi < words.length; wi++) {
+            if (titleOf(words[wi])) {
+              var sp1 = parseName(words.slice(0, wi).join(' '));
+              var sp2 = parseName(words.slice(wi).join(' '));
+              if (sp1 && sp2 && ac(sp1.pronoun) && ac(sp2.pronoun) && sp1.pronoun !== sp2.pronoun) {
+                parsed = { displayName: sp1.displayName + ' - ' + sp2.displayName, pronoun: 'anh chị', origName: '' };
+              }
+              break;
+            }
+          }
+        }
+        if (!parsed) {
+          // Không phải vợ chồng: bỏ phần sau " - " (ghi chú, vd " - nhà gái").
+          var di = namePart.indexOf(' - ');
+          if (di > 0) namePart = namePart.slice(0, di).trim();
+        }
+      }
+      if (!parsed) parsed = parseName(namePart);
+      if (!parsed) return;
+      // Nhóm bạn cao đẳng: chỉ lấy tên gọi (chữ đầu tiên), xưng "bạn" + tên.
+      if (lineGroup && /cao đẳng/i.test(lineGroup) && parsed.pronoun === 'bạn') {
+        var fw = parsed.displayName.split(/\s+/)[0];
+        if (fw) {
+          if (!parsed.origName) parsed.origName = parsed.displayName;
+          parsed.displayName = 'bạn ' + fw;
+        }
+      }
+      // Tên không có xưng hô thì tự thêm "Bạn" phía trước (vd "Yến Oanh" -> "Bạn Yến Oanh").
+      if (parsed.pronoun === 'bạn' && !/^bạn\s/i.test(parsed.displayName)) {
+        parsed.displayName = 'Bạn ' + parsed.displayName;
+      }
+      out.push({
+        id: 'g' + out.length + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+        name: parsed.displayName,
+        pronoun: parsed.pronoun,
+        orig: parsed.origName || '',
+        side: side, group: lineGroup, invited: invited
+      });
+    });
+    return out;
+  }
+
+  // Tên khách trong link: riêng gia đình anh Sơn chị Liên thì mang tên đầy đủ
+  // "Gia đình anh Sơn chị Liên" (ngoài bìa phong thư ghi đủ; trong thiệp rút gọn
+  // "Gia đình anh chị" — xem thiệp index.html). Chỉ áp dụng cho gia đình này.
+  function linkGuestName(g){
+    return (g.name === 'Anh Sơn - Chị Liên' && g.group === 'Gia đình') ? 'Gia đình anh Sơn chị Liên' : g.name;
+  }
+  // Tên khách hiện trong thiệp: ngoài bìa + trong thiệp (giống hệt thiệp index.html).
+  function inviteNames(linkGuest){
+    var env = linkGuest === 'Anh Sơn - Chị Liên' ? 'Gia đình anh Sơn chị Liên' : linkGuest;
+    var inside = (linkGuest === 'Gia đình anh Sơn chị Liên' || linkGuest === 'Anh Sơn - Chị Liên') ? 'Gia đình anh chị' : linkGuest;
+    return { env: env, inside: inside };
+  }
+  function makeLink(g){
+    var guestName = linkGuestName(g);
+    var url = BASE + '?guest=' + encodeURIComponent(guestName);
+    if (g.pronoun && g.pronoun !== 'bạn') url += '&goi=' + encodeURIComponent(g.pronoun);
+    return url;
+  }
+  function checkRow(label, value, big){
+    var row = document.createElement('div'); row.className = 'check-row';
+    var s = document.createElement('span'); s.textContent = label; row.appendChild(s);
+    var b = document.createElement(big ? 'b' : 'i'); b.textContent = value; row.appendChild(b);
+    return row;
+  }
+  // Xem trước tên khách sẽ hiện trong thiệp (không cần tải thiệp về).
+  function showCheck(linkGuest, pronoun, link){
+    var n = inviteNames(linkGuest);
+    var sp = selfPronoun(pronoun || 'bạn');
+    var pronText = (pronoun && pronoun !== 'bạn') ? 'xưng “' + pronoun + '” • ' + sp : sp;
+    var body = $('#checkBody');
+    body.innerHTML = '';
+    body.appendChild(checkRow('Ngoài bìa:', n.env, true));
+    body.appendChild(checkRow('Trong thiệp:', n.inside, true));
+    body.appendChild(checkRow('Tự xưng:', pronText, false));
+    if (link) {
+      var l = document.createElement('div'); l.className = 'g-link'; l.textContent = link; body.appendChild(l);
+    }
+    $('#checkModal').hidden = false;
+  }
+  $('#checkClose').addEventListener('click', function(){ $('#checkModal').hidden = true; });
+  $('#checkModal').addEventListener('click', function(e){ if (e.target.id === 'checkModal') $('#checkModal').hidden = true; });
+
+  // Hộp xác nhận vẽ ngay trong trang, thay hộp xác nhận mặc định của
+  // trình duyệt (vốn bị chặn khi trang chạy trong khung nhúng của app).
+  var bulkConfirmResolve = null;
+  function bulkConfirm(text){
+    return new Promise(function(resolve){
+      bulkConfirmResolve = resolve;
+      $('#bulkConfirmText').textContent = text;
+      $('#bulkConfirm').hidden = false;
+    });
+  }
+  function bulkConfirmDone(ok){
+    $('#bulkConfirm').hidden = true;
+    if (bulkConfirmResolve) { var r = bulkConfirmResolve; bulkConfirmResolve = null; r(ok); }
+  }
+  $('#bulkConfirmYes').addEventListener('click', function(){ bulkConfirmDone(true); });
+  $('#bulkConfirmNo').addEventListener('click', function(){ bulkConfirmDone(false); });
+  $('#bulkConfirm').addEventListener('click', function(e){ if (e.target.id === 'bulkConfirm') bulkConfirmDone(false); });
+  $('#btnCheckLink').addEventListener('click', function(){
+    var raw = ($('#checkInput').value || '').trim();
+    var m = raw.match(/[?&]guest=([^&#]*)/);
+    var guest = '';
+    try { guest = m ? decodeURIComponent(m[1].replace(/\+/g, ' ')).trim() : ''; } catch (e) { guest = ''; }
+    var mg = raw.match(/[?&]goi=([^&#]*)/);
+    var goi = 'bạn';
+    try { goi = mg ? decodeURIComponent(mg[1].replace(/\+/g, ' ')).trim() || 'bạn' : 'bạn'; } catch (e) { goi = 'bạn'; }
+    var cm = $('#checkMsg');
+    if (!guest) { cm.textContent = 'Link này không có tên khách (?guest=…). Dán đúng link mời đã gửi.'; cm.className = 'msg'; return; }
+    cm.textContent = ''; cm.className = 'msg';
+    showCheck(guest, goi, raw);
+  });
+
+  function sideLabel(s){ return s === 'trai' ? 'Nhà trai' : (s === 'gai' ? 'Nhà gái' : 'Chưa chia bên'); }
+
+  // Danh sách khách lưu online trên Google Sheet; ở đây chỉ lưu bản nháp ô nhập trên máy này.
+  function save(){
+    try { localStorage.setItem(LS_INPUT, inputEl.value); } catch (e) {}
+  }
+
+  // Tự xưng của cô dâu chú rể trong thiệp, đổi theo xưng hô của khách (khớp với thiệp):
+  // khách lớn hơn 1 thế hệ (Anh/Chị/Thầy, kể cả "anh chị") -> chúng em;
+  // lớn hơn 2 thế hệ (Bác/Ông/Bà/Cô/Chú) -> chúng cháu; còn lại (Bạn/Em) -> chúng tôi.
+  function selfPronoun(p){
+    var s = String(p || '').toLowerCase();
+    if (/(bác|ông|bà|cô|chú)/.test(s)) return 'chúng cháu';
+    if (/(anh|chị|thầy)/.test(s)) return 'chúng em';
+    return 'chúng tôi';
+  }
+
+  function guestCard(g){
+    var meta = sideLabel(g.side) + (g.group ? ' • ' + g.group : '') + (g.pronoun && g.pronoun !== 'bạn' ? ' • xưng “' + g.pronoun + '”' : '') + ' • ' + selfPronoun(g.pronoun);
+    var link = makeLink(g);
+    var el = document.createElement('div');
+    el.className = 'guest';
+    el.innerHTML =
+      '<div class="g-name">' + esc(g.name) + '</div>' +
+      (g.orig ? '<div class="g-orig">Tên gốc: ' + esc(g.orig) + '</div>' : '') +
+      '<div class="g-meta">' + esc(meta) + '</div>' +
+      '<div class="g-link">' + esc(link) + '</div>' +
+      '<div class="g-actions">' +
+        '<button class="btn-copy" type="button">Copy link</button>' +
+        '<button class="btn-open" type="button">Mở ↗</button>' +
+        '<button class="btn-check" type="button">🔍 Kiểm tra</button>' +
+        (g.invited
+          ? '<button class="btn-uninvite" type="button">↩ Chưa mời</button>'
+          : '<button class="btn-invite" type="button">✓ Đã mời</button>') +
+        '<button class="btn-delete" type="button">🗑 Xóa</button>' +
+      '</div>';
+    el.querySelector('.btn-copy').addEventListener('click', function(btn){
+      var b = btn.currentTarget;
+      var done = function(){ b.textContent = 'Đã copy ✓'; b.classList.add('done'); setTimeout(function(){ b.textContent = 'Copy link'; b.classList.remove('done'); }, 1800); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(link).then(done).catch(function(){ fallbackCopy(link, done); });
+      } else { fallbackCopy(link, done); }
+    });
+    el.querySelector('.btn-open').addEventListener('click', function(){
+      var a = document.createElement('a');
+      a.href = link; a.target = '_blank'; a.rel = 'noopener';
+      document.body.appendChild(a); a.click(); a.remove();
+    });
+    el.querySelector('.btn-check').addEventListener('click', function(){
+      showCheck(linkGuestName(g), g.pronoun, link);
+    });
+    var toggleBtn = el.querySelector('.btn-invite, .btn-uninvite');
+    if (toggleBtn) toggleBtn.addEventListener('click', function(){
+      var next = !g.invited;
+      g.invited = next; render();
+      if (mode === 'offline') { offlineGuests = guests; saveOfflineGuests(); setSync('Đã lưu trên máy này ✓ (bản Offline)', true); return; }
+      setSync('Đang lưu lên Google Sheet…');
+      queuePost({ action: 'setInvited', id: g.id, invited: next }).then(function(d){
+        if (d && d.ok) { setSync('Đã lưu online ✓', true); }
+        else { g.invited = !next; render(); setSync('Chưa lưu online được — đã hoàn lại trạng thái.'); }
+      });
+    });
+    el.querySelector('.btn-delete').addEventListener('click', function(){
+      bulkConfirm('Xóa link của "' + g.name + '"?').then(function(ok){
+        if (!ok) return;
+        guests = guests.filter(function(x){ return x.id !== g.id; });
+        render();
+        if (mode === 'offline') { offlineGuests = guests; saveOfflineGuests(); setSync('Đã xóa khỏi danh sách trên máy này ✓', true); return; }
+        setSync('Đang xóa khỏi Google Sheet…');
+        queuePost({ action: 'deleteGuest', id: g.id }).then(function(d){
+          if (d && d.ok) { setSync('Đã xóa online ✓', true); }
+          else { setSync('Chưa xóa online được — tải lại trang để kiểm tra.'); }
+        });
+      });
+    });
+    return el;
+  }
+
+  function fallbackCopy(text, done){
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta); done();
+    } catch (e) { setSync('Không copy được, hãy chạm giữ link để sao chép thủ công.'); }
+  }
+
+  // Phân trang: 10 link/trang cho đỡ dài.
+  var PAGE_SIZE = 10;
+  var todoPage = 1, donePage = 1;
+  function pager(el, page, totalPages, setPage){
+    el.innerHTML = '';
+    if (totalPages <= 1) return;
+    var mk = function(label, p, disabled, cur){
+      var b = document.createElement('button');
+      b.type = 'button'; b.textContent = label;
+      if (disabled) b.disabled = true;
+      if (cur) b.className = 'cur';
+      b.addEventListener('click', function(){ setPage(p); });
+      el.appendChild(b);
+    };
+    mk('‹ Trước', page - 1, page <= 1, false);
+    for (var i = 1; i <= totalPages; i++) mk(String(i), i, false, i === page);
+    mk('Sau ›', page + 1, page >= totalPages, false);
+  }
+
+  // Tên dài thì thu nhỏ cỡ chữ để vừa 1 hàng ngang; tên ngắn giữ nguyên 16px.
+  function fitGuestNames(){
+    document.querySelectorAll('.g-name').forEach(function(el){
+      el.style.whiteSpace = 'nowrap';
+      el.style.overflow = 'hidden';
+      el.style.textOverflow = 'ellipsis';
+      el.style.fontSize = '';
+      var fs = 16;
+      el.style.fontSize = fs + 'px';
+      while (fs > 11 && el.scrollWidth > el.clientWidth) { fs -= 1; el.style.fontSize = fs + 'px'; }
+    });
+  }
+  window.addEventListener('resize', fitGuestNames);
+
+  function render(){
+    var q = (searchEl.value || '').trim().toLowerCase();
+    var match = function(g){
+      if (!q) return true;
+      return g.name.toLowerCase().indexOf(q) >= 0 || (g.orig || '').toLowerCase().indexOf(q) >= 0 || (g.group || '').toLowerCase().indexOf(q) >= 0;
+    };
+    var todo = guests.filter(function(g){ return !g.invited && match(g); });
+    var done = guests.filter(function(g){ return g.invited && match(g); });
+    var total = guests.length;
+    var doneCount = guests.filter(function(g){ return g.invited; }).length;
+    $('#statTotal').textContent = total;
+    $('#statDone').textContent = doneCount;
+    $('#statTodo').textContent = total - doneCount;
+    $('#countTodo').textContent = todo.length;
+    $('#countDone').textContent = done.length;
+    listTodo.innerHTML = '';
+    if (!todo.length) {
+      var e1 = document.createElement('div'); e1.className = 'empty';
+      e1.textContent = total === 0 ? 'Chưa có khách nào. Dán danh sách rồi bấm “Tạo link”.' : 'Đã mời hết rồi 🎉';
+      listTodo.appendChild(e1);
+    } else {
+      var todoPages = Math.max(1, Math.ceil(todo.length / PAGE_SIZE));
+      if (todoPage > todoPages) todoPage = todoPages;
+      todo.slice((todoPage - 1) * PAGE_SIZE, todoPage * PAGE_SIZE).forEach(function(g){ listTodo.appendChild(guestCard(g)); });
+      pager($('#pagerTodo'), todoPage, todoPages, function(p){ todoPage = p; render(); });
+    }
+    listDone.innerHTML = '';
+    if (!done.length) {
+      var e2 = document.createElement('div'); e2.className = 'empty';
+      e2.textContent = 'Chưa có link nào được đánh dấu đã mời.';
+      listDone.appendChild(e2);
+    } else {
+      var donePages = Math.max(1, Math.ceil(done.length / PAGE_SIZE));
+      if (donePage > donePages) donePage = donePages;
+      done.slice((donePage - 1) * PAGE_SIZE, donePage * PAGE_SIZE).forEach(function(g){ listDone.appendChild(guestCard(g)); });
+      pager($('#pagerDone'), donePage, donePages, function(p){ donePage = p; render(); });
+    }
+    var pd = $('#pagerDone'); if (pd) pd.style.display = listDone.hidden ? 'none' : '';
+    resultCard.hidden = false;
+    fitGuestNames();
+  }
+
+  // Khóa trùng: cùng tên + xưng hô + tên gốc. Bên/nhóm KHÔNG tính,
+  // vì cùng 1 người dán từ bản xuất CCM (có bên/nhóm) hay gõ tay
+  // (không bên/nhóm) vẫn là 1 người. So sánh đúng cả hoa/thường
+  // để không gộp nhầm 2 người trùng tên (vd "Bạn Trang").
+  function dupKey(g){
+    return JSON.stringify([g.name, g.pronoun || '', g.orig || '']);
+  }
+  // Gộp trùng trong 1 mảng: giữ bản đầu tiên, đã mời thì giữ (OR).
+  function dedupeGuests(arr){
+    var seen = {}, out = [];
+    arr.forEach(function(g){
+      var k = dupKey(g);
+      if (seen[k]) { if (g.invited) seen[k].invited = true; return; }
+      seen[k] = g; out.push(g);
+    });
+    return out;
+  }
+
+  function generate(){
+    var text = inputEl.value;
+    var list = parseGuestList(text);
+    if (!list.length) {
+      msgEl.textContent = 'Không lọc được tên khách nào. Kiểm tra lại danh sách (mỗi khách 1 dòng).';
+      msgEl.className = 'msg';
+      return;
+    }
+    // Thêm khách mới lên ĐẦU danh sách, không xóa khách đã có.
+    // Tên nào đã có link rồi thì bỏ qua (tránh nhân đôi khi dán lại
+    // cùng danh sách); nếu bản mới ghi đã mời thì giữ dấu đã mời.
+    var seen = {};
+    guests.forEach(function(g){ seen[dupKey(g)] = g; });
+    var fresh = [], skipped = 0;
+    list.forEach(function(g){
+      var k = dupKey(g);
+      if (seen[k]) { if (g.invited) seen[k].invited = true; skipped++; return; }
+      seen[k] = g; fresh.push(g);
+    });
+    list = fresh;
+    // Tên nào đã tạo link xong thì mất khỏi ô nhập để gõ đợt tiếp.
+    inputEl.value = '';
+    save();
+    if (!list.length) {
+      // Toàn bộ đều đã có link: chỉ cập nhật dấu đã mời rồi báo, không thêm gì.
+      todoPage = 1; donePage = 1;
+      render();
+      msgEl.textContent = 'Các tên này đã có link rồi (' + skipped + ' tên trùng), không thêm trùng.';
+      msgEl.className = 'msg';
+      // Lưu dấu đã mời vừa gộp (chạy ngầm, theo bản đang dùng).
+      persistAll();
+      return;
+    }
+    guests = list.concat(guests);
+    todoPage = 1; donePage = 1;
+    render();
+    var preInvited = list.filter(function(g){ return g.invited; }).length;
+    msgEl.textContent = 'Đã thêm ' + list.length + ' link mới lên đầu danh sách (tổng ' + guests.length + ' khách)' + (skipped ? ' (bỏ qua ' + skipped + ' tên đã có)' : '') + (preInvited ? ' (' + preInvited + ' khách đã mời sẵn theo CCM)' : '') + '. Kiểm tra lại tên rồi copy gửi từng người.';
+    msgEl.className = 'msg ok';
+    resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Lưu chạy ngầm theo bản đang dùng, không chặn việc copy link.
+    persistAll();
+  }
+
+  // Dán nhanh: đọc danh sách đã sao chép từ CCM rồi cho vào ô nhập.
+  // Ô đang trống thì dán mới, đã có nội dung thì nối thêm xuống dưới.
+  // iPhone Safari có thể hỏi quyền truy cập bộ nhớ tạm ở lần đầu.
+  $('#btnPaste').addEventListener('click', function(){
+    if (!navigator.clipboard || !navigator.clipboard.readText) {
+      msgEl.textContent = 'Trình duyệt này không hỗ trợ dán nhanh. Bấm giữ vào ô rồi chọn “Dán”.';
+      msgEl.className = 'msg';
+      return;
+    }
+    navigator.clipboard.readText().then(function(text){
+      text = (text || '').trim();
+      if (!text) { msgEl.textContent = 'Bộ nhớ tạm đang trống. Sao chép danh sách từ CCM trước rồi bấm lại.'; msgEl.className = 'msg'; return; }
+      var cur = inputEl.value.trim();
+      inputEl.value = cur ? (cur + '\n' + text) : text;
+      save();
+      var lines = text.split(/\r?\n/).filter(function(l){ return l.trim(); }).length;
+      msgEl.textContent = 'Đã dán ' + lines + ' dòng vào ô nhập. Bấm “Tạo link” để tạo link.';
+      msgEl.className = 'msg ok';
+    }).catch(function(){
+      msgEl.textContent = 'Không đọc được bộ nhớ tạm (chưa cho phép). Bấm giữ vào ô rồi chọn “Dán”.';
+      msgEl.className = 'msg';
+    });
+  });
+  $('#btnGen').addEventListener('click', function(){ generate(); });
+  $('#bulkBtnClear').addEventListener('click', function(){
+    bulkConfirm(mode === 'offline'
+      ? 'Xóa hết danh sách offline trên máy này?'
+      : 'Xóa hết danh sách và link đã tạo?').then(function(ok){
+      if (!ok) return;
+      if (mode === 'offline') {
+        guests = []; offlineGuests = guests; saveOfflineGuests();
+        inputEl.value = '';
+        try { localStorage.removeItem(LS_INPUT); } catch (e) {}
+        msgEl.textContent = '';
+        todoPage = 1; donePage = 1;
+        render();
+        setSync('Đã xóa hết danh sách offline trên máy này.', true);
+        return;
+      }
+      setSync('Đang xóa trên Google Sheet…');
+      apiPost({ action: 'clearGuestLinks' }).then(function(){
+        guests = []; inputEl.value = '';
+        try { localStorage.removeItem(LS_INPUT); } catch (e) {}
+        msgEl.textContent = '';
+        todoPage = 1; donePage = 1;
+        return loadOnline();
+      });
+    });
+  });
+  $('#btnDedupe').addEventListener('click', function(){
+    var before = guests.length;
+    var cleaned = dedupeGuests(guests);
+    var removed = before - cleaned.length;
+    if (!removed) { msgEl.textContent = 'Không có khách trùng.'; msgEl.className = 'msg'; return; }
+    bulkConfirm('Tìm thấy ' + removed + ' bản trùng. Chỉ giữ lại 1 bản mỗi tên, xóa ' + removed + ' bản trùng?').then(function(ok){
+      if (!ok) return;
+      guests = cleaned;
+      todoPage = 1; donePage = 1;
+      render();
+      msgEl.textContent = 'Đã xóa ' + removed + ' bản trùng, còn ' + guests.length + ' khách.';
+      msgEl.className = 'msg ok';
+      persistAll();
+    });
+  });
+  // Sao lưu / khôi phục: tải file JSON chứa danh sách + trạng thái Đã mời,
+  // để khôi phục lại khi đổi máy hoặc khi bộ nhớ trình duyệt bị xóa.
+  var backupMsg = $('#backupMsg');
+  $('#btnBackup').addEventListener('click', function(){
+    if (!guests.length) { backupMsg.textContent = 'Chưa có khách nào để sao lưu.'; backupMsg.className = 'msg'; return; }
+    var data = { app: 'tao-link-moi-online', version: 1, savedAt: new Date().toISOString(), input: inputEl.value, guests: guests };
+    var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'link-moi-sao-luu-' + new Date().toISOString().slice(0, 10) + '.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+    backupMsg.textContent = 'Đã tải file sao lưu (' + guests.length + ' khách). Giữ file này để khôi phục khi cần.';
+    backupMsg.className = 'msg ok';
+  });
+  $('#btnRestore').addEventListener('click', function(){ $('#restoreFile').click(); });
+  $('#restoreFile').addEventListener('change', function(e){
+    var file = e.target.files[0];
+    e.target.value = '';
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(){
+      try {
+        var data = JSON.parse(reader.result);
+        var list = (data && Array.isArray(data.guests)) ? data.guests.filter(function(g){ return g && g.name; }) : [];
+        if (!list.length) throw new Error('bad');
+        list.forEach(function(g){
+          if (!g.id) g.id = 'g' + Math.random().toString(36).slice(2, 10);
+          if (!g.pronoun) g.pronoun = 'bạn';
+          if (g.invited === undefined) g.invited = false;
+        });
+        if (typeof data.input === 'string') inputEl.value = data.input;
+        save();
+        todoPage = 1; donePage = 1;
+        if (mode === 'offline') {
+          guests = list; offlineGuests = guests; saveOfflineGuests();
+          render();
+          backupMsg.textContent = 'Đã khôi phục ' + list.length + ' khách từ file sao lưu vào bản Offline (lưu trên máy này).';
+          backupMsg.className = 'msg ok';
+          return;
+        }
+        setSync('Đang lưu lên Google Sheet…');
+        apiPost({ action: 'replaceGuestLinks', guests: list }).then(function(){ return loadOnline(); }).then(function(ok){
+          if (!ok) { backupMsg.textContent = 'Không lưu được lên Google Sheet. Kiểm tra mạng rồi thử lại.'; backupMsg.className = 'msg'; return; }
+          backupMsg.textContent = 'Đã khôi phục ' + list.length + ' khách từ file sao lưu và lưu online.';
+          backupMsg.className = 'msg ok';
+        });
+      } catch (err) {
+        backupMsg.textContent = 'File sao lưu không đúng định dạng. Chọn đúng file đã tải từ nút Sao lưu.';
+        backupMsg.className = 'msg';
+      }
+    };
+    reader.readAsText(file);
+  });
+  $('#btnToggleInvited').addEventListener('click', function(){
+    var hidden = listDone.hidden;
+    listDone.hidden = !hidden;
+    $('#invitedArrow').textContent = hidden ? '▾' : '▸';
+    var pd = $('#pagerDone'); if (pd) pd.style.display = hidden ? '' : 'none';
+  });
+  searchEl.addEventListener('input', function(){ todoPage = 1; donePage = 1; render(); });
+
+  // ----- Công tắc 2 bản Online / Offline -----
+  var btnModeOnline = $('#btnModeOnline'), btnModeOffline = $('#btnModeOffline');
+  function updateModeUI(){
+    if (btnModeOnline) btnModeOnline.setAttribute('aria-pressed', mode === 'online' ? 'true' : 'false');
+    if (btnModeOffline) btnModeOffline.setAttribute('aria-pressed', mode === 'offline' ? 'true' : 'false');
+    var sub = $('#bulkSub');
+    if (sub) sub.textContent = 'Dương Đăng & Ánh Tuyết • 29 · 11 · 2026 • ' + (mode === 'online' ? 'Lưu online trên Google Sheet' : 'Bản Offline — chỉ lưu trên máy này');
+    var apiBox = $('#apiDetails');
+    if (apiBox) apiBox.hidden = (mode === 'offline');
+    var reloadBtn = $('#btnReloadSync');
+    if (reloadBtn) reloadBtn.hidden = (mode === 'offline');
+    var foot = $('#bulkFoot');
+    if (foot) foot.textContent = mode === 'online'
+      ? 'Mỗi link mở ra thiệp với tên và xưng hô riêng của khách đó. Danh sách và trạng thái “Đã mời” lưu trên Google Sheet, mở ở máy nào cũng thấy giống nhau.'
+      : 'Mỗi link mở ra thiệp với tên và xưng hô riêng của khách đó. Bản Offline: danh sách và trạng thái “Đã mời” chỉ lưu trên máy này — mất mạng vẫn làm được, nhưng mở máy khác sẽ không thấy. Bấm “Sao lưu” để giữ file dự phòng.';
+  }
+  function setMode(next){
+    if (next === mode) { updateModeUI(); return; }
+    // Cất danh sách của bản hiện tại trước khi đổi, để quay lại còn nguyên.
+    if (mode === 'online') { onlineGuests = guests; } else { offlineGuests = guests; saveOfflineGuests(); }
+    mode = next;
+    try { localStorage.setItem(LS_MODE, mode); } catch (e) {}
+    todoPage = 1; donePage = 1;
+    updateModeUI();
+    if (mode === 'offline') {
+      guests = offlineGuests;
+      render();
+      setSync('Bản Offline — danh sách chỉ lưu trên máy này (' + guests.length + ' khách).', true);
+    } else {
+      guests = onlineGuests || [];
+      render();
+      loadOnline();
+    }
+    window.dispatchEvent(new Event('resize'));
+  }
+  if (btnModeOnline) btnModeOnline.addEventListener('click', function(){ setMode('online'); });
+  if (btnModeOffline) btnModeOffline.addEventListener('click', function(){ setMode('offline'); });
+  var btnReloadSyncEl = $('#btnReloadSync');
+  if (btnReloadSyncEl) btnReloadSyncEl.addEventListener('click', function(){ if (mode === 'online') loadOnline(); });
+
+  // Khởi tạo theo bản đang chọn: Offline thì lấy danh sách trên máy này,
+  // Online thì tải từ Google Sheet. Vẫn tải online chạy nền để lúc gạt
+  // sang Online là có ngay danh sách mới nhất. Đang ở bản Offline thì
+  // quay lại trang không tự tải đè lên danh sách đang làm.
+  try {
+    var savedInput = localStorage.getItem(LS_INPUT);
+    if (savedInput) inputEl.value = savedInput;
+  } catch (e) {}
+  updateModeUI();
+  if (mode === 'offline') {
+    guests = offlineGuests;
+    render();
+    setSync('Bản Offline — danh sách chỉ lưu trên máy này (' + guests.length + ' khách).', true);
+  }
+  loadOnline();
+  document.addEventListener('visibilitychange', function(){ if (!document.hidden && mode === 'online') loadOnline(); });
+  // Đổi link Apps Script khi deploy mới (mặc định dùng link hiện tại của thiệp).
+  var apiInput = $('#apiUrl'), apiMsg = $('#apiMsg');
+  if (apiInput) {
+    apiInput.value = apiUrl();
+    var apiSaveBtn = $('#btnApiSave');
+    if (apiSaveBtn) apiSaveBtn.addEventListener('click', function(){
+      var u = (apiInput.value || '').trim();
+      try { if (u) localStorage.setItem(LS_API, u); else localStorage.removeItem(LS_API); } catch (e) {}
+      if (apiMsg) { apiMsg.textContent = 'Đã lưu link Apps Script. Đang tải lại danh sách…'; apiMsg.className = 'msg ok'; }
+      loadOnline();
+    });
+  }
+})();
+    </script>
+  </body>
+</html>
