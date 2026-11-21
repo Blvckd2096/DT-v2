@@ -297,7 +297,7 @@ A Đức - nhà gái"></textarea>
       }
       var invited = false, namePart = line, lineGroup = group;
       // Định dạng xuất CCM: "1. A Cường - Gia đình - Đã mời"
-      var ccm = line.match(/^\d+\.\s+(.+?)\s+-\s+(.+?)\s+-\s+(Đã mời|Chưa mời)\s*$/);
+      var ccm = line.match(/^\d+\.\s+(.+)\s+-\s+(.+?)\s+-\s+(Đã mời|Chưa mời)\s*$/);
       if (ccm) {
         namePart = ccm[1]; lineGroup = ccm[2]; invited = (ccm[3] === 'Đã mời');
       } else {
