@@ -47,7 +47,7 @@ a{color:inherit;text-decoration:none}
 .js .shake-in.in{opacity:1;animation:shakeIn .9s ease}
 .rvl.in,.slide-l.in,.slide-r.in{opacity:1;transform:none}
 @keyframes shakeIn{0%{transform:translateX(0) rotate(0deg)}15%{transform:translateX(-18px) rotate(-2deg)}30%{transform:translateX(18px) rotate(2deg)}45%{transform:translateX(-14px) rotate(-1.5deg)}60%{transform:translateX(14px) rotate(1.5deg)}75%{transform:translateX(-8px) rotate(-1deg)}90%{transform:translateX(8px) rotate(1deg)}100%{transform:translateX(0) rotate(0deg)}}
-@media (prefers-reduced-motion:reduce){.js .rvl,.js .slide-l,.js .slide-r,.js .shake-in,.story-item img,.cname-big{opacity:1;transform:none;transition:none;animation:none}}
+@media (prefers-reduced-motion:reduce){.js .rvl,.js .slide-l,.js .slide-r,.js .shake-in,.story-item img,.cname-big,.family .btn{opacity:1;transform:none;transition:none;animation:none}}
 /* ---------- OPENER: sample-faithful fade, pink only ---------- */
 .opener{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#e89ba8 0%,#d47a88 100%);padding:24px;transition:opacity 2.1s ease}
 .opener.opening{opacity:0;pointer-events:none}
@@ -325,7 +325,7 @@ a{color:inherit;text-decoration:none}
 .family .addr-btn{margin-top:auto;padding-top:14px}
 .family p:nth-of-type(1),.family p:nth-of-type(2){font-family:var(--serif);font-size:15px;font-weight:500;color:var(--ink);line-height:1.5}
 
-.family .btn{padding:8px 10px;font-size:12px;margin-top:10px;white-space:nowrap;max-width:100%}
+.family .btn{display:block;width:100%;padding:12px 6px;font-size:12px;font-weight:700;margin-top:10px;white-space:nowrap;text-align:center;background:#FFF0F2;border:2px solid var(--deep);box-shadow:0 4px 14px rgba(212,122,136,.28);animation:btnNudge 4s ease-in-out infinite}
 .family-divider{position:relative;width:1px;background:var(--line);justify-self:center}
 .family-divider svg{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:28px;height:20px;background:var(--card);color:var(--deep);padding:6px 0}
 .wed-date{margin-top:30px;text-align:center;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 16px 20px;box-shadow:var(--shadow)}
@@ -368,6 +368,7 @@ a{color:inherit;text-decoration:none}
 #gift .container{padding-bottom:60px}
 .giftbox{display:block;margin:14px auto 0;width:210px;background:var(--deep2);border-radius:18px;padding:30px 16px 24px;color:#fff;text-align:center;box-shadow:var(--shadow);cursor:pointer;position:relative;animation:giftWiggle 3.4s ease-in-out infinite;transform-origin:50% 100%}
 @keyframes giftWiggle{0%,86%,100%{transform:rotate(0)}89%{transform:rotate(-1.6deg)}93%{transform:rotate(1.6deg)}97%{transform:rotate(-.8deg)}}
+@keyframes btnNudge{0%,86%,100%{transform:translateX(0) rotate(0deg)}89%{transform:translateX(-2px) rotate(-1deg)}92%{transform:translateX(2px) rotate(1deg)}95%{transform:translateX(-1.5px) rotate(-.6deg)}98%{transform:translateX(1px) rotate(.4deg)}}
 @media (prefers-reduced-motion:reduce){.giftbox{animation:none}.cal-day.special::before,.cal-day.special::after{animation:none}}
 @media (max-width:380px){.gift-cols{gap:8px}.gift-dialog{padding:20px 10px 16px}.gift-qr-card{padding:8px}.sec-title{font-size:1.8rem}.hero-names{font-size:3.4rem}}
 .giftbox .xi{width:64px;height:64px;margin:0 auto 10px;border:2px solid #FFE9EC;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px}
@@ -769,9 +770,9 @@ T</span></div>
     <p class="invite-guest" data-bind="guestName">Quý Khách</p>
     <p class="slide-l" style="text-align:center;font-family:var(--serif);font-size:1.6rem;font-weight:600;line-height:1.5;color:var(--ink)" data-bind="inviteMessage">Trân trọng kính mời quý khách đến dự buổi tiệc chung vui cùng gia đình chúng tôi</p>
     <div class="families rvl"><div class="couple-names rvl"><span class="cname-big" data-bind="groomFullName">Dương Hải Đăng</span><span class="cname-amp">&</span><span class="cname-big" data-bind="brideFullName">Nguyễn Ánh Tuyết</span></div>
-      <div class="family slide-l"><h4 data-bind="familyTitleGroom">Nhà trai</h4><div class="parent"><span class="role">Ông</span><span class="pname" data-bind="groomFather">Dương Quang Sứ</span></div><div class="parent"><span class="role">Bà</span><span class="pname" data-bind="groomMother">Nguyễn Thị Tuyền</span></div><div class="addr"><span class="alabel">Địa chỉ</span><span class="atext" data-bind="groomAddress">Nhà văn hóa thôn Đình - Tam Hồng - Yên Lạc - Phú Thọ</span><div class="party"><span class="alabel">Tiệc cưới</span><span class="ptime">15:30 · 28/11/2026</span><span class="plunar">Thứ 7, 20 tháng 10 âm lịch</span></div></div><div class="addr-btn"><a class="btn btn-ghost" href="https://maps.app.goo.gl/9j6WR9qussmBc5LY7?g_st=ic" target="_blank" rel="noopener">Xem bản đồ</a></div></div>
+      <div class="family slide-l"><h4 data-bind="familyTitleGroom">Nhà trai</h4><div class="parent"><span class="role">Ông</span><span class="pname" data-bind="groomFather">Dương Quang Sứ</span></div><div class="parent"><span class="role">Bà</span><span class="pname" data-bind="groomMother">Nguyễn Thị Tuyền</span></div><div class="addr"><span class="alabel">Địa chỉ</span><span class="atext" data-bind="groomAddress">Nhà văn hóa thôn Đình - Tam Hồng - Yên Lạc - Phú Thọ</span><div class="party"><span class="alabel">Tiệc cưới</span><span class="ptime">15:30 · 28/11/2026</span><span class="plunar">Thứ 7, 20 tháng 10 âm lịch</span></div></div><div class="addr-btn"><a class="btn btn-ghost" href="https://maps.app.goo.gl/9j6WR9qussmBc5LY7?g_st=ic" target="_blank" rel="noopener">Chỉ đường trên bản đồ</a></div></div>
       <div class="family-divider" aria-hidden="true"><svg viewBox="0 0 32 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="10" r="7"/><circle cx="21" cy="10" r="7"/></svg></div>
-      <div class="family slide-r"><h4 data-bind="familyTitleBride">Nhà gái</h4><div class="parent"><span class="role">Ông</span><span class="pname" data-bind="brideFather">Nguyễn Hữu Thông</span></div><div class="parent"><span class="role">Bà</span><span class="pname" data-bind="brideMother">Nguyễn Thị Thanh Huyền</span></div><div class="addr"><span class="alabel">Địa chỉ</span><span class="atext" data-bind="brideAddress">SN 225 - Thôn Chùa - Tam Hồng - Yên Lạc - Phú Thọ</span><div class="party"><span class="alabel">Tiệc cưới</span><span class="ptime">15:30 · 28/11/2026</span><span class="plunar">Thứ 7, 20 tháng 10 âm lịch</span></div></div><div class="addr-btn"><a class="btn btn-ghost" href="https://www.google.com/maps/search/?api=1&query=21.1995739,105.5552271" target="_blank" rel="noopener">Xem bản đồ</a></div></div>
+      <div class="family slide-r"><h4 data-bind="familyTitleBride">Nhà gái</h4><div class="parent"><span class="role">Ông</span><span class="pname" data-bind="brideFather">Nguyễn Hữu Thông</span></div><div class="parent"><span class="role">Bà</span><span class="pname" data-bind="brideMother">Nguyễn Thị Thanh Huyền</span></div><div class="addr"><span class="alabel">Địa chỉ</span><span class="atext" data-bind="brideAddress">SN 225 - Thôn Chùa - Tam Hồng - Yên Lạc - Phú Thọ</span><div class="party"><span class="alabel">Tiệc cưới</span><span class="ptime">15:30 · 28/11/2026</span><span class="plunar">Thứ 7, 20 tháng 10 âm lịch</span></div></div><div class="addr-btn"><a class="btn btn-ghost" href="https://www.google.com/maps/search/?api=1&query=21.1995739,105.5552271" target="_blank" rel="noopener">Chỉ đường trên bản đồ</a></div></div>
     </div>
     <div class="wed-date">
       <p class="wed-date-label">Lễ Vu Quy</p>
@@ -933,7 +934,7 @@ T</span></div>
     <audio id="bgMusic" preload="none"></audio>
   </div>
 </div></section>
-<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><span class="admin-only"><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 20/11/2026 12:08</span></span></footer>
+<footer class="footer">Made with love · <span data-bind="groomName">Dương Đăng</span> &amp; <span data-bind="brideName">Ánh Tuyết</span><span class="admin-only"><br><span>Bản xem trước · bản mới toàn bộ v2 · chưa đẩy live</span><br><span id="buildStamp" style="font-size:11px;color:#b08a92">Cập nhật 21/11/2026 18:52</span></span></footer>
 <!-- Floating controls (above content, below dialogs) -->
 <nav class="bottom-bar" aria-label="Điều hướng nhanh">
   <a href="#wishes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5z"/></svg><span>Gửi lời chúc</span></a>
@@ -1380,8 +1381,8 @@ function renderSchedule() {
       ? venues.map(v => `<div>${esc(v.place || '')}</div>`).join('')
       : esc(ev.place).replace(/\n/g, '<br>');
     const btnsHtml = venues.length
-      ? `<div class="tl-venues">${venues.map(v => `<a class="btn btn-ghost btn-venue" href="${esc(v.mapUrl || '#')}" target="_blank" rel="noopener">${esc(v.label || 'Xem bản đồ')}</a>`).join('')}</div>`
-      : (ev.mapUrl ? `<a class="btn btn-ghost" href="${esc(ev.mapUrl)}" target="_blank" rel="noopener">Xem bản đồ</a>` : '');
+      ? `<div class="tl-venues">${venues.map(v => `<a class="btn btn-ghost btn-venue" href="${esc(v.mapUrl || '#')}" target="_blank" rel="noopener">${esc(v.label || 'Chỉ đường trên bản đồ')}</a>`).join('')}</div>`
+      : (ev.mapUrl ? `<a class="btn btn-ghost" href="${esc(ev.mapUrl)}" target="_blank" rel="noopener">Chỉ đường trên bản đồ</a>` : '');
     return `<div class="tl-item ${i % 2 === 0 ? 'slide-l' : 'slide-r'}">
     <p class="tl-time">${esc(ev.time)}</p><h3 class="tl-title">${esc(ev.title)}</h3><p class="tl-place">${placeHtml}</p>
     ${ev.desc ? `<p class="tl-desc">${esc(ev.desc).replace(/\n/g, '<br>')}</p>` : ''}
