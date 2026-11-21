@@ -542,6 +542,9 @@ A Đức - nhà gái"></textarea>
     }
     // Thêm khách mới lên ĐẦU danh sách, không xóa khách đã có.
     guests = list.concat(guests);
+    // Tên nào đã tạo link xong thì mất khỏi ô nhập để gõ đợt tiếp.
+    inputEl.value = '';
+    save();
     todoPage = 1; donePage = 1;
     save(); render();
     var preInvited = list.filter(function(g){ return g.invited; }).length;
