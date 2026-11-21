@@ -368,6 +368,15 @@ A Đức - nhà gái"></textarea>
       }
       if (!parsed) parsed = parseName(namePart);
       if (!parsed) return;
+      // "Gia đình anh X chị Y" là 1 khách gia đình (như gia đình anh Sơn chị Liên,
+      // gia đình anh Huy chị Quỳnh): giữ nguyên tên đầy đủ, không rút gọn
+      // thành "Anh X - Chị Y". Chỉ áp dụng cho cặp anh/chị trong nhóm "Gia đình".
+      if (lineGroup === 'Gia đình' && /^(Anh|Chị) .+ - (Anh|Chị) .+$/.test(parsed.displayName)) {
+        var fp = parsed.displayName.split(' - ');
+        var lowp = function(p){ return p.replace(/^(Anh|Chị)\s/, function(m){ return m.toLowerCase(); }); };
+        parsed.displayName = 'Gia đình ' + lowp(fp[0]) + ' ' + lowp(fp[1]);
+        parsed.pronoun = 'anh chị';
+      }
       // Nhóm bạn cao đẳng: chỉ lấy tên gọi (chữ đầu tiên), xưng "bạn" + tên.
       if (lineGroup && /cao đẳng/i.test(lineGroup) && parsed.pronoun === 'bạn') {
         var fw = parsed.displayName.split(/\s+/)[0];
@@ -395,12 +404,18 @@ A Đức - nhà gái"></textarea>
   // "Gia đình anh Sơn chị Liên" (ngoài bìa phong thư ghi đủ; trong thiệp rút gọn
   // "Gia đình anh chị" — xem thiệp index.html). Chỉ áp dụng cho gia đình này.
   function linkGuestName(g){
-    return (g.name === 'Anh Sơn - Chị Liên' && g.group === 'Gia đình') ? 'Gia đình anh Sơn chị Liên' : g.name;
+    if (g.group === 'Gia đình' && /^(Anh|Chị) .+ - (Anh|Chị) .+$/.test(g.name)) {
+      var fp = g.name.split(' - ');
+      var lowp = function(p){ return p.replace(/^(Anh|Chị)\s/, function(m){ return m.toLowerCase(); }); };
+      return 'Gia đình ' + lowp(fp[0]) + ' ' + lowp(fp[1]);
+    }
+    return g.name;
   }
   // Tên khách hiện trong thiệp: ngoài bìa + trong thiệp (giống hệt thiệp index.html).
   function inviteNames(linkGuest){
-    var env = linkGuest === 'Anh Sơn - Chị Liên' ? 'Gia đình anh Sơn chị Liên' : linkGuest;
-    var inside = (linkGuest === 'Gia đình anh Sơn chị Liên' || linkGuest === 'Anh Sơn - Chị Liên') ? 'Gia đình anh chị' : linkGuest;
+    var isFam = /^gia đình (anh|chị) \S+ (anh|chị) \S+$/i.test(linkGuest);
+    var env = linkGuest;
+    var inside = isFam ? 'Gia đình anh chị' : linkGuest;
     return { env: env, inside: inside };
   }
   function makeLink(g){
